@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boco.rofh.mapper.RofhConfigMapper" >
+
+	<select id = "getLinkTypeFtth"  parameterType="java.lang.String" resultType="java.lang.String">
+  		        select 'pos-olt' type
+		          from trans_element t, an_pos ap
+		         where t.cuid = ap.related_upne_cuid
+		           and ap.cuid = #{id}
+		        union all
+		        select 'pos-pos-olt' type
+		          from an_pos ap1, an_pos ap2
+		         where ap1.cuid = #{id}
+		           and ap1.related_upne_cuid = ap2.cuid
+  	</select>
+  	
+  	<select id="getLinkInfoFtthPOByCuid" parameterType="java.lang.String" resultType="java.util.Map">
+  	  select ap.related_port_cuid RELATED_OLT_DOWN_PTP,
+              nvl(ap.related_upne_cuid, ap.related_olt_cuid) RELATED_OLT,
+              (select p.cuid
+                 from ptp p
+                where p.related_ne_cuid = ap.cuid
+                  and p.PORT_SUB_TYPE = '12' and p.port_state = 1 and rownum = 1) RELATED_POS_UP_PTP
+         from an_pos ap 
+         where ap.cuid = #{id}
+  	</select>
+  	
+  	<select id="getLinkInfoFtthPPOByCuid" parameterType="java.lang.String" resultType="java.util.Map">
+         select 
+                ap1.related_upne_port_cuid RELATED_POS_DOWN_PTP,
+                nvl(ap1.related_olt_cuid, ap2.related_olt_cuid) RELATED_OLT,
+                nvl(ap1.related_port_cuid,ap2.related_port_cuid) RELATED_OLT_DOWN_PTP,
+                ap2.cuid RELATED_POS,
+                (select p.cuid
+                   from ptp p
+                  where p.related_ne_cuid = ap1.cuid
+                    and p.PORT_SUB_TYPE = '12' and p.port_state = 1 and rownum = 1) RELATED_TWO_POS_UP_PTP,
+                (select p.cuid
+                   from ptp p
+                  where p.related_ne_cuid = ap2.cuid
+                    and p.PORT_SUB_TYPE = '12' and p.port_state = 1 and rownum = 1) RELATED_POS_UP_PTP
+           from an_pos ap1
+           left join an_pos ap2 on ap1.related_upne_cuid = ap2.cuid
+           where ap1.cuid = #{id}
+  	</select>
+  	
+  	<select id="getLinkInfoFttbByCuid" parameterType="java.lang.String" resultType="java.util.Map">
+  		select nvl(ao.related_upne_cuid, ao.related_pos_cuid) RELATED_POS, /* pos*/
+		          nvl(ao.related_upne_port_cuid, ao.related_pos_port_cuid) RELATED_POS_DOWN_PTP, /* pos下联*/
+		          nvl(ao.related_olt_cuid, ap.related_olt_cuid) RELATED_OLT, /*olt*/
+		          nvl(ao.related_olt_port_cuid,ap.related_port_cuid) olt_pon_port_cuid,/*pon口*/
+		          (select p.cuid
+		             from ptp p
+		            where p.PORT_SUB_TYPE = '12' and p.port_state = 1
+		              and p.related_ne_cuid = ap.cuid and rownum = 1) RELATED_POS_UP_PTP /*pos 上联*/,
+		          (select p.cuid
+		             from ptp p
+		            where p.port_sub_type = '14' and p.port_state = 1
+		              and p.related_ne_cuid = ao.cuid and rownum = 1) RELATED_ONU_UP_PTP /*onu 上联*/
+		     from an_onu ao
+		     left join an_pos ap on ao.related_pos_cuid = ap.cuid
+             where ao.cuid = #{id}
+  	</select>
+  	
+  	<select id="getMaintainNameByAddr" parameterType="java.lang.String" resultType="java.util.Map">
+		select fa.label_cn,
+             bc.label_cn villages,
+             (select label_cn
+                from T_ROFH_MAINTAIN_DEPT MD
+               where bc.maintain_dept = md.cuid) maintain
+        from t_rofh_full_address fa
+        left join 
+             business_community bc on fa.related_community_cuid = bc.cuid
+       where fa.cuid = #{id}
+	</select>
+	
+	<select id="getWbsInfoById" parameterType="java.lang.String" resultType="java.util.Map">
+		 select aw.label_cn name,
+           ac.label_cn cpename,
+            aw.objectid,
+            aw.label_cn,
+            aw.related_district_cuid areaid,
+            (select label_cn
+               from district
+              where cuid = aw.related_district_cuid) areaname,
+            'WBS-逻辑口-01' ponname,
+            (SELECT F.PRODUCT_MODEL
+               FROM NE_MODEL_CFG_TYPE F
+              WHERE F.CUID = aw.MODEL) AS N_MODEL,
+            aw.dev_ip
+       from an_cpe ac, an_wbs aw
+	  where ac.related_wbs_cuid = aw.cuid
+	    and ac.cuid = #{id}
+	</select>
+	
+	<select id="getOnuInfoById" parameterType="com.boco.rofh.webservice.pojo.RofhNameSpaceBean" resultType="java.util.Map">
+	  	SELECT  ap.label_cn name,
+	  			ao.label_cn onuname,
+		       t.label_cn oltname,
+		       ap.objectid,
+		       ao.onu_id,
+		      (SELECT PRODUCT_MODEL FROM NE_MODEL_CFG_TYPE where cuid = ao.model) amodel,
+		       (select label_cn
+		          from fiber_cab_gx
+		         where cuid = nvl(ao.related_cab_cuid, ap.related_cab_cuid)
+		        union
+		        select label_cn
+		          from fiber_dp_gx
+		         where cuid = nvl(ao.related_cab_cuid, ap.related_cab_cuid)) relatedcab,
+		       (select label_cn from ptp where cuid = ao.related_pos_port_cuid) posport,
+		       ap.related_district_cuid areaid,
+		       ao.fttx,
+		       3 auth_type,
+		       pw.account_password value,
+		       (select label_cn from district where cuid = ao.related_district_cuid) areaname,
+		       ao.model amodel,
+		       t.cuid oltid,
+		       T.LABEL_CN oltname,
+		       (select p.label_cn from ptp p where p.cuid = pw.olt_pon_port_cuid) ponname,
+		       t.related_room_cuid roomid,
+		       (SELECT R.LABEL_CN AS NAME
+		          FROM ROOM R
+		         WHERE R.CUID = T.RELATED_ROOM_CUID) AS roomname,
+		       T.DEV_IP
+		  FROM ${ponwayns}PON_WAY pw , ${onuns}AN_ONU ao , TRANS_ELEMENT t , AN_POS ap 
+		  where  pw.related_onu_cuid = ao.cuid(+)
+		      and t.cuid(+) = pw.related_olt_cuid
+		      and ao.related_pos_cuid = ap.cuid(+)
+		      and pw.cuid = #{id}
+	  </select>
+  	
+</mapper>

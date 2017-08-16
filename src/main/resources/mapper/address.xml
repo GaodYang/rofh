@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boco.rofh.mapper.AddressMapper" >
+    
+    <select id="queryAddressTreeById" parameterType="java.lang.String" resultType="java.util.Map">
+		select  nvl(rel_full_addr_cuid,
+		          (select object_id
+		             from t_rofh_full_address fa
+		            where fa.cuid = rel_full_addr_cuid)
+		         )id,
+                 name,
+                 nm_get_py(name) spell,
+                 full_name,
+                 nm_get_py(full_name) full_spell
+               from t_rofh_addr_rel
+              where rel_id = #{id}
+	</select>
+	
+	<select id="queryObjectIdByRelId" parameterType="java.lang.String" resultType="java.lang.String">
+		        select t.object_id
+                   from t_rofh_full_address t
+                  where t.cuid = #{id}
+	</select>
+	
+	<select id="queryAddressByStdId" parameterType="java.lang.String" resultType="java.util.Map">
+		select FA.LABEL_CN name,
+	       FA.object_id,
+	       upper(fa.pinyin) pinyin,
+	       FA.room_no,
+	       t.oldcuid districtid,
+	       t.label_cn districtname
+	  from t_rofh_full_address fa
+	  left join district t on fa.county = t.cuid
+	 where fa.object_id = #{id}
+	</select>
+	
+	<select id = "queryNameByDistrictId" parameterType="java.lang.String" resultType="java.lang.String">
+		select full_name from t_rofh_addr_rel where id = #{id}
+	</select>
+	
+	<select id="queryAddress" parameterType="com.boco.rofh.webservice.pojo.QueryAddressReq" resultType="java.util.Map">
+		select * from (
+		select rownum n,t.* from (
+		select FA.LABEL_CN name, FA.object_id,upper(fa.pinyin) pinyin,FA.room_no,t.oldcuid districtid,t.label_cn districtname
+		  from t_rofh_full_address FA
+		  left join district t  on t.cuid = fa.county
+		 where 1=1 
+		<if test="detailName != null and detailName != '' ">
+			and replace(fa.label_cn,'|','') like '${detailName}'
+		</if> 
+		<if test="detailSpell != null and detailSpell != '' ">
+			and replace(upper(fa.pinyin),'|','') like '%${detailSpell}%'
+		</if>
+		<if test="districtId != null and districtId != '' ">
+			and t.oldcuid = #{districtId}
+		</if>
+		<![CDATA[ and rownum <= #{endIndex} ]]>) t
+		)where n between #{startIndex} and #{endIndex}
+	</select>
+	
+	<select id="queryAddressCount" parameterType="com.boco.rofh.webservice.pojo.QueryAddressReq" resultType="java.lang.Integer">
+		select count(1) TOTALCOUNT
+		   from t_rofh_full_address FA
+		   left join district t  on t.cuid = fa.county
+		 where 1=1 
+		 <if test="detailName != null and detailName != '' ">
+			and replace(fa.label_cn,'|','') like '${detailName}'
+		</if> 
+		<if test="detailSpell != null and detailSpell != '' ">
+			and replace(upper(fa.pinyin),'|','') like '%${detailSpell}%'
+		</if>
+		<if test="districtId != null and districtId != '' ">
+			and t.oldcuid = #{districtId}
+		</if>
+	</select>
+	
+	<select id="queryRelAddrId" parameterType="java.lang.String" resultType="java.lang.String">
+		  select id
+		      from t_rofh_addr_rel r
+		     where r.rel_full_addr_cuid =
+		           (select cuid
+		              from t_rofh_full_address
+		             where object_id = #{id})
+	</select>
+	
+	<select id="queryAddrParentIds" parameterType="java.lang.String" resultType="java.lang.String">
+		   select wm_concat(id) parentids
+		   from (select id
+		           from t_rofh_addr_rel
+		          start with id = #{id}
+		         connect by prior rel_id = id
+		          order by rownum desc)
+	</select>
+	
+
+</mapper>

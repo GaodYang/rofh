@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boco.rofh.mapper.RelationMapper" >
+
+    <select id="getVillageResource" resultType="com.boco.rofh.po.VillageResource" >
+       select t.ptid, t.ptname, t.id, t.name, t.type,bc.cuid , bc.label_cn village, t.state state
+		  from (
+		        select p.cuid ptid,
+		                p.label_cn ptname,
+		                na.cuid id,
+		                na.label_cn name,
+		                fa.related_community_cuid,
+		                '1' type,
+		                p.port_state state
+		          from ptp p, an_onu na, t_rofh_full_address fa
+		         where exists (select 1
+		                  from gpon_cover gc
+		                 where na.related_cab_cuid = gc.related_ne_cuid
+		                   and gc.standard_addr = fa.cuid)
+		           and p.related_ne_cuid = na.cuid
+		           and p.port_sub_type = 37
+		           and dev_type = 2
+		        union all
+		        select p.cuid ptid,
+		               p.label_cn ptname,
+		               na.cuid id,
+		               na.label_cn name,
+		               fa.related_community_cuid,
+		               '2' type,
+		               p.port_state state
+		          from ptp p, an_pos na, t_rofh_full_address fa
+		         where exists (select 1
+		                  from gpon_cover gc
+		                 where na.related_cab_cuid = gc.related_ne_cuid
+		                   and gc.standard_addr = fa.cuid)
+		           and p.related_ne_cuid = na.cuid
+		           and p.port_sub_type = 13
+		           and dev_type = 3
+		        union all
+		        select p.cuid ptid,
+		               p.label_cn ptname,
+		               na.cuid id,
+		               na.label_cn name,
+		               fa.related_community_cuid,
+		               '2' type,
+		               p.port_state state
+		          from an_pos na, ptp p, t_rofh_full_address fa
+		         where p.related_ne_cuid = na.cuid
+		           and exists (select 1
+		                  from gpon_cover gc, fiber_dp_map_gx fd
+		                 where na.related_cab_cuid = fd.fiber_cab_cuid
+		                   and fd.fiber_dp_cuid = gc.related_ne_cuid
+		                   and gc.standard_addr = fa.cuid)
+		           and p.port_sub_type = 13
+		           and dev_type = 3
+		        union all
+		        select '1' ptid,
+		               to_char(aw.port_num) ptname,
+		               aw.cuid id,
+		               aw.label_cn name,
+		               fa.related_community_cuid,
+		               '3' type,
+		               aw.used_port_num state
+		          from an_wbs aw, t_rofh_full_address fa, gpon_cover gc
+		         where gc.standard_addr = fa.cuid
+		           and gc.related_ne_cuid = aw.cuid) t,
+		       business_community bc
+		 where t.related_community_cuid = bc.cuid
+    </select>
+    
+    <select id = "getOnuLink"  parameterType="java.lang.String" resultType="java.util.Map">
+    	select ap.cuid posid, ap.label_cn posname, te.cuid oltid, te.label_cn oltname
+		   from an_onu ao, an_pos ap, trans_element te
+		  where ao.related_pos_cuid = ap.cuid
+		    and ap.related_olt_cuid = te.cuid
+		    and ao.cuid = #{id}
+    </select>
+    
+    <select id = "getPosLink"  parameterType="java.lang.String" resultType="java.util.Map">
+     select  ap2.cuid posid, ap2.label_cn posname, te.cuid oltid, te.label_cn oltname
+		    from an_pos ap, an_pos ap2, trans_element te
+		   where ap.related_olt_cuid = te.cuid
+		     and ap.related_upne_cuid = ap2.cuid(+)
+		     and ap.cuid = #{id}
+    </select>
+    
+
+</mapper>

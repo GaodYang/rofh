@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="rofh">
+		<class>com.boco.rofh.entity.RofhProduct</class>
+		<class>com.boco.rofh.entity.RofhOrder</class>
+		<class>com.boco.rofh.entity.AnOnu</class>
+		<class>com.boco.rofh.entity.PonWay</class>
+		<class>com.boco.rofh.entity.AnCpe</class>
+		<class>com.boco.rofh.entity.Ptp</class>
+		<class>com.boco.rofh.entity.RofhFullAddress</class>
+		<class>com.boco.rofh.entity.AnWbs</class>
+		<class>com.boco.rofh.entity.AnPos</class>
+		<class>com.boco.rofh.entity.RofhCustomer</class>
+		<class>com.boco.rofh.entity.WebservicePbossFinish</class>
+		<class>com.boco.rofh.entity.ProdServInfo</class>
+		<class>com.boco.rofh.entity.RofhActivate</class>
+	</persistence-unit>
+</persistence>

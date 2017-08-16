@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boco.rofh.mapper.ResourceMapper" >
+
+   <select id="queryBroadPlan" parameterType="java.lang.String" resultType="java.util.Map">
+			select sum(num) num, max(t.prod_srv_code) prod_srv_code, max(t.prod_srv_name)prod_srv_name
+            from ( 
+            select count(1) num
+                    from ptp p,an_onu na,nms_system n
+                   where exists (select 1
+                            from  gpon_cover gc
+                           where  na.related_cab_cuid = gc.related_ne_cuid 
+                             and gc.standard_addr = #{id})
+                             and n.cuid = na.related_ems_cuid
+                             and n.ownership = 2
+                             and p.related_ne_cuid = na.cuid
+                     and p.port_state = 1
+                     and p.port_sub_type = 37
+                     and dev_type = 2           
+                            union all
+            select count(1) num
+                  from ptp p,an_pos na,nms_system n
+                 where exists (select 1
+                          from  gpon_cover gc
+                         where na.related_cab_cuid = gc.related_ne_cuid  
+                           and gc.standard_addr = #{id})
+                           and p.related_ne_cuid = na.cuid
+                            and n.cuid = na.related_ems_cuid
+                             and n.ownership = 2
+                   and p.port_state = 1
+                   and p.port_sub_type = 13
+                   and dev_type = 3
+                union all
+                select count(1) num
+                  from an_pos na, ptp p,nms_system n
+                 where p.related_ne_cuid = na.cuid
+                   and exists (select 1
+                           from gpon_cover gc, fiber_dp_map_gx fd
+                         where na.related_cab_cuid = fd.fiber_cab_cuid
+                           and fd.fiber_dp_cuid = gc.related_ne_cuid
+                           and fd.related_pos_cuid is null
+                           and gc.standard_addr = #{id})
+                   and p.port_state = 1
+                   and n.cuid = na.related_ems_cuid
+                   and n.ownership = 2
+                   and p.port_sub_type = 13
+                   and dev_type = 3
+                    union all
+                select count(1) num
+                  from an_pos na, ptp p,nms_system n
+                 where p.related_ne_cuid = na.cuid
+                   and exists (select 1
+                          from gpon_cover gc, fiber_dp_map_gx fd
+                         where na.related_cab_cuid = fd.fiber_cab_cuid
+                           and fd.fiber_dp_cuid = gc.related_ne_cuid
+                           and fd.related_pos_cuid is not null
+                           and fd.related_pos_cuid = na.cuid
+           				   and p.port_no between fd.start_port_num and fd.end_port_num
+                           and gc.standard_addr = #{id})
+                   and p.port_state = 1
+                   and n.cuid = na.related_ems_cuid
+                   and n.ownership = 2
+                   and p.port_sub_type = 13
+                   and dev_type = 3
+                     ),
+                 t_PROD_SERV_INFO t
+           where t.prod_srv_type = 'CTT'         
+    union all  
+    select num, t.prod_srv_code, t.prod_srv_name
+            from (select count(1) num
+                    from ptp p, an_onu na,nms_system n
+                   where exists (select 1
+                            from gpon_cover gc
+                           where 
+                              na.related_cab_cuid = gc.related_ne_cuid 
+                             and gc.standard_addr = #{id})
+                             and n.cuid = na.related_ems_cuid
+                             and n.ownership = 1
+                     and p.port_state = 1
+                     and p.related_ne_cuid = na.cuid
+                     and p.port_sub_type = 37
+                     and dev_type = 2
+                            ),
+                 t_PROD_SERV_INFO t
+           where t.prod_srv_type = 'FTTB'
+          union all
+          select sum(num) num, max(t.prod_srv_code) prod_srv_code, max(t.prod_srv_name)prod_srv_name
+            from (  select count(1) num
+                  from ptp p, an_pos na,nms_system n
+                 where exists (select 1
+                          from gpon_cover gc
+                         where na.related_cab_cuid = gc.related_ne_cuid 
+                           and gc.standard_addr = #{id})
+                           and p.related_ne_cuid = na.cuid
+                            and n.cuid = na.related_ems_cuid
+                             and n.ownership = 1
+                   and p.port_state = 1
+                   and p.port_sub_type = 13
+                   and dev_type = 3
+                union all
+                select count(1) num
+                   from an_pos na, ptp p,nms_system n
+                 where p.related_ne_cuid = na.cuid
+                   and exists (select 1
+                           from gpon_cover gc, fiber_dp_map_gx fd
+                         where na.related_cab_cuid = fd.fiber_cab_cuid
+                           and fd.fiber_dp_cuid = gc.related_ne_cuid
+                           and fd.related_pos_cuid is null
+                           and gc.standard_addr = #{id})
+                   and p.port_state = 1
+                   and n.cuid = na.related_ems_cuid
+                   and n.ownership = 1
+                   and p.port_sub_type = 13
+                   and dev_type = 3
+                   union all
+	               select count(1) num
+	                   from an_pos na, ptp p,nms_system n
+	                 where p.related_ne_cuid = na.cuid
+	                   and exists (select 1
+	                            from gpon_cover gc, fiber_dp_map_gx fd
+	                         where na.related_cab_cuid = fd.fiber_cab_cuid
+	                            and fd.fiber_dp_cuid = gc.related_ne_cuid
+	                            and fd.related_pos_cuid is not  null
+        					    and fd.related_pos_cuid = na.cuid
+        					    and p.port_no between fd.start_port_num and fd.end_port_num
+	                            and gc.standard_addr = #{id})
+	                   and p.port_state = 1
+	                   and n.cuid = na.related_ems_cuid
+	                   and n.ownership = 1
+	                   and p.port_sub_type = 13
+	                   and dev_type = 3
+	                     
+                     ),
+                 t_PROD_SERV_INFO t
+           where t.prod_srv_type = 'FTTH'  
+          union all
+          select nvl((select aw.port_num - aw.used_port_num num
+                       from an_wbs aw
+                       left join gpon_cover gc
+                         on gc.related_ne_cuid = aw.cuid
+                      where gc.standard_addr = #{id}
+                      and rownum = 1),
+                     -1) num,
+                 t.prod_srv_code,
+                 t.prod_srv_name
+            from t_PROD_SERV_INFO t
+           where prod_srv_type = 'WBS'
+	</select>
+	
+	
+	<select id="getFreePortFttb" parameterType="java.lang.String" resultType="java.util.Map">
+			select cuid, related_ne_cuid
+			  from (select p.cuid, p.related_ne_cuid, p.port_no
+			          from ptp p,an_onu na,nms_system n
+			         where exists (select 1
+			                  from  gpon_cover gc
+			                 where 
+			                   na.related_cab_cuid = gc.related_ne_cuid
+			                   and gc.standard_addr = #{id})
+			           and p.related_ne_cuid = na.cuid
+			           and n.cuid = na.related_ems_cuid
+		               and n.ownership = 1
+			           and p.port_state = 1
+			           and p.port_sub_type = 37
+			           and dev_type = 2)
+			 order by port_no asc
+	</select>
+	
+	<select id="getFreePortCtt" parameterType="java.lang.String" resultType="java.util.Map">
+			select cuid, related_ne_cuid,type
+			  from (select p.cuid, p.related_ne_cuid, p.port_no,'3' type
+			          from ptp p,an_onu na,nms_system n
+			         where exists (select 1
+			                  from  gpon_cover gc
+			                 where 
+			                    na.related_cab_cuid = gc.related_ne_cuid
+			                   and gc.standard_addr = #{id})
+			           and n.cuid = na.related_ems_cuid
+		               and n.ownership = 2
+			           and p.related_ne_cuid = na.cuid
+			           and p.port_state = 1
+			           and p.port_sub_type = 37
+			           and dev_type = 2
+			           union all
+			           select p.cuid, p.related_ne_cuid, p.port_no,'5' type
+			          from ptp p,an_pos na,nms_system n
+			         where exists (select 1
+			                  from gpon_cover gc
+			                 where na.related_cab_cuid = gc.related_ne_cuid
+			                   and gc.standard_addr = #{id})
+			           and p.related_ne_cuid = na.cuid
+			           and n.cuid = na.related_ems_cuid
+			           and n.ownership = 2
+			           and p.port_state = 1
+			           and p.port_sub_type = 13
+			           and dev_type = 3
+			        union all
+			        select p.cuid, p.related_ne_cuid, p.port_no,'5' type
+			          from an_pos na, ptp p,nms_system n
+			         where p.related_ne_cuid = na.cuid
+			           and exists (select 1
+			                   from gpon_cover gc, fiber_dp_map_gx fd
+			                 where 
+			                   fd.fiber_dp_cuid = gc.related_ne_cuid
+			                   and na.related_cab_cuid = fd.fiber_cab_cuid
+			                   and fd.related_pos_cuid is null
+			                   and gc.standard_addr = #{id})
+			           and n.cuid = na.related_ems_cuid
+			           and n.ownership = 2
+			           and p.port_state = 1
+			           and p.port_sub_type = 13
+			           and dev_type = 3
+			           union all
+			        select p.cuid, p.related_ne_cuid, p.port_no,'5' type
+			          from an_pos na, ptp p,nms_system n
+			         where p.related_ne_cuid = na.cuid
+			           and exists (select 1
+			                   from gpon_cover gc, fiber_dp_map_gx fd
+			                 where 
+			                   fd.fiber_dp_cuid = gc.related_ne_cuid
+			                   and na.related_cab_cuid = fd.fiber_cab_cuid
+			                   and fd.related_pos_cuid is not  null
+         					   and fd.related_pos_cuid = na.cuid
+        					   and p.port_no between fd.start_port_num and fd.end_port_num
+			                   and gc.standard_addr = #{id})
+			           and n.cuid = na.related_ems_cuid
+			           and n.ownership = 2
+			           and p.port_state = 1
+			           and p.port_sub_type = 13
+			           and dev_type = 3)
+			 order by port_no asc
+	</select>
+	
+	<select id="getFreePortFtth" parameterType="java.lang.String" resultType="java.util.Map">
+          select cuid, related_ne_cuid
+		  from (select p.cuid, p.related_ne_cuid, p.port_no
+		          from ptp p,an_pos na,nms_system n
+		         where exists (select 1
+		                  from  gpon_cover gc
+		                 where na.related_cab_cuid = gc.related_ne_cuid
+		                   and gc.standard_addr = #{id})
+		           and p.related_ne_cuid = na.cuid
+		           and n.cuid = na.related_ems_cuid
+		           and n.ownership = 1
+		           and p.port_state = 1
+		           and p.port_sub_type = 13
+		           and dev_type = 3
+		        union all
+		        select p.cuid, p.related_ne_cuid, p.port_no
+		          from an_pos na, ptp p,nms_system n
+		         where p.related_ne_cuid = na.cuid
+		           and exists (select 1
+		                   from gpon_cover gc, fiber_dp_map_gx fd
+		                 where 
+		                    fd.fiber_dp_cuid = gc.related_ne_cuid
+		                    and na.related_cab_cuid = fd.fiber_cab_cuid
+		                    and fd.related_pos_cuid is null
+		                    and gc.standard_addr = #{id})
+		           and n.cuid = na.related_ems_cuid
+		           and n.ownership = 1
+		           and p.port_state = 1
+		           and p.port_sub_type = 13
+		           and dev_type = 3
+		           union all
+		        select p.cuid, p.related_ne_cuid, p.port_no
+		          from an_pos na, ptp p,nms_system n
+		         where p.related_ne_cuid = na.cuid
+		           and exists (select 1
+		                   from gpon_cover gc, fiber_dp_map_gx fd
+		                 where 
+		                    fd.fiber_dp_cuid = gc.related_ne_cuid
+		                    and na.related_cab_cuid = fd.fiber_cab_cuid
+		                    and fd.related_pos_cuid is not  null
+            				and fd.related_pos_cuid = na.cuid
+        				    and p.port_no between fd.start_port_num and fd.end_port_num
+		                    and gc.standard_addr = #{id})
+		           and n.cuid = na.related_ems_cuid
+		           and n.ownership = 1
+		           and p.port_state = 1
+		           and p.port_sub_type = 13
+		           and dev_type = 3)
+		 order by port_no asc
+	</select>
+	
+	<select id="getFreePortWbs" parameterType="java.lang.String" resultType="java.util.Map">
+		       select (aw.port_num - aw.used_port_num) num, aw.cuid RELATED_NE_CUID,aw.related_bras_ptp cuid
+		         from an_wbs aw
+		         left join gpon_cover gc on aw.cuid = gc.related_ne_cuid
+		        where gc.standard_addr = #{id}
+		        and port_num > used_port_num
+	</select>
+	
+	<select id="getDeviceVendorCodeByPosId" parameterType="java.lang.String" resultType = "java.lang.String" > 
+		select dv.abbreviation
+		  FROM TRANS_ELEMENT t, device_vendor dv
+		 WHERE t.CONFIG_TYPE = 1
+		   AND t.SIGNAL_TYPE = 9
+		   and t.cuid =
+		       (select ap.related_olt_cuid
+		          from an_pos ap
+		         where ap.cuid = #{id})
+		   and t.related_vendor_cuid = dv.cuid
+	</select>
+	
+	<select id="getDeviceVendorCodeByWbsId" parameterType="java.lang.String" resultType = "java.lang.String" > 
+		select dv.abbreviation
+		  from an_wbs aw, DEVICE_VENDOR dv
+		 where aw.related_vendor_cuid = dv.cuid
+		 and aw.cuid = #{id}
+	</select>
+
+
+</mapper>
