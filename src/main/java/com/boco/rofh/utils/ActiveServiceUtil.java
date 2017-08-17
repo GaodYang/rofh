@@ -1,7 +1,7 @@
 package com.boco.rofh.utils;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 
 import javax.annotation.PostConstruct;
 
@@ -9,8 +9,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.boco.active.MessageReceiver;
-import com.boco.active.MessageReceiverImplService;
+import com.boco.nais.core.web.msgreceiver.MessageReceiverImplServiceLocator;
+import com.boco.nais.core.web.msgreceiver.MessageReceiverImplServiceSoapBindingStub;
+import com.boco.rofh.constant.WebServiceConstant;
 
 @Component
 public class ActiveServiceUtil {
@@ -18,24 +19,15 @@ public class ActiveServiceUtil {
 	@Value("${activeWsServiceUrl}")
 	private String WSURL ;
 	
-	private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
-	
-	private MessageReceiverImplService messageReceiverImplService;
+	private MessageReceiverImplServiceSoapBindingStub bindingStub;
 	
 	private final static Logger logger = Logger.getLogger(ActiveServiceUtil.class);
 	
-	private MessageReceiver getService(){
-		
-		if(messageReceiverImplService == null){
-			init();
-		}
-		return messageReceiverImplService.getMessageReceiverImplPort();
-	} 
 	
-	public String send(String msg){
+	public String send(String msg) throws RemoteException{
 
-		msg = XML_HEAD + RofhUtil.replaceBlank(msg);
-		return getService().process("IRMS", "SVC_FULFILL_CFG", msg);
+		msg = WebServiceConstant.XML_HEAD + RofhUtil.replaceBlank(msg);
+		return bindingStub.process("IRMS", "SVC_FULFILL_CFG", msg);
 	}
 	
 	@PostConstruct
@@ -43,8 +35,9 @@ public class ActiveServiceUtil {
 		
 		try {
 			URL url = new URL(WSURL);
-			messageReceiverImplService = new MessageReceiverImplService(url);
-		} catch (MalformedURLException e) {
+			MessageReceiverImplServiceLocator implServiceLocator = new MessageReceiverImplServiceLocator();
+			bindingStub = new MessageReceiverImplServiceSoapBindingStub(url,implServiceLocator);
+		} catch (Exception e) {
 			
 			logger.error("激活服务无法连接",e);
 		}
@@ -55,7 +48,7 @@ public class ActiveServiceUtil {
 		
 		String[] str = new String[2];
 		str[0] = WSURL;
-		str[1] = messageReceiverImplService == null ? "ERROE" : "OK";
+		str[1] = bindingStub == null ? "ERROE" : "OK";
 		return str;
 	}
 

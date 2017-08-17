@@ -104,6 +104,21 @@ public class FinishMsgBuilder {
 		resAttrList.add(newResAttr("terminal_code",""));
 		resAttrList.add(newResAttr("terminal_name",""));
 		
+		Map<String,String> map = configMapper.getMaintainNameByAddr(rofhBean.getProduct().getRelatedCoverageAddrCuid());
+		String maintain = map.get("MAINTAIN");
+		String villages = map.get("VILLAGES");
+		String sdtname = map.get("LABEL_CN");
+		
+		String city = addressDao.getDistrictNameById(rofhBean.getProduct().getBusinessCityD());
+		resAttrList.add(newResAttr("city_name",city));
+		//area_id	所属区域ID
+		resAttrList.add(newResAttr("area_id",rofhBean.getProduct().getBusinessCityD()));
+		//area_name	所属区域名称
+		resAttrList.add(newResAttr("area_name",city));
+		resAttrList.add(newResAttr("county_name",addressDao.getDistrictNameById(rofhBean.getProduct().getBusinessCountyD())));
+		resAttrList.add(newResAttr("maintain_name",StringUtils.isBlank(maintain) ? rofhBean.getProduct().getRelatedMaintainCuid() : maintain));
+		resAttrList.add(newResAttr("villages",StringUtils.isBlank(villages) ? rofhBean.getProduct().getCellName() : villages));
+		resAttrList.add(newResAttr("std_addr_name",StringUtils.isBlank(sdtname) ? rofhBean.getProduct().getCellAddress() : sdtname));
 		
 		
 		if(rofhBean.getProduct().getAccessMode().equals(WebServiceConstant.AccessMode.WBS)){
@@ -133,7 +148,6 @@ public class FinishMsgBuilder {
 			
 			ponway = attempPonWayDao.findByProductCuid(product.getCuid());
 		}
-		/////////////////////
 		
 		
 		///
@@ -178,8 +192,6 @@ public class FinishMsgBuilder {
 		String eqpt_name = "";
 		String room_id = "";	
 		String room_name = "";	
-		String area_id = "";	
-		String area_name = "";	
 		String olt_ip = "";
 		String olt_port = "";
 		String onu_auth_type = "";
@@ -202,8 +214,6 @@ public class FinishMsgBuilder {
 			eqpt_name = ObjectUtils.toString(map.get("NAME"));
 			room_id = ObjectUtils.toString(map.get("ROOMID"));
 			room_name = ObjectUtils.toString(map.get("ROOMNAME"));
-			area_id = ObjectUtils.toString(map.get("AREAID"));
-			area_name = ObjectUtils.toString(map.get("AREANAME"));
 			eqpt_id =  ObjectUtils.toString(map.get("OBJECTID"));
 			olt_ip = ObjectUtils.toString(map.get("DEV_IP"));
 			olt_port = ObjectUtils.toString(map.get("PONNAME"));
@@ -231,10 +241,6 @@ public class FinishMsgBuilder {
 		resAttrList.add(newResAttr("room_id",room_id));
 		//room_name	机房名称
 		resAttrList.add(newResAttr("room_name",room_name));
-		//area_id	所属区域ID
-		resAttrList.add(newResAttr("area_id",area_id));
-		//area_name	所属区域名称
-		resAttrList.add(newResAttr("area_name",area_name));
 
 		resAttrList.add(newResAttr("olt_ip",olt_ip));
 		resAttrList.add(newResAttr("olt_port",olt_port));
@@ -246,17 +252,6 @@ public class FinishMsgBuilder {
 		resAttrList.add(newResAttr("onu_name",onu_name));
 		resAttrList.add(newResAttr("port_name",port_name));
 		
-		Map<String,String> map = configMapper.getMaintainNameByAddr(product.getRelatedCoverageAddrCuid());
-		String maintain = map.get("MAINTAIN");
-		String villages = map.get("VILLAGES");
-		String sdtname = map.get("LABEL_CN");
-		
-		resAttrList.add(newResAttr("city_name",addressDao.getDistrictNameById(product.getBusinessCityD())));
-		resAttrList.add(newResAttr("county_name",addressDao.getDistrictNameById(product.getBusinessCountyD())));
-
-		resAttrList.add(newResAttr("maintain_name",StringUtils.isBlank(maintain) ? product.getRelatedMaintainCuid() : maintain));
-		resAttrList.add(newResAttr("villages",StringUtils.isBlank(villages) ? product.getCellName() : villages));
-		resAttrList.add(newResAttr("std_addr_name",StringUtils.isBlank(sdtname) ? product.getCellAddress() : sdtname));
 		resAttrList.add(newResAttr("olt_name",olt_name));
 		resAttrList.add(newResAttr("onu_dev_type",onu_dev_type));
 		resAttrList.add(newResAttr("onu_id",onu_id));
@@ -316,14 +311,11 @@ public class FinishMsgBuilder {
 		String eqpt_name = "";
 		String room_id = "";	
 		String room_name = "";	
-		String area_id = "";	
-		String area_name = "";	
 		String olt_ip = "";
 		String olt_port = "";
 		String onu_auth_type = "";
 		String onu_auth_value = "";
 		String onu_type = "";
-		
 		String cpename = "";
 		String model = "";
 		
@@ -335,15 +327,12 @@ public class FinishMsgBuilder {
 			eqpt_name = ObjectUtils.toString(map.get("NAME"));
 			room_id = ObjectUtils.toString(map.get("ROOMID"));
 			room_name = ObjectUtils.toString(map.get("ROOMNAME"));
-			area_id = ObjectUtils.toString(map.get("AREAID"));
-			area_name = ObjectUtils.toString(map.get("AREANAME"));
 			eqpt_id =  ObjectUtils.toString(map.get("OBJECTID"));
 			olt_ip = ObjectUtils.toString(map.get("DEV_IP"));
 			olt_port = ObjectUtils.toString(map.get("PONNAME"));
 			onu_auth_type = ObjectUtils.toString(map.get("AUTH_TYPE"));
 			onu_auth_value = ObjectUtils.toString(map.get("VALUE"));
 			onu_type = ObjectUtils.toString(map.get("FTTX"));
-			
 			cpename = ObjectUtils.toString(map.get("CPENAME"));
 			model =  ObjectUtils.toString(map.get("N_MODEL"));
 		}
@@ -358,12 +347,6 @@ public class FinishMsgBuilder {
 		resAttrList.add(newResAttr("room_id",room_id));
 		//room_name	机房名称
 		resAttrList.add(newResAttr("room_name",room_name));
-		//area_id	所属区域ID
-		resAttrList.add(newResAttr("area_id",area_id));
-		//area_name	所属区域名称
-		resAttrList.add(newResAttr("area_name",area_name));
-		
-
 		resAttrList.add(newResAttr("olt_ip",olt_ip));
 		resAttrList.add(newResAttr("olt_port",olt_port));
 		resAttrList.add(newResAttr("onu_auth_type",onu_auth_type));
@@ -374,18 +357,6 @@ public class FinishMsgBuilder {
 		// add 2017 06 09
 		resAttrList.add(newResAttr("onu_name",cpename));
 		resAttrList.add(newResAttr("port_name",olt_port));
-		
-		Map<String,String> map = configMapper.getMaintainNameByAddr(product.getRelatedCoverageAddrCuid());
-		String maintain = map.get("MAINTAIN");
-		String villages = map.get("VILLAGES");
-		String sdtname = map.get("LABEL_CN");
-
-		resAttrList.add(newResAttr("maintain_name",StringUtils.isBlank(maintain) ? product.getRelatedMaintainCuid() : maintain));
-		resAttrList.add(newResAttr("villages",StringUtils.isBlank(villages) ? product.getCellName() : villages));
-		resAttrList.add(newResAttr("std_addr_name",StringUtils.isBlank(sdtname) ? product.getCellAddress() : sdtname));
-		resAttrList.add(newResAttr("city_name",addressDao.getDistrictNameById(product.getBusinessCityD())));
-		resAttrList.add(newResAttr("county_name",addressDao.getDistrictNameById(product.getBusinessCountyD())));
-		
 		resAttrList.add(newResAttr("olt_name",""));
 		resAttrList.add(newResAttr("onu_dev_type",model));
 		resAttrList.add(newResAttr("onu_id",""));

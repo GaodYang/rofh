@@ -39,7 +39,7 @@ public abstract class RofhProduct implements Serializable {
 	@Column(name="ACCOUNT_PASSWORD")
 	private String accountPassword;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="APPOINTMENT_TIME")
 	private Date appointmentTime;
 
@@ -84,7 +84,7 @@ public abstract class RofhProduct implements Serializable {
 
 	private String cpvlan;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
@@ -102,11 +102,11 @@ public abstract class RofhProduct implements Serializable {
 
 	private String distance;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="END_TIME")
 	private Date endTime;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="FINISH_TIME")
 	private Date finishTime;
 
@@ -122,11 +122,11 @@ public abstract class RofhProduct implements Serializable {
 	@Column(name="ONU_IS_OLD")
 	private String onuIsOld;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="OPEN_TIME")
 	private Date openTime;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="PREEMPT_TIME")
 	private Date preemptTime;
 

@@ -31,7 +31,7 @@ public class Ptp implements Serializable {
 	@Column(name="AVAILABLE_BANDWIDTH")
 	private String availableBandwidth;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
@@ -82,7 +82,7 @@ public class Ptp implements Serializable {
 	@Column(name="LABEL_CN")
 	private String labelCn;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_MODIFY_TIME")
 	private Date lastModifyTime;
 
@@ -95,7 +95,7 @@ public class Ptp implements Serializable {
 	@Column(name="LIVE_CYCLE")
 	private BigDecimal liveCycle;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LIVEMODIFY_TIME")
 	private Date livemodifyTime;
 

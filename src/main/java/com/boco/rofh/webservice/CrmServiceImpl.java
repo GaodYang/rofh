@@ -65,7 +65,7 @@ public class CrmServiceImpl implements ICrmService{
 	 * @param sReceiveMsg
 	 * @return
 	 */
-	public Integer queryAddressCount(String sReceiveMsg,String sRegionId){
+	public int queryAddressCount(String sReceiveMsg,String sRegionId){
 		
 		return queryAddressCountService.doProcess(sReceiveMsg);
 	}

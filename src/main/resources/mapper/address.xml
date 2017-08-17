@@ -4,11 +4,10 @@
 <mapper namespace="com.boco.rofh.mapper.AddressMapper" >
     
     <select id="queryAddressTreeById" parameterType="java.lang.String" resultType="java.util.Map">
-		select  nvl(rel_full_addr_cuid,
-		          (select object_id
-		             from t_rofh_full_address fa
-		            where fa.cuid = rel_full_addr_cuid)
-		         )id,
+		select  decode(rel_full_addr_cuid,null,id,
+                 (select object_id
+                      from t_rofh_full_address fa
+                  where fa.cuid = rel_full_addr_cuid)) id,
                  name,
                  nm_get_py(name) spell,
                  full_name,

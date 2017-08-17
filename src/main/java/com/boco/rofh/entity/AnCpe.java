@@ -75,7 +75,7 @@ public class AnCpe implements Serializable {
 	@Column(name="RESOURCES_TYPE")
 	private String resourcesType;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="SETUP_TIME")
 	private Date setupTime;
 

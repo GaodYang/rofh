@@ -1,10 +1,12 @@
-package com.boco.rofh.webservice;
+/*package com.boco.rofh.webservice;
 
 import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.jaxws.EndpointImpl;
+import org.apache.cxf.transport.servlet.CXFServlet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +24,11 @@ public class CxfConfig {
 	
 	@Autowired
 	private Bus bus;
+	
+	@Bean
+    public ServletRegistrationBean dispatcherServlet() {
+        return new ServletRegistrationBean(new CXFServlet(), "/soap/*");
+    }
 	
 	@Bean
     public Endpoint iCrm() {
@@ -44,3 +51,4 @@ public class CxfConfig {
         return endpoint;
     }
 }
+*/

@@ -1,18 +1,17 @@
 package com.boco.rofh.utils;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 
 import javax.annotation.PostConstruct;
-import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.pboss.webservice.ArrayOfXsdString;
-import com.pboss.webservice.ObjectFactory;
-import com.pboss.webservice.SfRmSVImpl;
-import com.pboss.webservice.SfRmSVImplService;
+import com.boco.rofh.constant.WebServiceConstant;
+import com.pboss.webservice.SF4RESSoapBindingStub;
+import com.pboss.webservice.SfRmSVImplServiceLocator;
 
 @Service
 public class PbossServiceUtil {
@@ -20,49 +19,33 @@ public class PbossServiceUtil {
 	@Value("${pbossWsServiceUrl}")
 	private String WSURL ;
 	
-	private String nameSpace;
+	private final static String[] STAFF = {"99999","AUTO_STAFF","系统自动"};
 	
-	private ArrayOfXsdString staff ;
-	
-	private SfRmSVImplService implService;
-	
-	private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
+	private SF4RESSoapBindingStub bindingStub;
 	
 	private final static Logger logger = Logger.getLogger(PbossServiceUtil.class);
-
-	private SfRmSVImpl getService(){
+	
+	public String sendSuccess(Long taskId , String xml , String regionId) throws RemoteException{
 		
-		if(implService == null){
-			init();
-		}
-		return implService.getPort(new QName("SfRmSVImpl"), SfRmSVImpl.class);
+		xml = WebServiceConstant.XML_HEAD + RofhUtil.replaceBlank(xml);
+		return bindingStub.finishRmTaskAsyn(taskId, STAFF, null, "资源回单", xml, regionId);
 	}
 	
-	public String sendSuccess(Long taskId , String xml , String regionId){
+	public String sendError(Long taskId , String xml ,String excpCode, String desc, String regionId) throws RemoteException{
 		
-		xml = XML_HEAD + RofhUtil.replaceBlank(xml);
-		return getService().finishRmTaskAsyn(taskId, staff, null, "资源回单", xml, regionId);
-	}
-	
-	public String sendError(Long taskId , String xml ,String excpCode, String desc, String regionId){
-		
-		xml = XML_HEAD + RofhUtil.replaceBlank(xml);
-		return getService().finishRmTaskAsyn(taskId, staff, excpCode, desc , xml, regionId);
+		xml = WebServiceConstant.XML_HEAD + RofhUtil.replaceBlank(xml);
+		return bindingStub.finishRmTaskAsyn(taskId, STAFF, excpCode, desc , xml, regionId);
 	}
 	
 	
 	@PostConstruct
 	void init(){
-		staff = new ObjectFactory().createArrayOfXsdString();
-		staff.getItem().add(0, "99999");
-		staff.getItem().add(1, "AUTO_STAFF");
-		staff.getItem().add(2, "系统自动");
-		
-		nameSpace = WSURL.substring(0,WSURL.indexOf("?"));
 		
 		try {
 			URL url = new URL(WSURL);
-			implService = new SfRmSVImplService(url,new QName(nameSpace,"SfRmSVImplService"));
+			SfRmSVImplServiceLocator Locator = new SfRmSVImplServiceLocator();
+			bindingStub = new SF4RESSoapBindingStub(url, Locator);
+			
 		} catch (Exception e) {
 			
 			logger.error("pboss服务无法连接" , e);
@@ -73,7 +56,7 @@ public class PbossServiceUtil {
 		
 		String[] str = new String[2];
 		str[0] = WSURL;
-		str[1] = implService == null ? "ERROE" : "OK";
+		str[1] = bindingStub == null ? "ERROE" : "OK";
 		return str;
 	}
 }

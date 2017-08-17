@@ -38,14 +38,14 @@ public class WebservicePbossFinish implements Serializable {
     		parameters = { @Parameter(name = "tableName", value = "T_WEBSERVICE_PBOSS_FINISH") })
 	private String cuid;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
 	@Column(name="ERROR_REASON")
 	private String errorReason;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_MODIFY_TIME")
 	private Date lastModifyTime;
 

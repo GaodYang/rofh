@@ -39,7 +39,7 @@ public class RofhCustomer implements Serializable {
 
 	private String county;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
@@ -58,7 +58,7 @@ public class RofhCustomer implements Serializable {
 	@Column(name="LABEL_CN")
 	private String labelCn;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_MODIFY_TIME")
 	private Date lastModifyTime;
 

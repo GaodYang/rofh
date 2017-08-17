@@ -37,6 +37,7 @@ public class CttInstallTask extends AbstractInstallTask{
 		rofhProduct.setAccessMode(type);
 		rofhProduct.setAccessPort(portCuid);//端口ID
 		rofhProduct.setAccessDevice(neCuid);//端口对应设备ID	
+		rofhProduct.setProductType(WebServiceConstant.ProductType.宽带业务);
 		
 		//接口更新为预占
 		ptpDao.updatePortState(portCuid, WebServiceConstant.PtpState.预占);

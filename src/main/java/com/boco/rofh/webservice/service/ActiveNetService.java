@@ -168,6 +168,7 @@ public class ActiveNetService {
 		
 		PonWayAttemp attempPonWay = attempPonWayDao.findByProductCuid(rofhBean.getProduct().getCuid());
 		if (attempPonWay != null){
+			
 			RofhActivate activateBean = new RofhActivate();
 			activateBean.setRelatedOltCuid(attempPonWay.getRelatedOltCuid());
 			Map<String, String> map = activeMapper.getOltById(attempPonWay.getRelatedOltCuid());
@@ -263,6 +264,7 @@ public class ActiveNetService {
 				
 			}
 		} catch (Exception e) {
+			
 			logger.error("",e);
 			errorMessage = "解析报文出错！";
 			return opdetailCreator("001", errorMessage, "");

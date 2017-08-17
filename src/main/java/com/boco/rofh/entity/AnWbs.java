@@ -35,7 +35,7 @@ public class AnWbs implements Serializable {
 	@Column(name="COVER_USER_COUNT")
 	private BigDecimal coverUserCount;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
@@ -54,7 +54,7 @@ public class AnWbs implements Serializable {
 	@Column(name="LABEL_DEV")
 	private String labelDev;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_MODIFY_TIME")
 	private Date lastModifyTime;
 
@@ -116,7 +116,7 @@ public class AnWbs implements Serializable {
 
 	private String remark;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="SETUP_TIME")
 	private Date setupTime;
 

@@ -66,6 +66,7 @@ public class ApInstallTask extends AbstractInstallTask	{
 		rofhProduct.setAccessPort(ObjectUtils.toString(list.get(0).get("CUID")));
 		//获取接入方式 T_LOGIC_DEVICE_WBS
 		rofhProduct.setAccessMode(WebServiceConstant.AccessMode.WBS);
+		rofhProduct.setProductType(WebServiceConstant.ProductType.无线宽带);
 		wbsDao.updateWbsOccupyById(neCuid);
 		
 		return true;

@@ -24,7 +24,7 @@ import org.hibernate.annotations.Parameter;
 public class RofhOrder implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="ACCEPT_TIME_LIMIT")
 	private Date acceptTimeLimit;
 
@@ -136,7 +136,7 @@ public class RofhOrder implements Serializable {
 	@Column(name="RELATED_PLAN_CUID")
 	private String relatedPlanCuid;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="RENEW_TIME")
 	private Date renewTime;
 

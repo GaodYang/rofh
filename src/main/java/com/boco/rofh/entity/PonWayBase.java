@@ -23,7 +23,7 @@ import org.hibernate.annotations.Parameter;
 public abstract class PonWayBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="ACCOUNT_END_TIME")
 	private Date accountEndTime;
 
@@ -59,7 +59,7 @@ public abstract class PonWayBase implements Serializable {
 	@Column(name="CLIENT_PORT_MODEL")
 	private BigDecimal clientPortModel;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
@@ -97,7 +97,7 @@ public abstract class PonWayBase implements Serializable {
 	@Column(name="LABEL_CN")
 	private String labelCn;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_MODIFY_TIME")
 	private Date lastModifyTime;
 
@@ -255,7 +255,7 @@ public abstract class PonWayBase implements Serializable {
 	@Column(name="SERVICE_SLA_LEVLE")
 	private BigDecimal serviceSlaLevle;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="SERVICE_TIME")
 	private Date serviceTime;
 

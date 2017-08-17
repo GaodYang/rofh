@@ -45,6 +45,7 @@ public class FttbInstallTask extends AbstractInstallTask{
 		//获取接入方式 T_LOGIC_DEVICE_ONU
 		rofhProduct.setAccessMode(WebServiceConstant.AccessMode.FTTB);
 		rofhProduct.setAccessDevice(neCuid);//端口对应设备ID
+		rofhProduct.setProductType(WebServiceConstant.ProductType.宽带业务);
 		
 		//接口更新为预占
 		ptpDao.updatePortState(portCuid, WebServiceConstant.PtpState.预占);

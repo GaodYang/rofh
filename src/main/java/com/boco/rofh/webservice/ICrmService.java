@@ -29,7 +29,7 @@ interface ICrmService {
 	 * @return
 	 */
 	@WebMethod(action="http://webservice.rofh.boco.com/queryAddressCount")
-	public Integer queryAddressCount(@WebParam(name = "sReceiveMsg")String sReceiveMsg,@WebParam(name = "sRegionId")String sRegionId);
+	public int queryAddressCount(@WebParam(name = "sReceiveMsg")String sReceiveMsg,@WebParam(name = "sRegionId")String sRegionId);
 	/**
 	 * 查询资源和端口
 	 * @param sReceiveMsg

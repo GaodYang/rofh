@@ -54,7 +54,15 @@ public class WebServiceConstant {
 		public static final String 宽带 = "12";
 		public static final String 语音 = "13";
 	}
+	
+	public static class ProductType {
 
+		public static final String 宽带业务 = "1";
+		public static final String IMS业务 = "2";
+		public static final String OTT业务 = "3";
+		public static final String 无线宽带 = "99";
+	}
+	
 	public static class PtpState {
 
 		public static final String 空闲 = "1";

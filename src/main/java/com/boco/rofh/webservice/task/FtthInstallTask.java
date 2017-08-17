@@ -206,6 +206,7 @@ public class FtthInstallTask extends AbstractInstallTask{
 		rofhProduct.setAccessMode(WebServiceConstant.AccessMode.FTTH);
 		rofhProduct.setAccessDevice(neCuid);//端口对应设备ID
 		rofhProduct.setAccessPort(portCuid);//端口ID
+		rofhProduct.setProductType(WebServiceConstant.ProductType.宽带业务);
 		
 		//接口更新为预占
 		ptpDao.updatePortState(portCuid, WebServiceConstant.PtpState.预占);

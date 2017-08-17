@@ -39,7 +39,7 @@ public class RofhActivate implements Serializable {
 	@Column(name="ACTIVATE_STATUS")
 	private String activateStatus;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="ACTIVATE_TIME")
 	private Date activateTime;
 
@@ -57,7 +57,7 @@ public class RofhActivate implements Serializable {
 	@Column(name="DATA_TYPE")
 	private String dataType;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="DEACTIVATE_TIME")
 	private Date deactivateTime;
 
@@ -108,11 +108,11 @@ public class RofhActivate implements Serializable {
 	@Column(name="RELATED_TASK_CUID")
 	private String relatedTaskCuid;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="RETURN_ACTIVATE_TIME")
 	private Date returnActivateTime;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="SEND_ACTIVATE_TIME")
 	private Date sendActivateTime;
 

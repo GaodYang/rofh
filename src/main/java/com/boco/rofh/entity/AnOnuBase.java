@@ -31,20 +31,20 @@ public abstract class AnOnuBase implements Serializable {
 	@Column(name="AUTH_TYPE")
 	private BigDecimal authType;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="BACK_NETWORK_TIME")
 	private Date backNetworkTime;
 
 	private BigDecimal capacity;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
 
 	@Column(name="CREATOR_NAME")
 	private String creatorName;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date creattime;
 
 	@Id
@@ -83,7 +83,7 @@ public abstract class AnOnuBase implements Serializable {
 	@Column(name="LABEL_DEV")
 	private String labelDev;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_MODIFY_TIME")
 	private Date lastModifyTime;
 
@@ -95,7 +95,7 @@ public abstract class AnOnuBase implements Serializable {
 	@Column(name="LIVE_CYCLE")
 	private String liveCycle;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LIVEMODIFY_TIME")
 	private Date livemodifyTime;
 
@@ -198,7 +198,7 @@ public abstract class AnOnuBase implements Serializable {
 
 	private String seqno;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="SETUP_TIME")
 	private Date setupTime;
 

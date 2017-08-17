@@ -80,10 +80,6 @@
            ac.label_cn cpename,
             aw.objectid,
             aw.label_cn,
-            aw.related_district_cuid areaid,
-            (select label_cn
-               from district
-              where cuid = aw.related_district_cuid) areaname,
             'WBS-逻辑口-01' ponname,
             (SELECT F.PRODUCT_MODEL
                FROM NE_MODEL_CFG_TYPE F
@@ -109,11 +105,9 @@
 		          from fiber_dp_gx
 		         where cuid = nvl(ao.related_cab_cuid, ap.related_cab_cuid)) relatedcab,
 		       (select label_cn from ptp where cuid = ao.related_pos_port_cuid) posport,
-		       ap.related_district_cuid areaid,
 		       ao.fttx,
 		       3 auth_type,
 		       pw.account_password value,
-		       (select label_cn from district where cuid = ao.related_district_cuid) areaname,
 		       ao.model amodel,
 		       t.cuid oltid,
 		       T.LABEL_CN oltname,
