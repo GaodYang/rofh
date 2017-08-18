@@ -18,7 +18,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
             <fileNamePattern>${LOG_HOME}/rofh.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>  
-            <maxFileSize>100M</maxFileSize>  
+            <maxFileSize>100MB</maxFileSize>  
             <totalSizeCap>10GB</totalSizeCap> 
             <!--日志文件保留天数-->
             <MaxHistory>30</MaxHistory>
