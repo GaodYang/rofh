@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.boco.nais.core.web.msgreceiver.MessageReceiverImplServiceLocator;
 import com.boco.nais.core.web.msgreceiver.MessageReceiverImplServiceSoapBindingStub;
-import com.boco.rofh.constant.WebServiceConstant;
 
 @Component
 public class ActiveServiceUtil {
@@ -26,7 +25,6 @@ public class ActiveServiceUtil {
 	
 	public String send(String msg) throws RemoteException{
 
-		msg = WebServiceConstant.XML_HEAD + RofhUtil.replaceBlank(msg);
 		return bindingStub.process("IRMS", "SVC_FULFILL_CFG", msg);
 	}
 	

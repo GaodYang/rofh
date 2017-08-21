@@ -298,8 +298,8 @@ public class ActiveNetService {
 			activeResult = ActiveResult.toBean(result);
 		}	catch (Exception e) {
 			
-			logger.error("调用激活接口调用失败",e);
-			updateActivateByState(activateBean,"调用激活接口调用失败","0");
+			logger.error("调用激活接口失败",e);
+			updateActivateByState(activateBean,"调用激活接口失败","0");
 			return "调用激活接口调用失败";
 		}
 		

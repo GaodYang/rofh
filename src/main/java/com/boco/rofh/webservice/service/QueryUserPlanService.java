@@ -115,21 +115,21 @@ public class QueryUserPlanService extends BaseRofhWebService<QueryUserPlanReq,Qu
 		resInfo.setPortSerialNumber(portCode);
 		resInfo.setRoomName(MapUtil.getStringValue(map, "ROOMNAME"));
 		
-		if(product.getAccessMode().equals(WebServiceConstant.AccessMode.FTTB)){
+		if(WebServiceConstant.AccessMode.FTTB.equals(product.getAccessMode())){
 			//			设备种类名称
 			resInfo.setEqptKindName("ONU");
 			//PORT_TYPE_ID	端口规格
 			resInfo.setPortTypeId("37");
 			resInfo.setPortTypeName("电FE口");
 			
-		}else if (product.getAccessMode().equals(WebServiceConstant.AccessMode.FTTH)){
+		}else if (WebServiceConstant.AccessMode.FTTH.equals(product.getAccessMode())){
 			//			设备种类名称
 			resInfo.setEqptKindName("POS");
 			//PORT_TYPE_ID	端口规格
 			resInfo.setPortTypeId("29");
 			resInfo.setPortTypeName("ETH");
 			
-		}else if(product.getAccessMode().equals(WebServiceConstant.AccessMode.WBS)){
+		}else if(WebServiceConstant.AccessMode.WBS.equals(product.getAccessMode())){
 			
 //				设备种类名称
 				resInfo.setEqptKindName("WBS");

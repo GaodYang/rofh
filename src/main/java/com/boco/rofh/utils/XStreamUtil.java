@@ -13,6 +13,8 @@ import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
 /**
@@ -67,7 +69,7 @@ public class XStreamUtil {
 		
 					@Override
 					public HierarchicalStreamWriter createWriter(Writer out) {
-						return new PrettyPrintWriter(out) {
+						return new PrettyPrintWriter(out,"","") {
 		
 							// 标签的特殊字符不进行转义
 							@Override
@@ -118,7 +120,7 @@ public class XStreamUtil {
 		StringBuilder sb = new StringBuilder(WebServiceConstant.XML_HEAD);
 		XStream stream = getXstream(obj.getClass(),cls);
 		String xml = stream.toXML(obj);
-		sb.append(RofhUtil.replaceBlank(xml));
+		sb.append(xml);
 		return sb.toString();
 	}
 	

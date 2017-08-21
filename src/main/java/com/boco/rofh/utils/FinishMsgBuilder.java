@@ -121,7 +121,7 @@ public class FinishMsgBuilder {
 		resAttrList.add(newResAttr("std_addr_name",StringUtils.isBlank(sdtname) ? rofhBean.getProduct().getCellAddress() : sdtname));
 		
 		
-		if(rofhBean.getProduct().getAccessMode().equals(WebServiceConstant.AccessMode.WBS)){
+		if(WebServiceConstant.AccessMode.WBS.equals(rofhBean.getProduct().getAccessMode())){
 			
 			builderFinishWbsMsg(rofhBean.getProduct(),ressrv);
 		}else{
@@ -167,7 +167,7 @@ public class FinishMsgBuilder {
 		
 		//
 		List<Map<String, String>> list = new ArrayList<Map<String,String>>();
-		if(product.getAccessMode().equals(WebServiceConstant.AccessMode.FTTB) || WebServiceConstant.AccessMode.PON_LAN.equals(product.getAccessMode())){
+		if(WebServiceConstant.AccessMode.FTTB.equals(product.getAccessMode()) || WebServiceConstant.AccessMode.PON_LAN.equals(product.getAccessMode())){
 			//			设备种类名称
 			resAttrList.add(newResAttr("eqpt_kind",product.getSaleType()));
 			if(product.getProductAction().equals(WebServiceConstant.ProductAction.拆机)){
@@ -178,7 +178,7 @@ public class FinishMsgBuilder {
 				list = configMapper.getOnuInfoById(RofhNameSpaceBean.buildBean(ponway.getCuid(), "ATTEMP_", ""));
 			}
 			
-		}else if (product.getAccessMode().equals(WebServiceConstant.AccessMode.FTTH) || WebServiceConstant.AccessMode.XDSL.equals(product.getAccessMode())){
+		}else if (WebServiceConstant.AccessMode.FTTH.equals(product.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(product.getAccessMode())){
 			//			设备种类名称
 			resAttrList.add(newResAttr("eqpt_kind",product.getSaleType()));
 			if(product.getProductAction().equals(WebServiceConstant.ProductAction.拆机)){

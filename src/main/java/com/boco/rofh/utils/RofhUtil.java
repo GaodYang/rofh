@@ -1,8 +1,6 @@
 package com.boco.rofh.utils;
 
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -40,15 +38,5 @@ public class RofhUtil {
 		return sb.toString();
 	}
 	
-	public static String replaceBlank(String str) {
-		
-		String dest = "";
-		if (str!=null) {
-			Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-			Matcher m = p.matcher(str);
-			dest = m.replaceAll("");
-		}
-		return dest;
-	}
 	
 }

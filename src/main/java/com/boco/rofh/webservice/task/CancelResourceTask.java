@@ -28,7 +28,7 @@ public class CancelResourceTask extends AbstractResourceTask{
 		
 		RofhProductAttemp attempProduct = (RofhProductAttemp) rofhBean.getProduct();
 		
-		if (attempProduct.getAccessMode().equals(WebServiceConstant.AccessMode.FTTH)) {
+		if (WebServiceConstant.AccessMode.FTTH.equals(attempProduct.getAccessMode())) {
 			
 			if(attempProduct.getProductAction().equals(WebServiceConstant.ProductAction.装机) || attempProduct.getProductAction().equals(WebServiceConstant.ProductAction.移机)){
 				
@@ -60,7 +60,7 @@ public class CancelResourceTask extends AbstractResourceTask{
 				return ;
 			}
 			//删除虚拟onu
-			if(product.getAccessMode().equals(WebServiceConstant.AccessMode.FTTH) || product.getAccessMode().equals(WebServiceConstant.AccessMode.XDSL)){
+			if(WebServiceConstant.AccessMode.FTTH.equals(product.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(product.getAccessMode())){
 				
 				attempOnuDao.delete(ponway.getRelatedOnuCuid());;
 				//删除虚拟ptp
@@ -69,7 +69,7 @@ public class CancelResourceTask extends AbstractResourceTask{
 			
 			}
 			//删除虚拟cpe
-			else if(product.getAccessMode().equals(WebServiceConstant.AccessMode.WBS)){
+			else if(WebServiceConstant.AccessMode.WBS.equals(product.getAccessMode())){
 				
 				cpeDao.delete(ponway.getRelatedOnuCuid());
 				wbsDao.updateWbsFreeById(ponway.getRelatedOltCuid());

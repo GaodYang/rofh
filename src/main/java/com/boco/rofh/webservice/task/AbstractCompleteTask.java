@@ -34,11 +34,11 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		/**
 		 * 虚拟onu转移到正式表中
 		 */
-		if(!rofhProduct.getAccessMode().equals(WebServiceConstant.AccessMode.WBS)){
+		if(!WebServiceConstant.AccessMode.WBS.equals(rofhProduct.getAccessMode())){
 			
 			String portid = rofhProduct.getAccessPort();
 			ptpDao.updatePortState(portid, WebServiceConstant.PtpState.实占);
-			if(rofhProduct.getAccessMode().equals(WebServiceConstant.AccessMode.FTTH) || rofhProduct.getAccessMode().equals(WebServiceConstant.AccessMode.XDSL)){
+			if(WebServiceConstant.AccessMode.FTTH.equals(rofhProduct.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(rofhProduct.getAccessMode())){
 				
 				AnOnuAttemp attempOnu = attempOnuDao.findOne(attempPonWay.getRelatedOnuCuid());
 				AnOnu onu = new AnOnu();
@@ -61,7 +61,7 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		if(ponway == null){
 			return;
 		}
-		if(rofhProduct.getAccessMode().equals(WebServiceConstant.AccessMode.FTTB) || rofhProduct.getAccessMode().equals(WebServiceConstant.AccessMode.XDSL)){
+		if(WebServiceConstant.AccessMode.FTTB.equals(rofhProduct.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(rofhProduct.getAccessMode())){
 		
 			onuDao.delete(ponway.getRelatedOnuCuid());
 		
@@ -69,7 +69,7 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 			ptpDao.delete(ponway.getOnuUpPortCuid());
 
 		}
-		else if(rofhProduct.getAccessMode().equals(String.valueOf(WebServiceConstant.AccessMode.WBS))){
+		else if(WebServiceConstant.AccessMode.WBS.equals(rofhProduct.getAccessMode())){
 			
 			//删除虚拟cpe
 			cpeDao.delete(ponway.getRelatedOnuCuid());
