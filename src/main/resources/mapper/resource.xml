@@ -3,7 +3,70 @@
 
 <mapper namespace="com.boco.rofh.mapper.ResourceMapper" >
 
+   <select id="queryProdSrvInfo" resultType="java.util.Map">
+   		    select t.prod_srv_code code,t.prod_srv_name name,t.prod_srv_type type from t_PROD_SERV_INFO t
+   </select>
+  
+   <select id="queryCoverNeByAddr" parameterType="java.lang.String" resultType="java.lang.String">
+   			select gc.related_ne_cuid from gpon_cover gc where gc.standard_addr = #{id}
+   </select>
+   
+   <select id="queryWbsBroadPlan" parameterType="java.lang.String" resultType="java.lang.Integer">
+   			select  (aw.port_num - aw.used_port_num) num
+                       from an_wbs aw
+            	where aw.cuid = #{id}      
+   </select>
+   
+   <select id="queryFiberDpMapByDp" parameterType="java.lang.String" resultType="java.util.Map">
+   	 		select fd.fiber_cab_cuid,
+                   fd.related_pos_cuid,
+                   fd.start_port_num,
+                   fd.end_port_num
+            from fiber_dp_map_gx fd
+           where fd.fiber_dp_cuid = #{id}
+   </select>
+   
+   <select id="queryPosBroadPlan" parameterType="java.util.Map" resultType="java.util.Map">
+   			select count(1) num,decode(min(n.ownership),2,'CTT','FTTH') type from an_pos ap,ptp p,nms_system n
+               where  ap.related_cab_cuid = #{FIBER_CAB_CUID}
+            	   and p.related_ne_cuid = ap.cuid
+            	   and p.port_state = 1
+                   and p.port_sub_type = 13
+                   and p.dev_type = 3
+                   and n.cuid = ap.related_ems_cuid
+                   <if test="RELATED_POS_CUID != null and RELATED_POS_CUID != '' ">
+						and ap.cuid = #{RELATED_POS_CUID}
+				   </if> 
+				   <if test="START_PORT_NUM != null and START_PORT_NUM != '' ">
+				   	    and p.port_no <![CDATA[ >= ]]> #{START_PORT_NUM}
+				   </if>
+				   <if test="END_PORT_NUM != null and END_PORT_NUM != '' ">
+				   	    and p.port_no <![CDATA[ <= ]]> #{END_PORT_NUM}
+				   </if>
+   </select>
+   
    <select id="queryBroadPlan" parameterType="java.lang.String" resultType="java.util.Map">
+   			select count(1) num, decode(min(ownership), 2, 'CTT',3,'FTTB', 'FTTH') type
+			  from (select n.ownership
+			          from an_pos ap, ptp p, nms_system n
+			         where ap.related_cab_cuid = #{id}
+			           and p.related_ne_cuid = ap.cuid
+			           and p.port_state = 1
+			           and p.port_sub_type = 13
+			           and p.dev_type = 3
+			           and n.cuid = ap.related_ems_cuid
+			        union all
+			        select decode(n.ownership,1,3)
+			          from an_onu ap, ptp p, nms_system n
+			         where ap.related_cab_cuid = #{id}
+			           and p.related_ne_cuid = ap.cuid
+			           and p.port_state = 1
+			           and p.port_sub_type = 37
+			           and p.dev_type = 2
+			           and n.cuid = ap.related_ems_cuid)
+   </select>
+   
+   <select id="queryBroadPlanbk" parameterType="java.lang.String" resultType="java.util.Map">
 			select sum(num) num, max(t.prod_srv_code) prod_srv_code, max(t.prod_srv_name)prod_srv_name
             from ( 
             select count(1) num

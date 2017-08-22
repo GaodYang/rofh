@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 4.4.2 设备资源及端口查询 响应
@@ -18,7 +19,7 @@ public class QueryBroadPlanResult {
 	private List<ProdServInfo> prodSrvList;
 	
 	@XStreamAlias("prod_serv_info")
-	public static class ProdServInfo{
+	public static class ProdServInfo implements Cloneable{
 		
 		//产品服务编码
 		@XStreamAlias("prod_srv_code")
@@ -30,9 +31,11 @@ public class QueryBroadPlanResult {
 		
 		//存量数量
 		@XStreamAlias("inv_num")
-		private String invNum;
+		private int invNum;
 		
-
+		@XStreamOmitField
+		private  String type;
+		
 		public String getProdSrvCode() {
 			return prodSrvCode;
 		}
@@ -49,18 +52,39 @@ public class QueryBroadPlanResult {
 			this.prodSrvName = prodSrvName;
 		}
 
-		public String getInvNum() {
+		public int getInvNum() {
 			return invNum;
 		}
 
-		public void setInvNum(String invNum) {
+		public void setInvNum(int invNum) {
 			this.invNum = invNum;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
 		}
 
 		@Override
 		public String toString() {
 			
 			return ToStringBuilder.reflectionToString(this);
+		}
+		
+		@Override
+		public ProdServInfo clone() {
+			
+			try {
+				return (ProdServInfo)super.clone();
+				
+			} catch (CloneNotSupportedException e) {
+				
+				return new ProdServInfo();
+			}
+			
 		}
 		
 	}
@@ -84,4 +108,5 @@ public class QueryBroadPlanResult {
 		
 		return ToStringBuilder.reflectionToString(this);
 	}
+	
 }

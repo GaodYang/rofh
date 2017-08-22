@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ObjectUtils;
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.boco.rofh.constant.WebServiceConstant.ProdSerType;
 import com.boco.rofh.dao.AddressDao;
 import com.boco.rofh.mapper.ResourceMapper;
 import com.boco.rofh.webservice.pojo.QueryBroadPlanReq;
@@ -29,6 +31,8 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 	@Autowired
 	private AddressDao addressDao;
 	
+	private List<ProdServInfo> serList;
+	
 	/**
 	 * 设备资源及端口查询
 	 * @param 
@@ -37,36 +41,97 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 	@Override
 	protected QueryBroadPlanResult doBusiness(QueryBroadPlanReq broadPlanReq) {
 		
+		//标准地址id
 		String cuid = addressDao.findIdByObjectId(new BigDecimal(broadPlanReq.getStandardAddrId()));
 		
 		QueryBroadPlanResult broadPlanResult = new QueryBroadPlanResult();
+		broadPlanResult.setProdSrvList(serList);
 		
 		if(cuid == null){
 			
 			return broadPlanResult;
 		}
-		List<Map<String,String>> list = resourceMapper.queryBroadPlan(cuid);
 		
-	
-		List<ProdServInfo> prodSrvList = new ArrayList<ProdServInfo>();
-		
-		for(Map<String,String> map : list){
+		//获取管理箱体的网元
+		List<String> cabIdList = resourceMapper.queryCoverNeByAddr(cuid);
+		if(cabIdList == null || cabIdList.size() < 1){
 			
-			ProdServInfo info = new ProdServInfo();
-			String num = ObjectUtils.toString(map.get("NUM"));
-			info.setInvNum("0".equals(num) ? "-1" : num);
-			info.setProdSrvCode(ObjectUtils.toString(map.get("PROD_SRV_CODE")));
-			info.setProdSrvName(ObjectUtils.toString(map.get("PROD_SRV_NAME")));
-			prodSrvList.add(info);
-			
-		}
-		if(prodSrvList.size() == 0){
 			return broadPlanResult;
 		}
 		
-		broadPlanResult.setProdSrvList(prodSrvList);
+		String cabId = cabIdList.get(0);
+		//如果是wbs
+		if(cabId.startsWith("AN_WBS")){
+			
+			Integer num = resourceMapper.queryWbsBroadPlan(cabId);
+			if(num != null && num > 0){
+				
+				broadPlanResult.setProdSrvList(makeData(ProdSerType.WBS,num));
+			}
+			
+			return broadPlanResult;
+		}
+		//查询箱体关联关系
+		List<Map<String,Object>> fiberList = resourceMapper.queryFiberDpMapByDp(cabId);
+		//是分光器
+		if(fiberList != null && fiberList.size() > 0){
+			
+			Map<String,Object> fiberMap = fiberList.get(0);
+			//取分光器信息
+			Map<String,Object> posMap = resourceMapper.queryPosBroadPlan(fiberMap);
+			broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(posMap.get("TYPE").toString()),Integer.parseInt(posMap.get("NUM").toString())));
+			return broadPlanResult;
+		}
+		//正常查
+		
+		List<Map<String,Object>> list = resourceMapper.queryBroadPlan(cabId);
+		
+	
+		if(list.size() == 0){
+			return broadPlanResult;
+		}
+		Map<String,Object> bMap = list.get(0);
+		
+		broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(bMap.get("TYPE").toString()),Integer.parseInt(bMap.get("NUM").toString())));
 		return broadPlanResult;
 			
 	}
+	
+	private List<ProdServInfo> makeData(ProdSerType type,int num){
+		
+		List<ProdServInfo> prodSrvList = new ArrayList<ProdServInfo>();
+	
+		for(ProdServInfo info : serList){
+			
+			if(type.name().equals(info.getType()) && num > 0){
+				
+				ProdServInfo pinfo = info.clone();
+				pinfo.setInvNum(num);
+				prodSrvList.add(pinfo);
+			}else{
+				
+				prodSrvList.add(info);
+			}
+		}
+		
+		return prodSrvList;
+	}
+	
+	@PostConstruct
+	private void init(){
+		
+		serList = new ArrayList<>();
+		List<Map<String,String>> list = resourceMapper.queryProdSrvInfo();
+		for(Map<String,String> map : list){
+			
+			ProdServInfo info = new ProdServInfo();
+			info.setInvNum(-1);
+			info.setProdSrvCode(map.get("CODE"));
+			info.setProdSrvName(map.get("NAME"));
+			info.setType(map.get("TYPE"));
+			serList.add(info);
+		}
+	}
+	
 	
 }

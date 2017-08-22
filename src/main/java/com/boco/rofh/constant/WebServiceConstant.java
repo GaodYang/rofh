@@ -102,5 +102,11 @@ public class WebServiceConstant {
 		ACTIVATESTATE.put("30-000", "32");
 		ACTIVATESTATE.put("30-001", "33");
 	 }
+	
+	public static enum ProdSerType{
+		
+		WBS,CTT,FTTB,FTTH;
+		
+	}
 
 }

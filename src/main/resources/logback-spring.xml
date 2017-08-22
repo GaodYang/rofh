@@ -2,6 +2,7 @@
 <configuration debug="false">
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
     <jmxConfigurator/>
+    <springProperty scope="context" name="port" source="server.port"/>
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
     <property name="LOG_HOME" value="./logs" />
     <!-- 控制台输出 -->
@@ -13,11 +14,11 @@
     </appender>
     <!-- 按照每天生成日志文件 -->
     <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
-    	<file>${LOG_HOME}/rofh.log</file>  
+    	<file>${LOG_HOME}/rofh.${port}.log</file>  
         <append>true</append>  
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <fileNamePattern>${LOG_HOME}/rofh.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>  
+            <fileNamePattern>${LOG_HOME}/rofh.${port}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>  
             <maxFileSize>100MB</maxFileSize>  
             <totalSizeCap>10GB</totalSizeCap> 
             <!--日志文件保留天数-->
