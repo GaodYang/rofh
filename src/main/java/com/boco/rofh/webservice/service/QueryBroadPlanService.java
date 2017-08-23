@@ -71,28 +71,28 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 			
 			return broadPlanResult;
 		}
-		//查询箱体关联关系
-		List<Map<String,Object>> fiberList = resourceMapper.queryFiberDpMapByDp(cabId);
-		//是分光器
-		if(fiberList != null && fiberList.size() > 0){
-			
-			Map<String,Object> fiberMap = fiberList.get(0);
-			//取分光器信息
-			Map<String,Object> posMap = resourceMapper.queryPosBroadPlan(fiberMap);
-			broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(posMap.get("TYPE").toString()),Integer.parseInt(posMap.get("NUM").toString())));
-			return broadPlanResult;
-		}
+		
 		//正常查
-		
 		List<Map<String,Object>> list = resourceMapper.queryBroadPlan(cabId);
-		
-	
-		if(list.size() == 0){
-			return broadPlanResult;
-		}
 		Map<String,Object> bMap = list.get(0);
-		
-		broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(bMap.get("TYPE").toString()),Integer.parseInt(bMap.get("NUM").toString())));
+		int num = Integer.parseInt(bMap.get("NUM").toString());
+	
+		if(num == 0){
+			
+			//查询箱体关联关系
+			List<Map<String,Object>> fiberList = resourceMapper.queryFiberDpMapByDp(cabId);
+			//是分光器
+			if(fiberList != null && fiberList.size() > 0){
+				
+				Map<String,Object> fiberMap = fiberList.get(0);
+				//取分光器信息
+				Map<String,Object> posMap = resourceMapper.queryPosBroadPlan(fiberMap);
+				broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(posMap.get("TYPE").toString()),Integer.parseInt(posMap.get("NUM").toString())));
+				return broadPlanResult;
+			}
+		}else{
+			broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(bMap.get("TYPE").toString()),num));
+		}
 		return broadPlanResult;
 			
 	}
