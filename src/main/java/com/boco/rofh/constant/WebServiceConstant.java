@@ -46,6 +46,7 @@ public class WebServiceConstant {
 		public static final String CABLE = "6";
 		public static final String WBS = "7";
 		public static final String 广电 = "8";
+		public static final String IPTV = "15";
 
 	}
 
@@ -53,6 +54,7 @@ public class WebServiceConstant {
 
 		public static final String 宽带 = "12";
 		public static final String 语音 = "13";
+		public static final String IPTV = "15";
 	}
 	
 	public static class ProductType {
@@ -60,6 +62,7 @@ public class WebServiceConstant {
 		public static final String 宽带业务 = "1";
 		public static final String IMS业务 = "2";
 		public static final String OTT业务 = "3";
+		public static final String IPTV业务 = "15";
 		public static final String 无线宽带 = "99";
 	}
 	
@@ -106,7 +109,12 @@ public class WebServiceConstant {
 	public static enum ProdSerType{
 		
 		WBS,CTT,FTTB,FTTH;
+	}
+	
+	public static class InstallType{
 		
+		public static String 单装 = "0";
+		public static String IPTV合装 = "1";
 	}
 
 }

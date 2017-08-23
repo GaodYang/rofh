@@ -92,6 +92,18 @@ public class ConfigTaskReq {
 		//@FieldNote(name="异常编码",isNullAble=false)
 		private String exceptionCode;
 		
+		//装机业务类型
+		@XStreamAlias("install_type")
+		private String installType;
+		
+		//父单号
+		@XStreamAlias("main_id")
+		private String mainId;
+		
+		//子单号
+		@XStreamAlias("vice_id")
+		private String viceId;
+		
 		@XStreamAlias("req_attr_list")
 		private List<ReqAttr> reqAttrList;
 
@@ -239,6 +251,42 @@ public class ConfigTaskReq {
 			this.reqAttrList = reqAttrList;
 		}
 
+		
+
+		public String getInstallType() {
+			return installType;
+		}
+
+
+
+		public void setInstallType(String installType) {
+			this.installType = installType;
+		}
+
+
+
+		public String getMainId() {
+			return mainId;
+		}
+
+
+
+		public void setMainId(String mainId) {
+			this.mainId = mainId;
+		}
+
+
+
+		public String getViceId() {
+			return viceId;
+		}
+
+
+
+		public void setViceId(String viceId) {
+			this.viceId = viceId;
+		}
+
 
 
 		@Override
@@ -318,6 +366,10 @@ public class ConfigTaskReq {
 		
 		@XStreamAlias("onu_id")
 		private String onuId;
+		
+		//iptv机顶盒mac地址
+		@XStreamAlias("stb_mac")
+		private String stbMac;
 		
 		@XStreamAlias("prod_attr_list")
 		private List<ReqAttr> prodAttrList;
@@ -417,6 +469,24 @@ public class ConfigTaskReq {
 		public void setOnuId(String onuId) {
 			this.onuId = onuId;
 		}
+
+
+		public String getStbMac() {
+			return stbMac;
+		}
+
+
+
+		public void setStbMac(String stbMac) {
+			this.stbMac = stbMac;
+		}
+
+
+
+		public void setAccessNum(String accessNum) {
+			this.accessNum = accessNum;
+		}
+
 
 
 		@Override

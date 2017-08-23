@@ -20,7 +20,7 @@ public interface ProductDao<T extends RofhProduct> extends JpaRepository<T, Stri
 	public String isExistByAccount(@Param("name")String name);
 	
 	@Query("select t from #{#entityName} t where t.accountName = :name")
-	public T findByAccountName(@Param("name")String name);
+	public List<T> findByAccountName(@Param("name")String name);
 
 	@Query("select t from #{#entityName} t where t.relatedOrderCuid = :id")
 	public RofhProduct findByOrderId(@Param("id")String relatedOrderCuid);

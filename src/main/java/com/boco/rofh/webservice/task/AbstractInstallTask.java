@@ -2,6 +2,7 @@ package com.boco.rofh.webservice.task;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +140,16 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		
 		RofhOrder order = rofhBean.getOrder();
 		order.setRelGroupCustomerCuid(rofhBean.getCustomer().getCuid());
+		String cuid = rofhBean.getProduct().getRelatedOrderCuid();
+		if(StringUtils.isNotBlank(cuid)){
+			RofhOrder rOrder = orderDao.findOne(cuid);
+			if(rOrder != null){
+				if(order.getViceId() == null || order.getViceId().equals(rOrder.getViceId())){
+					order.setCuid(cuid);
+				}
+			}
+			
+		}
 		orderDao.save(order);
 	}
 	
