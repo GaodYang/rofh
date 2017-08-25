@@ -60,11 +60,8 @@ public class RofhOrder implements Serializable {
 	@Column(name="CRM_TASK_ID")
 	private String crmTaskId;
 	
-	@Column(name="MAIN_ID")
-	private String mainId;
-	
-	@Column(name="VICE_ID")
-	private String viceId;
+	@Column(name="ORDER_GROUP_ID")
+	private String orderGroupId;
 
 	@Id
 	@GeneratedValue(generator = "IDUtils")  
@@ -550,20 +547,12 @@ public class RofhOrder implements Serializable {
 		this.transBusiness = transBusiness;
 	}
 
-	public String getMainId() {
-		return mainId;
+	public String getOrderGroupId() {
+		return orderGroupId;
 	}
 
-	public void setMainId(String mainId) {
-		this.mainId = mainId;
-	}
-
-	public String getViceId() {
-		return viceId;
-	}
-
-	public void setViceId(String viceId) {
-		this.viceId = viceId;
+	public void setOrderGroupId(String orderGroupId) {
+		this.orderGroupId = orderGroupId;
 	}
 
 }

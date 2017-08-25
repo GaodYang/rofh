@@ -22,8 +22,6 @@ public interface ResourceMapper {
 	
 	List<String> queryCoverNeByAddr(String id);
 	
-	List<Map<String,String>> queryProdSrvInfo();
-	
 	Integer queryWbsBroadPlan(String id);
 	
 	List<Map<String,Object>> queryFiberDpMapByDp(String id);

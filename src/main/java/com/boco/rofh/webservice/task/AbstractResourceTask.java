@@ -2,7 +2,6 @@ package com.boco.rofh.webservice.task;
 
 import java.util.LinkedList;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +97,7 @@ public abstract class AbstractResourceTask {
 		}catch(Exception e){
 			
 			logger.error("Task error !",e);
+			finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.used", e.getMessage(),rofhBean.getRegionId());
 		}finally{
 			removeId(accountName);
 		}
@@ -109,13 +109,6 @@ public abstract class AbstractResourceTask {
 	public void doTask(ConfigTaskReq req,String regionId){
 		
 		RofhBean rofhBean = beanWapper.Wapper2RofhBean(req,regionId) ;
-		RofhProductAttemp attempProduct = (RofhProductAttemp) rofhBean.getProduct();
-		//验证
-		if(StringUtils.isEmpty(attempProduct.getCuid())){
-			logger.error("用户宽带号：" + attempProduct.getAccountName() + ",不存在！");
-			finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.config.wait", "宽带账号："+ attempProduct.getAccountName() +",不存在！",regionId);
-			return ;
-		}
 		
 		this.execute(rofhBean);
 	}

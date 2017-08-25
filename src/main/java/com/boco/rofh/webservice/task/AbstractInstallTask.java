@@ -48,51 +48,43 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 	@Override
 	public void doBusiness(RofhBean rofhBean) {
 		
-
 		RofhProduct product = rofhBean.getProduct();
-		if("INSTALL".equals(rofhBean.getAction())){
-			product.setProductAction(WebServiceConstant.ProductAction.装机);
-		}else{
-			product.setProductAction(WebServiceConstant.ProductAction.移机);
+		//验证
+		if(StringUtils.isEmpty(product.getCuid())){
 			
+			logger.error("用户宽带号：" + product.getAccountName() + ",不存在！");
+			finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.config.wait", "宽带账号："+ product.getAccountName() +",不存在！",rofhBean.getRegionId());
+			return ;
+		}
+
+		// 添加客户信息
+		this.addRofhCustomer(rofhBean);
+		//添加订单
+		this.addOrder(rofhBean);
+		//新pon_way
+		//如果有pon_way就不操作
+		PonWayAttemp pw = attempPonWayDao.findByProductCuid(rofhBean.getProduct().getCuid());
+		if(pw == null){
+			
+			this.createAttempPonWay(rofhBean.getProduct());
 		}
 		
-		String xml = "";
-		try {
-			// 添加客户信息
-			this.addRofhCustomer(rofhBean);
-			//添加订单
-			this.addOrder(rofhBean);
-			//新pon_way
-			//如果有pon_way就不操作
-			PonWayAttemp pw = attempPonWayDao.findByProductCuid(rofhBean.getProduct().getCuid());
-			if(pw == null){
+		//更新产品信息
+		this.updateProduct(rofhBean);
+	
+		if (WebServiceConstant.AccessMode.FTTH.equals(rofhBean.getProduct().getAccessMode())) {
+			
+			String str = activeNetService.netActivate(rofhBean, "1", "1");
+			rofhBean.setActiveMsg(str);
+			if (str == null){
 				
-				this.createAttempPonWay(rofhBean.getProduct());
+				return ;
 			}
-			
-			//更新产品信息
-			this.updateProduct(rofhBean);
-		
-			if (WebServiceConstant.AccessMode.FTTH.equals(rofhBean.getProduct().getAccessMode())) {
-				
-				String str = activeNetService.netActivate(rofhBean, "1", "1");
-				rofhBean.setActiveMsg(str);
-				if (str == null){
-					
-					return ;
-				}
-			}
-				
-			xml = finishMsgBuilder.buildFinishMsg(rofhBean);
-			finishRmTaskAsynService.sendXmlToPboss(rofhBean.getOrder().getCrmTaskId(),xml,rofhBean.getRegionId());
-			
-		} catch (Exception e) {
-			
-			logger.error("当前宽带账户："+rofhBean.getProduct().getAccountName()+",装机异常!",e);
-			finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.used", e.getMessage(),rofhBean.getRegionId());
-			return;
 		}
+			
+		String xml = finishMsgBuilder.buildFinishMsg(rofhBean);
+		finishRmTaskAsynService.sendXmlToPboss(rofhBean.getOrder().getCrmTaskId(),xml,rofhBean.getRegionId());
+			
 		
 	}
 	/**
@@ -109,7 +101,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 	 * 添加客户信息
 	 * @param processBean
 	 */
-	private void addRofhCustomer(RofhBean rofhBean) {
+	protected void addRofhCustomer(RofhBean rofhBean) {
 		
 		RofhCustomer customer = rofhBean.getCustomer();
 		RofhCustomer hisCustomer = customerDao.findByCustomerCode(customer.getCustomerCode());
@@ -136,7 +128,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 	 * 添加订单信息
 	 * @param processBean
 	 */
-	private void addOrder(RofhBean rofhBean) {
+	protected void addOrder(RofhBean rofhBean) {
 		
 		RofhOrder order = rofhBean.getOrder();
 		order.setRelGroupCustomerCuid(rofhBean.getCustomer().getCuid());
@@ -144,7 +136,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		if(StringUtils.isNotBlank(cuid)){
 			RofhOrder rOrder = orderDao.findOne(cuid);
 			if(rOrder != null){
-				if(order.getViceId() == null || order.getViceId().equals(rOrder.getViceId())){
+				if(order.getCrmSheetNo().equals(rOrder.getCrmSheetNo())){
 					order.setCuid(cuid);
 				}
 			}
@@ -157,7 +149,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 	 * 更新产品信息
 	 * @param processBean
 	 */
-	private void updateProduct(RofhBean rofhBean) {
+	protected void updateProduct(RofhBean rofhBean) {
 		
 		RofhProduct rofhProduct = rofhBean.getProduct();
 
@@ -166,6 +158,13 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		rofhProduct.setBusinessState(WebServiceConstant.BusinessState.未归档);
 		rofhProduct.setCreateTime(new Date());
 			
+		if("INSTALL".equals(rofhBean.getAction())){
+			rofhProduct.setProductAction(WebServiceConstant.ProductAction.装机);
+		}else{
+			rofhProduct.setProductAction(WebServiceConstant.ProductAction.移机);
+			
+		}
+		
 		attempProductDao.save((RofhProductAttemp)rofhProduct);
 	}
 	

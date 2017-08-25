@@ -16,11 +16,14 @@ public interface ProductDao<T extends RofhProduct> extends JpaRepository<T, Stri
 	@Query("select t from #{#entityName} t where t.productCode = :code")
 	public List<T> findByProductCode(@Param("code")String code);
 	
+	@Query("select t from #{#entityName} t where t.productCode = :code and t.accountName = :name order by createTime desc")
+	public List<T> findByProductCodeAndAccount(@Param("code")String code,@Param("name")String name);
+	
 	@Query("select 1 from  #{#entityName} t where t.accountName = :name")
 	public String isExistByAccount(@Param("name")String name);
 	
 	@Query("select t from #{#entityName} t where t.accountName = :name")
-	public List<T> findByAccountName(@Param("name")String name);
+	public T findByAccountName(@Param("name")String name);
 
 	@Query("select t from #{#entityName} t where t.relatedOrderCuid = :id")
 	public RofhProduct findByOrderId(@Param("id")String relatedOrderCuid);

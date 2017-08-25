@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.boco.rofh.constant.WebServiceConstant.ProdSerType;
 import com.boco.rofh.dao.AddressDao;
 import com.boco.rofh.mapper.ResourceMapper;
+import com.boco.rofh.utils.RofhBeanWapper;
 import com.boco.rofh.webservice.pojo.QueryBroadPlanReq;
 import com.boco.rofh.webservice.pojo.QueryBroadPlanResult;
 import com.boco.rofh.webservice.pojo.QueryBroadPlanResult.ProdServInfo;
@@ -30,6 +31,9 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 	
 	@Autowired
 	private AddressDao addressDao;
+	
+	@Autowired
+	private RofhBeanWapper beanWapper;
 	
 	private List<ProdServInfo> serList;
 	
@@ -121,14 +125,14 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 	private void init(){
 		
 		serList = new ArrayList<>();
-		List<Map<String,String>> list = resourceMapper.queryProdSrvInfo();
-		for(Map<String,String> map : list){
+		List<com.boco.rofh.entity.ProdServInfo> list = beanWapper.getProdServInfo();
+		for(com.boco.rofh.entity.ProdServInfo pinfo : list){
 			
 			ProdServInfo info = new ProdServInfo();
 			info.setInvNum(-1);
-			info.setProdSrvCode(map.get("CODE"));
-			info.setProdSrvName(map.get("NAME"));
-			info.setType(map.get("TYPE"));
+			info.setProdSrvCode(pinfo.getProdSrvCode());
+			info.setProdSrvName(pinfo.getProdSrvName());
+			info.setType(pinfo.getProdSrvType());
 			serList.add(info);
 		}
 	}

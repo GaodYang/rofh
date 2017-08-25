@@ -47,6 +47,7 @@ public class WebServiceConstant {
 		public static final String WBS = "7";
 		public static final String 广电 = "8";
 		public static final String IPTV = "15";
+		public static final String IMS = "16";
 
 	}
 
@@ -55,6 +56,7 @@ public class WebServiceConstant {
 		public static final String 宽带 = "12";
 		public static final String 语音 = "13";
 		public static final String IPTV = "15";
+		public static final String IMS = "16";
 	}
 	
 	public static class ProductType {
@@ -108,13 +110,13 @@ public class WebServiceConstant {
 	
 	public static enum ProdSerType{
 		
-		WBS,CTT,FTTB,FTTH;
+		WBS,CTT,FTTB,FTTH,IPTV,IMS;
 	}
 	
-	public static class InstallType{
+	public static enum DataSource{
 		
-		public static String 单装 = "0";
-		public static String IPTV合装 = "1";
+		SF,HIS,ATTEMP;
 	}
+
 
 }

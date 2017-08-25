@@ -4,6 +4,8 @@ import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.boco.rofh.constant.WebServiceConstant;
+
 public class RofhUtil {
 
 	public static String getAddressDetialInfo(String str){
@@ -36,6 +38,23 @@ public class RofhUtil {
 			str = str.replace((str.charAt(num) + ""), "");
 		}
 		return sb.toString();
+	}
+	
+	public static String getAccountPrefix(String type){
+		
+		String prefix = "";
+		switch (type) {
+		case WebServiceConstant.BusinessType.IPTV:
+			prefix = "P";
+			break;
+		case WebServiceConstant.BusinessType.IMS:
+			prefix = "M";
+			break;
+		default:
+			break;
+		}
+		
+		return prefix;
 	}
 	
 	

@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  *
  */
 @XStreamAlias("ConfigTaskReq")
-public class ConfigTaskReq {
+public class ConfigTaskReq implements Comparable<ConfigTaskReq>{
 
 	@XStreamAlias("req_info")
 	private ReqInfo reqInfo;
@@ -97,12 +97,15 @@ public class ConfigTaskReq {
 		private String installType;
 		
 		//父单号
-		@XStreamAlias("main_id")
-		private String mainId;
+		@XStreamAlias("src_order_grp_id")
+		private String srcOrderGrpId;
 		
-		//子单号
-		@XStreamAlias("vice_id")
-		private String viceId;
+		//子订单数量
+		@XStreamAlias("sub_order_num")
+		private int subOrderNum;
+		
+		//优先级
+		private int priority;
 		
 		@XStreamAlias("req_attr_list")
 		private List<ReqAttr> reqAttrList;
@@ -263,28 +266,40 @@ public class ConfigTaskReq {
 			this.installType = installType;
 		}
 
+		
 
-
-		public String getMainId() {
-			return mainId;
+		public String getSrcOrderGrpId() {
+			return srcOrderGrpId;
 		}
 
 
 
-		public void setMainId(String mainId) {
-			this.mainId = mainId;
+		public void setSrcOrderGrpId(String srcOrderGrpId) {
+			this.srcOrderGrpId = srcOrderGrpId;
 		}
 
 
 
-		public String getViceId() {
-			return viceId;
+		public int getSubOrderNum() {
+			return subOrderNum;
 		}
 
 
 
-		public void setViceId(String viceId) {
-			this.viceId = viceId;
+		public void setSubOrderNum(int subOrderNum) {
+			this.subOrderNum = subOrderNum;
+		}
+
+
+
+		public int getPriority() {
+			return priority;
+		}
+
+
+
+		public void setPriority(int priority) {
+			this.priority = priority;
 		}
 
 
@@ -503,6 +518,12 @@ public class ConfigTaskReq {
 
 	public void setDetialMap(Map<String, String> detialMap) {
 		this.detialMap = detialMap;
+	}
+
+	@Override
+	public int compareTo(ConfigTaskReq o) {
+		
+		return o.getReqInfo().getPriority() - this.getReqInfo().getPriority();
 	}
 	
 	

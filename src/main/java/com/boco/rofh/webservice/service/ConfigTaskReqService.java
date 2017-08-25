@@ -1,6 +1,8 @@
 package com.boco.rofh.webservice.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -9,14 +11,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.boco.rofh.dao.ProdInfoDao;
-import com.boco.rofh.entity.ProdServInfo;
+import com.boco.rofh.utils.ConfigReqPool;
+import com.boco.rofh.utils.RofhBeanWapper;
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 import com.boco.rofh.webservice.task.AbstractResourceTask;
 import com.boco.rofh.webservice.task.ApInstallTask;
 import com.boco.rofh.webservice.task.CttInstallTask;
 import com.boco.rofh.webservice.task.FttbInstallTask;
 import com.boco.rofh.webservice.task.FtthInstallTask;
+import com.boco.rofh.webservice.task.IptvInstallTask;
 import com.boco.rofh.webservice.task.RemoveTask;
 import com.boco.rofh.webservice.task.ThreadPoolManager;
 
@@ -42,27 +45,44 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 	@Autowired
 	private CttInstallTask cttInstallTask;
 	@Autowired
-	private ProdInfoDao prodInfoDao;
+	private IptvInstallTask iptvInstallTask;
+	
+	@Autowired
+	private RofhBeanWapper beanWapper;
 	
 	@Override
-	protected Object doBusiness(final ConfigTaskReq req) {
+	protected Object doBusiness(ConfigTaskReq req) {
 		
-		final String regionId = getRegionId();
+		String regionId = getRegionId();
 		
+		List<ConfigTaskReq> taskList = new ArrayList<>();
+		
+		String groupId = req.getReqInfo().getSrcOrderGrpId();
+		if(StringUtils.isNotBlank(groupId)){
+			
+			List<ConfigTaskReq> list = ConfigReqPool.getInstance().getTask(groupId, req.getReqInfo().getSubOrderNum(), req);
+			if(list != null){
+				taskList.addAll(list);
+			}
+		}
+		else{
+			
+			taskList.add(req);
+		}
+		if(taskList.isEmpty()){
+			
+			return null;
+		}
 		ThreadPoolManager.getInstance().addTask(this.getClass(), 
 				new Runnable() {
 					@Override
 					public void run() {
 						
-						String key = "UNINSTALL";
-						if(!"UNINSTALL".equals(req.getReqInfo().getActCode())){
-							String pid = req.getProdInfoList().get(0).getProdSrvSpecCode();
-							ProdServInfo info = prodInfoDao.findOne(pid);
-							String type = info.getProdSrvType();
-							type = StringUtils.isEmpty(type) ? "FTTB" : type;
-							key = req.getReqInfo().getActCode() + type;
+						for(ConfigTaskReq taskReq : taskList){
+							
+							runTask(taskReq,regionId);
 						}
-						configResourceTask.get(key).doTask(req,regionId);
+						ConfigReqPool.getInstance().remove(groupId);
 					}
 				});
 		
@@ -70,20 +90,29 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 		
 	}
 	
+	private void runTask(ConfigTaskReq req , String regionId){
+		
+		String key = "UNINSTALL";
+		if(!"UNINSTALL".equals(req.getReqInfo().getActCode())){
+			String pid = req.getProdInfoList().get(0).getProdSrvSpecCode();
+			key = beanWapper.getProdSerMap().get(pid);
+			key = StringUtils.isEmpty(key) ? "FTTB" : key;
+
+		}
+		configResourceTask.get(key).doTask(req,regionId);
+	}
+	
 	@PostConstruct
 	private void init(){
 		
 		configResourceTask = new HashMap<String, AbstractResourceTask>();
-		//装机
-		configResourceTask.put("INSTALLFTTB", fttbInstallTask);
-		configResourceTask.put("INSTALLFTTH", ftthInstallTask);
-		configResourceTask.put("INSTALLWBS", apInstallTask);
-		configResourceTask.put("INSTALLCTT", cttInstallTask);
-		//移机
-		configResourceTask.put("MOVEFTTB", fttbInstallTask);
-		configResourceTask.put("MOVEFTTH", ftthInstallTask);
-		configResourceTask.put("MOVEWBS", apInstallTask);
-		configResourceTask.put("MOVECTT", cttInstallTask);
+		//装机移机
+		configResourceTask.put("FTTB", fttbInstallTask);
+		configResourceTask.put("FTTH", ftthInstallTask);
+		configResourceTask.put("WBS", apInstallTask);
+		configResourceTask.put("CTT", cttInstallTask);
+		configResourceTask.put("IPTV", iptvInstallTask);
+
 		//拆机
 		configResourceTask.put("UNINSTALL", removeTask);
 	}
