@@ -33,7 +33,6 @@ import com.boco.rofh.webservice.task.FtthInstallTask;
  *
  */
 @Service
-@Transactional
 public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>{
 
 	
@@ -113,6 +112,7 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 		this.taskMap = taskMap;
 	}
 	
+	@Transactional
 	@Override
 	public String doProcess(String xml, String regionId) {
 		

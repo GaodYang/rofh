@@ -30,7 +30,7 @@ public class CancelResourceTask extends AbstractResourceTask{
 		
 		if (WebServiceConstant.AccessMode.FTTH.equals(attempProduct.getAccessMode())) {
 			
-			if(attempProduct.getProductAction().equals(WebServiceConstant.ProductAction.装机) || attempProduct.getProductAction().equals(WebServiceConstant.ProductAction.移机)){
+			if(WebServiceConstant.ProductAction.装机.equals(attempProduct.getProductAction()) || WebServiceConstant.ProductAction.移机.equals(attempProduct.getProductAction())){
 				
 				rofhBean.getProduct().setCuid(attempProduct.getCuid());
 				rofhBean.getProduct().setRelatedOrderCuid(attempProduct.getRelatedOrderCuid());
@@ -48,7 +48,7 @@ public class CancelResourceTask extends AbstractResourceTask{
 		/**
 		 * 装机场景释放端口 拆机场景不释放端口
 		 */
-		if (!product.getProductAction().equals(WebServiceConstant.ProductAction.拆机)) {
+		if (!WebServiceConstant.ProductAction.拆机.equals(product.getProductAction())) {
 			if(!WebServiceConstant.AccessMode.WBS.equals(product.getAccessMode())){
 				
 				ptpDao.updatePortState(product.getAccessPort(), WebServiceConstant.PtpState.空闲);
