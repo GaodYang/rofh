@@ -1,6 +1,7 @@
 package com.boco.rofh.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,9 +31,12 @@ import com.boco.rofh.entity.RofhProductSf;
 import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.RelationMapper;
 import com.boco.rofh.po.VillageResource;
+import com.boco.rofh.utils.ConfigReqPool;
 import com.boco.rofh.utils.SpringUtil;
 import com.boco.rofh.webservice.CrmServiceImpl;
 import com.boco.rofh.webservice.ICrmService;
+import com.boco.rofh.webservice.pojo.ConfigTaskReq;
+import com.boco.rofh.webservice.pojo.ConfigTaskReq.ReqInfo;
 
 @Controller
 @RequestMapping("/test")
@@ -422,8 +426,10 @@ public class test {
 	}
 	
 	@RequestMapping("/tt")
-	public void tt(){
+	public @ResponseBody List<ReqInfo> tt(){
 		
-		((ICrmService)SpringUtil.getBean(CrmServiceImpl.class)).queryAddress("34324", "454");
+		List<ReqInfo> list = new ArrayList<>();
+		ConfigReqPool.getInstance().getMap().forEach((k,v) -> v.forEach((c) -> list.add(c.getReqInfo())));
+		return list;
 	}
 }

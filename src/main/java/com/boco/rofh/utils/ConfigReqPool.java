@@ -58,4 +58,9 @@ public class ConfigReqPool {
 			reqMap.remove(id);
 		}
 	}
+	
+	public Map<String,List<ConfigTaskReq>> getMap(){
+		
+		return this.reqMap;
+	}
 }
