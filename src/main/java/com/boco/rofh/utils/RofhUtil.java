@@ -1,5 +1,7 @@
 package com.boco.rofh.utils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,5 +59,36 @@ public class RofhUtil {
 		return prefix;
 	}
 	
+	/**
+	 * 获取某个类的某个字段的值
+	 * @param fieldName 字段名称
+	 * @param obj  类名称
+	 * @return
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	public static Object getFieldValue(String fieldName,Object obj){
+		
+		try {
+			
+			Class clazz = obj.getClass();
+			clazz = clazz.getSuperclass() == Object.class ? clazz : clazz.getSuperclass();
+			byte[] items = fieldName.getBytes();
+			items[0] = (byte) ((char) items[0] - 'a' + 'A');
+			String fieldGetName = "get" + new String(items);
+			Method fieldGetMet = clazz.getMethod(fieldGetName);
+	        Object fieldVal = fieldGetMet.invoke(obj);
+	        return fieldVal;
+	        
+		} catch (Exception e) {
+			
+			return null;
+		}
+		
+		
+	}
 	
 }

@@ -13,10 +13,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 
 @SpringBootApplication
+@EnableTransactionManagement
 @EnableJpaRepositories("com.boco.rofh.dao")
 @EntityScan("com.boco.rofh.entity")
 @ComponentScan("com.boco.rofh")

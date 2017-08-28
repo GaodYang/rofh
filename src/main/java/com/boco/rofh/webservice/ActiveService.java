@@ -8,7 +8,7 @@ public class ActiveService implements IActiveService{
 	
 	public ActiveService() {
 		
-		activeService = SpringUtil.getBean(ActiveServiceImpl.class);
+		activeService = SpringUtil.getBean(IActiveService.class);
 	}
 	
 	@Override

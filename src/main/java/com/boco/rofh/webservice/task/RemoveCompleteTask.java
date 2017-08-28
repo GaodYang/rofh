@@ -15,7 +15,7 @@ public class RemoveCompleteTask extends AbstractCompleteTask{
 	protected void doBusiness(RofhBean rofhBean) {
 		
 		RofhProductAttemp attempProduct = (RofhProductAttemp) rofhBean.getProduct();
-		List<RofhProductSf> sfProducts = sfProductDao.findByProductCode(attempProduct.getProductCode());
+		List<RofhProductSf> sfProducts = sfProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(),attempProduct.getAccountName());
 		
 		for(RofhProductSf sfProduct : sfProducts){
 			this.removeComplete(sfProduct);

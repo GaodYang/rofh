@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -16,6 +17,8 @@ public class IDUtils implements Configurable,IdentifierGenerator{
 
 	
 	private String tableName ;
+	private String targetName ;
+	
 	private String createCuid(String tablename) {
 		String cuid = UUID.randomUUID().toString().replace("-", "").replace("_", "").toLowerCase();
 		cuid = tablename.toUpperCase() + "-" + cuid;
@@ -29,6 +32,11 @@ public class IDUtils implements Configurable,IdentifierGenerator{
 	@Override
 	public Serializable generate(SessionImplementor arg0, Object arg1) throws HibernateException {
 		
+		String  cuid = (String)RofhUtil.getFieldValue(targetName, arg1);
+		if(StringUtils.isNotBlank(cuid)){
+			
+			return cuid;
+		}
 		return createCuid(tableName);
 	}
 
@@ -36,5 +44,7 @@ public class IDUtils implements Configurable,IdentifierGenerator{
 	public void configure(Type arg0, Properties arg1, ServiceRegistry arg2) throws MappingException {
 		
 		tableName = (String) arg1.get("tableName");	
+		targetName = (String) arg1.get("target_column");
 	}
+	
 }

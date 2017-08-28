@@ -20,7 +20,6 @@ import com.boco.rofh.entity.RofhCustomer;
 import com.boco.rofh.entity.RofhOrder;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductAttemp;
-import com.boco.rofh.entity.RofhProductSf;
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 import com.boco.rofh.webservice.pojo.ConfigTaskReq.ProdInfo;
 import com.boco.rofh.webservice.pojo.ConfigTaskReq.ReqAttr;
@@ -153,7 +152,7 @@ public class RofhBeanWapper {
 		attempProduct = attempProduct == null ? new RofhProductAttemp() : attempProduct;
 		
 		attempProduct.setProductCode(prodInfo.getProdInsId());
-		attempProduct.setAccountName(prodInfo.getAccessNum());
+		attempProduct.setAccountName(fullName);
 		String bandwidth = map.get("bandwidth");
 		attempProduct.setBroadandWidth(bandwidth.substring(0, bandwidth.indexOf("@") == -1 ? bandwidth.length() : bandwidth.indexOf("@")));//带宽
 		attempProduct.setInstallAddress(map.get("install_addr"));//用户标准地址（安装地址）

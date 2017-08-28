@@ -1,14 +1,17 @@
 package com.boco.rofh.webservice.task;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boco.rofh.constant.WebServiceConstant;
+import com.boco.rofh.constant.WebServiceConstant.DataSource;
 import com.boco.rofh.dao.AddressDao;
 import com.boco.rofh.dao.CustomerDao;
 import com.boco.rofh.entity.PonWayAttemp;
@@ -17,6 +20,8 @@ import com.boco.rofh.entity.RofhCustomer;
 import com.boco.rofh.entity.RofhOrder;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductAttemp;
+import com.boco.rofh.entity.RofhProductSf;
+import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.ResourceMapper;
 import com.boco.rofh.mapper.RofhConfigMapper;
 import com.boco.rofh.webservice.service.ActiveNetService;
@@ -166,6 +171,67 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		}
 		
 		attempProductDao.save((RofhProductAttemp)rofhProduct);
+	}
+	
+	/**
+	 * 获取宽带资源信息
+	 * @param attempProduct
+	 */
+	protected void getBroadResource(RofhBean rofhBean) {
+		
+		RofhProduct attempProduct = rofhBean.getProduct();
+		
+		if(attempProduct.getCuid() == null){
+			
+			String dataSource = DataSource.ATTEMP.name();
+			//装机不是重发，可能是一起装，可能是加装
+			//一起装
+			RofhProduct product  ;
+			
+			String accountName = attempProduct.getAccountName().substring(1);
+			List<RofhProductAttemp> attempList = attempProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(), accountName);
+			if(attempList != null && attempList.size() > 0){
+				
+				product = attempList.get(0);
+			}else{
+				//加装
+				List<RofhProductSf> sfList = sfProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(), accountName);
+				if(sfList != null && sfList.size() > 0){
+					
+					dataSource = DataSource.SF.name();
+					product = sfList.get(0);
+				}else{
+					
+					//没有数据
+					throw new UserException("没有宽带数据！");
+				}
+				
+			}
+			
+			product.setSaleType(attempProduct.getSaleType());
+			product.setAccountName(attempProduct.getAccountName());
+			BeanUtils.copyProperties(product, attempProduct);
+			attempProduct.setRelatedSheetCuid(product.getCuid());
+			attempProduct.setRelatedOrderCuid("");
+			attempProduct.setDataSource(dataSource);
+			attempProduct.setCuid(null);
+			this.setProperties(attempProduct);
+		}
+		
+		rofhBean.getCustomer().setCuid(attempProduct.getRelatedCustomerCuid());
+		//添加订单
+		this.addOrder(rofhBean);
+		//更新产品信息
+		this.updateProduct(rofhBean);
+		
+		String xml = finishMsgBuilder.buildFinishMsg(rofhBean);
+		finishRmTaskAsynService.sendXmlToPboss(rofhBean.getOrder().getCrmTaskId(),xml,rofhBean.getRegionId());
+		
+		
+	}
+	
+	protected void setProperties(RofhProduct product) {
+		
 	}
 	
 }

@@ -37,7 +37,7 @@ public class RemoveTask extends AbstractResourceTask{
 			}
 		}else{
 			
-			List<RofhProductSf> productSfList = sfProductDao.findByProductCode(attempProduct.getProductCode());
+			List<RofhProductSf> productSfList = sfProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(),attempProduct.getAccountName());
 			if(productSfList == null || productSfList.size() == 0){
 				
 				logger.error("用户账号：" + rofhBean.getProduct().getProductCode() + "，不存在！");
@@ -46,12 +46,6 @@ public class RemoveTask extends AbstractResourceTask{
 			}
 			
 			RofhProductSf productSf = productSfList.get(0);
-			for(RofhProductSf product : productSfList){
-				
-				if(product.getAccountName().equals(attempProduct.getAccountName())){
-					productSf = product;
-				}
-			}
 			
 			rofhBean.setProduct(productSf);
 			

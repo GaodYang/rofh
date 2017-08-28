@@ -185,7 +185,7 @@ public class FinishMsgBuilder {
 			
 			if(StringUtils.isNotBlank(product.getRelatedSheetCuid())){
 				
-				if(DataSource.SF.equals(product.getDataSource())){
+				if(DataSource.SF.name().equals(product.getDataSource())){
 					
 					ponway = ponWayDao.findByProductCuid(product.getRelatedSheetCuid());
 				}else{

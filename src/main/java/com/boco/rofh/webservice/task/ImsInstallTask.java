@@ -9,10 +9,10 @@ import com.boco.rofh.entity.RofhBean;
 import com.boco.rofh.entity.RofhProduct;
 
 @Service
-public class IptvInstallTask extends AbstractInstallTask{
+public class ImsInstallTask extends AbstractInstallTask{
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(IptvInstallTask.class);
+			.getLogger(ImsInstallTask.class);
 	
 	public boolean occupyPort(RofhProduct rofhProduct){
 	
@@ -32,9 +32,9 @@ public class IptvInstallTask extends AbstractInstallTask{
 	@Override
 	protected void setProperties(RofhProduct product) {
 		
-		product.setAccessMode(WebServiceConstant.AccessMode.IPTV);
-		product.setProductType(WebServiceConstant.ProductType.IPTV业务);
-		product.setBusinessType(WebServiceConstant.BusinessType.IPTV);
+		product.setAccessMode(WebServiceConstant.AccessMode.IMS);
+		product.setProductType(WebServiceConstant.ProductType.IMS业务);
+		product.setBusinessType(WebServiceConstant.BusinessType.IMS);
 	}
 	
 	
