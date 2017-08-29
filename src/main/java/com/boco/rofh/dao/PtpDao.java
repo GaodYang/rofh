@@ -1,5 +1,6 @@
 package com.boco.rofh.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -24,4 +25,7 @@ public interface PtpDao extends JpaRepository<Ptp, String>{
 	
 	@Transactional@Modifying@Query("update Ptp set portState = 1 where cuid in :id")
 	void updatePortFreeBatch(@Param("id")List<String> id);
+	
+	@Query(value="select get_object_id(:tableName) from dual",nativeQuery=true)
+	BigDecimal getObjectId(@Param("tableName") String tableName);
 }

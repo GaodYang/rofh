@@ -128,7 +128,7 @@ public class FtthInstallTask extends AbstractInstallTask{
 		onu.setRelatedPonPortCuid(ptp.getCuid());
 		onu.setRelatedOltPortCuid(ptp.getCuid());
 		onu.setRelatedDistrictCuid(pos.getRelatedDistrictCuid());
-	//TODO:	onu.setObjectid("");
+		onu.setObjectid(ptpDao.getObjectId("AN_ONU"));
 		onu.setCreateTime(new Date());
 		onu.setPassword(RofhUtil.getRandomPw(8));
 		onu.setFttx("2");
@@ -141,7 +141,7 @@ public class FtthInstallTask extends AbstractInstallTask{
 		String onuCuid = onu.getCuid();
 		
 		Ptp onuDowPtp = new Ptp();
-		onuDowPtp.setObjectid(null);//
+		onuDowPtp.setObjectid(ptpDao.getObjectId("PTP"));
 		onuDowPtp.setLabelCn(onuName + "下联口");
 		onuDowPtp.setRelatedNeCuid(onuCuid);
 		onuDowPtp.setPortState("2");
@@ -156,7 +156,7 @@ public class FtthInstallTask extends AbstractInstallTask{
 		
 		// onu上联口
 		Ptp onuUpPtp = new Ptp();
-		onuUpPtp.setObjectid(null);
+		onuUpPtp.setObjectid(ptpDao.getObjectId("PTP"));
 		onuUpPtp.setLabelCn(onuName+"上联口");
 		onuUpPtp.setRelatedNeCuid(onuCuid);
 		onuUpPtp.setPortState("2");

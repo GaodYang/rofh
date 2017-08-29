@@ -61,7 +61,7 @@ public class FttbInstallTask extends AbstractInstallTask{
 
 		PonWayAttemp ponWay = new PonWayAttemp();		
 		ponWay.setCreateTime(new Date());
-		ponWay.setObjectid(new BigDecimal(System.currentTimeMillis()));
+		ponWay.setObjectid(ptpDao.getObjectId("PON_WAY"));
 		ponWay.setAccountName(rofhProduct.getAccountName());
 		ponWay.setOnuPortCuid(rofhProduct.getAccessPort());
 		ponWay.setRelatedOnuCuid(rofhProduct.getAccessDevice());

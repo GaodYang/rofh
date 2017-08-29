@@ -82,7 +82,7 @@ public class ApInstallTask extends AbstractInstallTask	{
 		cpe.setLabelCn(createCpeName(rofhProduct));
 		cpe.setRelatedWbsCuid(rofhProduct.getAccessDevice());
 		cpe.setSetupTime(new Date());
-	//	cpe.setObjectid("");
+		cpe.setObjectid(ptpDao.getObjectId("AN_CPE"));
 		
 		cpeDao.save(cpe);
 		Map<String,String> map = new HashMap<String,String>();
