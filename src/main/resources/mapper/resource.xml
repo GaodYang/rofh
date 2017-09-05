@@ -56,7 +56,7 @@
 			           and p.dev_type = 3
 			           and n.cuid = ap.related_ems_cuid
 			        union all
-			        select decode(n.ownership,1,3)
+			        select decode(n.ownership,1,3,n.ownership)
 			          from an_onu ap, ptp p, nms_system n
 			         where ap.related_cab_cuid = #{id}
 			           and p.related_ne_cuid = ap.cuid
