@@ -212,7 +212,14 @@ public class ActiveNetService {
 			activateBean = list.get(0);
 		}else if (operType.equals("1")){//代表激活，还没有对应的 激活数据
 			
-			activateBean = saveInitializeData(rofhBean);
+			try {
+			
+				activateBean = saveInitializeData(rofhBean);
+			} catch (Exception e) {
+				
+				logger.error("激活数据异常，不影响流程",e);
+				return "pon口不存在";
+			}
 		} else {
 			
 			return "未找到对应的激活数据";

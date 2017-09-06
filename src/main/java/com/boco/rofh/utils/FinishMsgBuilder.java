@@ -24,6 +24,7 @@ import com.boco.rofh.entity.PonWayBase;
 import com.boco.rofh.entity.RofhBean;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductSf;
+import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.RofhConfigMapper;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq.FProdInfo;
@@ -83,12 +84,12 @@ public class FinishMsgBuilder {
 			
 			List<RofhProductSf> sfProductList = sfProductDao.findByProductCode(product.getProductCode());
 			
-			if(sfProductList != null && sfProductList.size() > 0){
+			if(sfProductList == null || sfProductList.isEmpty()){
 				
-				RofhProductSf sfProduct = sfProductList.get(0);
-				processBean.setProduct(sfProduct);
+				throw new UserException(product.getAccountName() + "缺少存量数据");
 			}
-			
+			RofhProductSf sfProduct = sfProductList.get(0);
+			processBean.setProduct(sfProduct);
 			processBean.getProduct().setProductAction(ProductAction.拆机);
 			ressrvList.add(makeData(processBean));
 			
