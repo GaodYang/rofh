@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.boco.rofh.constant.WebServiceConstant;
 import com.boco.rofh.dao.AddressDao;
@@ -109,6 +110,13 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 
 	public void setTaskMap(Map<String, AbstractInstallTask> taskMap) {
 		this.taskMap = taskMap;
+	}
+	
+	@Transactional
+	@Override
+	public String doProcess(String xml, String regionId) {
+		
+		return super.doProcess(xml, regionId);
 	}
 	
 	@PostConstruct

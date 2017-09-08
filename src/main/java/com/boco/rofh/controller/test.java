@@ -1,6 +1,7 @@
 package com.boco.rofh.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,8 +28,15 @@ import com.boco.rofh.dao.ProductDao;
 import com.boco.rofh.entity.AnOnu;
 import com.boco.rofh.entity.AnPos;
 import com.boco.rofh.entity.RofhProductSf;
+import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.RelationMapper;
 import com.boco.rofh.po.VillageResource;
+import com.boco.rofh.utils.ConfigReqPool;
+import com.boco.rofh.utils.SpringUtil;
+import com.boco.rofh.webservice.CrmServiceImpl;
+import com.boco.rofh.webservice.ICrmService;
+import com.boco.rofh.webservice.pojo.ConfigTaskReq;
+import com.boco.rofh.webservice.pojo.ConfigTaskReq.ReqInfo;
 
 @Controller
 @RequestMapping("/test")
@@ -44,6 +53,9 @@ public class test {
 	
 	@Autowired
 	private RelationMapper relationMapper;
+	
+	@Autowired
+	private ICrmService crm;
 	
 	/**
 	 * searchField=cuid&searchString=123&searchOper=eq	 ne bw bn ew en  cn nc nu nn in ni
@@ -404,5 +416,20 @@ public class test {
 		return map;
 	}
 	
+	@Transactional
+	@RequestMapping("/trans")
+	public void trans(){
+		
+		
+		((test33)SpringUtil.getBean(test33.class)).aa();
 	
+	}
+	
+	@RequestMapping("/tt")
+	public @ResponseBody List<ReqInfo> tt(){
+		
+		List<ReqInfo> list = new ArrayList<>();
+		ConfigReqPool.getInstance().getMap().forEach((k,v) -> v.forEach((c) -> list.add(c.getReqInfo())));
+		return list;
+	}
 }

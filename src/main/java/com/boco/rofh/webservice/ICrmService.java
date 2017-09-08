@@ -5,7 +5,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 @WebService
-interface ICrmService {
+public interface ICrmService {
 
 	/**
 	 * 4.2 标准地址查询（树结构方式）

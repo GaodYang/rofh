@@ -5,7 +5,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 @WebService
-interface IPbossService {
+public interface IPbossService {
 
 	/**
 	 * 资源配置

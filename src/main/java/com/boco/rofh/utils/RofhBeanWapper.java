@@ -4,11 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.boco.rofh.constant.WebServiceConstant;
+import com.boco.rofh.constant.WebServiceConstant.ProdSerType;
+import com.boco.rofh.dao.ProdInfoDao;
 import com.boco.rofh.dao.ProductDao;
+import com.boco.rofh.entity.ProdServInfo;
 import com.boco.rofh.entity.RofhBean;
 import com.boco.rofh.entity.RofhCustomer;
 import com.boco.rofh.entity.RofhOrder;
@@ -27,6 +33,13 @@ public class RofhBeanWapper {
 	
 	@Autowired
 	private ProductDao<RofhProductAttemp> attempProductDao;
+	
+	@Autowired
+	private ProdInfoDao prodInfoDao;
+	
+	private List<ProdServInfo> prodSerList;
+	
+	private Map<String,String> prodSerMap;
 	/**
 	 * 将请求实体转换为RofhProcessBean，都是为了复用流程啊
 	 * @return
@@ -45,7 +58,7 @@ public class RofhBeanWapper {
 		RofhOrder order = buildOrder(reqInfo);
 		bean.setOrder(order);
 		
-		RofhProduct product = buildRofhProduct(prodInfo, detialAttrs);
+		RofhProduct product = buildRofhProduct(prodInfo, detialAttrs,reqInfo.getInstallType());
 		bean.setProduct(product);
 		product.setRemark(regionId);
 		
@@ -120,6 +133,7 @@ public class RofhBeanWapper {
 	
 		order.setLimitTime(DateFormatUtils.format(reqInfo.getAlarmDate(), DEFAULTFORMAT));
 		
+		order.setOrderGroupId(reqInfo.getSrcOrderGrpId());
 		return order;
 	}
 	
@@ -131,22 +145,48 @@ public class RofhBeanWapper {
 	 * @param map
 	 * @return
 	 */
-	private RofhProduct buildRofhProduct(ProdInfo prodInfo,Map<String, String> map) {
+	private RofhProduct buildRofhProduct(ProdInfo prodInfo,Map<String, String> map,String installType) {
 		
-		RofhProductAttemp attempProduct = attempProductDao.findByAccountName(prodInfo.getAccessNum());
-		if(attempProduct == null){
-			
-			attempProduct = new RofhProductAttemp();
-		}
+		String fullName = RofhUtil.getAccountPrefix(prodInfo.getProdSrvSpecCode()) + prodInfo.getAccessNum();
+		RofhProductAttemp attempProduct = attempProductDao.findByAccountName(fullName);
+		attempProduct = attempProduct == null ? new RofhProductAttemp() : attempProduct;
+		
 		attempProduct.setProductCode(prodInfo.getProdInsId());
-		attempProduct.setAccountName(prodInfo.getAccessNum());
+		attempProduct.setAccountName(fullName);
 		String bandwidth = map.get("bandwidth");
 		attempProduct.setBroadandWidth(bandwidth.substring(0, bandwidth.indexOf("@") == -1 ? bandwidth.length() : bandwidth.indexOf("@")));//带宽
 		attempProduct.setInstallAddress(map.get("install_addr"));//用户标准地址（安装地址）
 		attempProduct.setSaleType(prodInfo.getProdSrvSpecCode());//专业服务编码
+		//报俊字段
 		attempProduct.setSnCode(prodInfo.getOnuId());
+		attempProduct.setStbMac(prodInfo.getStbMac());
+		
 		return attempProduct;
 	}
 	
+	
+	@PostConstruct
+	private void init(){
+		
+		prodSerList = prodInfoDao.findAll();
+		
+		prodSerMap = new HashMap<>();
+		for(ProdServInfo info : prodSerList){
+			prodSerMap.put(info.getProdSrvCode(), info.getProdSrvType());
+		}
+		prodSerMap.put(WebServiceConstant.BusinessType.IPTV,ProdSerType.IPTV.name());
+		prodSerMap.put(WebServiceConstant.BusinessType.IMS,ProdSerType.IMS.name());
+		
+	}
+	
+	public List<ProdServInfo> getProdServInfo(){
+		
+		return prodSerList;
+	}
+	
+	public Map<String,String> getProdSerMap(){
+		
+		return prodSerMap;
+	}
 	
 }

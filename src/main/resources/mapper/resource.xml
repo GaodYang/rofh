@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.boco.rofh.mapper.ResourceMapper" >
-
-   <select id="queryProdSrvInfo" resultType="java.util.Map">
-   		    select t.prod_srv_code code,t.prod_srv_name name,t.prod_srv_type type from t_PROD_SERV_INFO t
-   </select>
   
    <select id="queryCoverNeByAddr" parameterType="java.lang.String" resultType="java.lang.String">
    			select gc.related_ne_cuid from gpon_cover gc where gc.standard_addr = #{id}

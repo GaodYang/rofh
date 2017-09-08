@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  *
  */
 @XStreamAlias("ConfigTaskReq")
-public class ConfigTaskReq {
+public class ConfigTaskReq implements Comparable<ConfigTaskReq>{
 
 	@XStreamAlias("req_info")
 	private ReqInfo reqInfo;
@@ -91,6 +91,21 @@ public class ConfigTaskReq {
 		@XStreamAlias("exception_code")
 		//@FieldNote(name="异常编码",isNullAble=false)
 		private String exceptionCode;
+		
+		//装机业务类型
+		@XStreamAlias("install_type")
+		private String installType;
+		
+		//父单号
+		@XStreamAlias("src_order_grp_id")
+		private String srcOrderGrpId;
+		
+		//子订单数量
+		@XStreamAlias("sub_order_num")
+		private int subOrderNum;
+		
+		//优先级
+		private int priority;
 		
 		@XStreamAlias("req_attr_list")
 		private List<ReqAttr> reqAttrList;
@@ -239,6 +254,54 @@ public class ConfigTaskReq {
 			this.reqAttrList = reqAttrList;
 		}
 
+		
+
+		public String getInstallType() {
+			return installType;
+		}
+
+
+
+		public void setInstallType(String installType) {
+			this.installType = installType;
+		}
+
+		
+
+		public String getSrcOrderGrpId() {
+			return srcOrderGrpId;
+		}
+
+
+
+		public void setSrcOrderGrpId(String srcOrderGrpId) {
+			this.srcOrderGrpId = srcOrderGrpId;
+		}
+
+
+
+		public int getSubOrderNum() {
+			return subOrderNum;
+		}
+
+
+
+		public void setSubOrderNum(int subOrderNum) {
+			this.subOrderNum = subOrderNum;
+		}
+
+
+
+		public int getPriority() {
+			return priority;
+		}
+
+
+
+		public void setPriority(int priority) {
+			this.priority = priority;
+		}
+
 
 
 		@Override
@@ -318,6 +381,10 @@ public class ConfigTaskReq {
 		
 		@XStreamAlias("onu_id")
 		private String onuId;
+		
+		//iptv机顶盒mac地址
+		@XStreamAlias("stb_mac")
+		private String stbMac;
 		
 		@XStreamAlias("prod_attr_list")
 		private List<ReqAttr> prodAttrList;
@@ -419,6 +486,24 @@ public class ConfigTaskReq {
 		}
 
 
+		public String getStbMac() {
+			return stbMac;
+		}
+
+
+
+		public void setStbMac(String stbMac) {
+			this.stbMac = stbMac;
+		}
+
+
+
+		public void setAccessNum(String accessNum) {
+			this.accessNum = accessNum;
+		}
+
+
+
 		@Override
 		public String toString() {
 			
@@ -433,6 +518,12 @@ public class ConfigTaskReq {
 
 	public void setDetialMap(Map<String, String> detialMap) {
 		this.detialMap = detialMap;
+	}
+
+	@Override
+	public int compareTo(ConfigTaskReq o) {
+		
+		return o.getReqInfo().getPriority() - this.getReqInfo().getPriority();
 	}
 	
 	

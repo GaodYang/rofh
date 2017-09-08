@@ -8,7 +8,7 @@ public class PbossService implements IPbossService{
 	
 	public PbossService() {
 		
-		pbossService = SpringUtil.getBean(PbossServiceImpl.class);
+		pbossService = SpringUtil.getBean(IPbossService.class);
 	}
 
 	@Override

@@ -205,15 +205,24 @@ public class ActiveNetService {
 	public String netActivate(RofhBean rofhBean,String operType,String onuOperType){
 		
 		RofhActivate activateBean ;
-		if (operType.equals("1")){//代表激活，还没有对应的 激活数据
-			activateBean = saveInitializeData(rofhBean);
+		List<RofhActivate> list = activeDao.findByOrderid(rofhBean.getProduct().getRelatedOrderCuid());
+		
+		if(list != null && list.size() > 0){
+			
+			activateBean = list.get(0);
+		}else if (operType.equals("1")){//代表激活，还没有对应的 激活数据
+			
+			try {
+			
+				activateBean = saveInitializeData(rofhBean);
+			} catch (Exception e) {
+				
+				logger.error("激活数据异常，不影响流程",e);
+				return "pon口不存在";
+			}
 		} else {
 			
-			activateBean = activeDao.findByOrderid(rofhBean.getProduct().getRelatedOrderCuid());
-			if (activateBean == null ){
-
-				return "未找到对应的激活数据";
-			}
+			return "未找到对应的激活数据";
 		}
 
 		return netActivate(rofhBean,activateBean,operType,onuOperType);

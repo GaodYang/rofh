@@ -13,7 +13,7 @@ public class CrmService implements ICrmService{
 	
 	public CrmService() {
 		
-		this.crmService = SpringUtil.getBean(CrmServiceImpl.class);
+		this.crmService = SpringUtil.getBean(ICrmService.class);
 	}
 
 	@Override

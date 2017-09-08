@@ -87,8 +87,10 @@ public abstract class RofhProduct implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime;
-
 	
+	@Column(name="STB_MAC")
+	private String stbMac;
+
 	@Id
 	@GeneratedValue(generator = "IDUtils")  
     @GenericGenerator(name = "IDUtils", strategy = "com.boco.rofh.utils.IDUtils",  
@@ -352,6 +354,14 @@ public abstract class RofhProduct implements Serializable {
 
 	public void setCpvlan(String cpvlan) {
 		this.cpvlan = cpvlan;
+	}
+
+	public String getStbMac() {
+		return stbMac;
+	}
+
+	public void setStbMac(String stbMac) {
+		this.stbMac = stbMac;
 	}
 
 	public Date getCreateTime() {
