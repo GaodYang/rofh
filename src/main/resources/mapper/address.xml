@@ -92,5 +92,25 @@
 		          order by rownum desc)
 	</select>
 	
+	<select id="queryRegionInfo" resultType="java.util.Map">
+		   select d.cuid, d.district_code code
+			  from district d
+			 where d.data_type = '3'
+			   and cuid like 'DISTRICT-00001-00010%'
+	</select>
+	
+	<select id="queryCountyInfo" parameterType="java.util.Map" resultType="java.lang.String">
+		      select cuid
+			     from (select cuid
+			             from district d
+			            where d.oldcuid = #{id}
+			              and d.data_type = 4
+			           union
+			           select t.related_district_id
+			             from t_pboss_district t
+			            where t.id = #{id}) t
+			    where t.cuid like '${city}-%'
+			      and rownum = 1
+	</select>
 
 </mapper>

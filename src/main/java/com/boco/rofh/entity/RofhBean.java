@@ -13,6 +13,8 @@ public class RofhBean {
 	private String action;
 	
 	private String activeMsg;
+	
+	private String districtId;
 
 	public RofhProduct getProduct() {
 		return product;
@@ -60,6 +62,14 @@ public class RofhBean {
 
 	public void setActiveMsg(String activeMsg) {
 		this.activeMsg = activeMsg;
+	}
+
+	public String getDistrictId() {
+		return districtId;
+	}
+
+	public void setDistrictId(String districtId) {
+		this.districtId = districtId;
 	}
 	
 	

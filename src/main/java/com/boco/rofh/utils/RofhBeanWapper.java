@@ -65,6 +65,7 @@ public class RofhBeanWapper {
 		bean.setRegionId(regionId);
 		
 		bean.setAction(taskReq.getReqInfo().getActCode());
+		bean.setDistrictId(reqInfo.getDistrictId());
 		
 		return bean;
 	}

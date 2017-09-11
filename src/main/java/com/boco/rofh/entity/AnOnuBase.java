@@ -50,7 +50,7 @@ public abstract class AnOnuBase implements Serializable {
 	@Id
 	@GeneratedValue(generator = "IDUtils")  
     @GenericGenerator(name = "IDUtils", strategy = "com.boco.rofh.utils.IDUtils",  
-    		parameters = { @Parameter(name = "tableName", value = "AN_ONU") })
+    		parameters = { @Parameter(name = "tableName", value = "TRANS_ELEMENT") })
 	private String cuid;
 
 	@Column(name="DEV_CUID")

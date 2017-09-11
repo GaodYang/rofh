@@ -227,23 +227,22 @@
 	</select>
 	
 	<select id="getFreePortCtt" parameterType="java.lang.String" resultType="java.util.Map">
-			select cuid, related_ne_cuid,type
-			  from (select p.cuid, p.related_ne_cuid, p.port_no,'3' type
-			          from ptp p,an_onu na,nms_system n
+			select cuid, related_ne_cuid, type
+			  from (select p.cuid, p.related_ne_cuid, p.port_no, '3' type
+			          from ptp p, an_onu na, nms_system n
 			         where exists (select 1
-			                  from  gpon_cover gc
-			                 where 
-			                    na.related_cab_cuid = gc.related_ne_cuid
+			                  from gpon_cover gc
+			                 where na.related_cab_cuid = gc.related_ne_cuid
 			                   and gc.standard_addr = #{id})
 			           and n.cuid = na.related_ems_cuid
-		               and n.ownership = 2
+			           and n.ownership = 2
 			           and p.related_ne_cuid = na.cuid
 			           and p.port_state = 1
 			           and p.port_sub_type = 37
 			           and dev_type = 2
-			           union all
-			           select p.cuid, p.related_ne_cuid, p.port_no,'5' type
-			          from ptp p,an_pos na,nms_system n
+			        union all
+			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type
+			          from ptp p, an_pos na, nms_system n
 			         where exists (select 1
 			                  from gpon_cover gc
 			                 where na.related_cab_cuid = gc.related_ne_cuid
@@ -255,13 +254,12 @@
 			           and p.port_sub_type = 13
 			           and dev_type = 3
 			        union all
-			        select p.cuid, p.related_ne_cuid, p.port_no,'5' type
-			          from an_pos na, ptp p,nms_system n
+			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type
+			          from an_pos na, ptp p, nms_system n
 			         where p.related_ne_cuid = na.cuid
 			           and exists (select 1
-			                   from gpon_cover gc, fiber_dp_map_gx fd
-			                 where 
-			                   fd.fiber_dp_cuid = gc.related_ne_cuid
+			                  from gpon_cover gc, fiber_dp_map_gx fd
+			                 where fd.fiber_dp_cuid = gc.related_ne_cuid
 			                   and na.related_cab_cuid = fd.fiber_cab_cuid
 			                   and fd.related_pos_cuid is null
 			                   and gc.standard_addr = #{id})
@@ -270,19 +268,20 @@
 			           and p.port_state = 1
 			           and p.port_sub_type = 13
 			           and dev_type = 3
-			           union all
-			        select p.cuid, p.related_ne_cuid, p.port_no,'5' type
-			          from an_pos na, ptp p,nms_system n
+			        union all
+			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type
+			          from an_pos          na,
+			               ptp             p,
+			               nms_system      n,
+			               gpon_cover      gc,
+			               fiber_dp_map_gx fd
 			         where p.related_ne_cuid = na.cuid
-			           and exists (select 1
-			                   from gpon_cover gc, fiber_dp_map_gx fd
-			                 where 
-			                   fd.fiber_dp_cuid = gc.related_ne_cuid
-			                   and na.related_cab_cuid = fd.fiber_cab_cuid
-			                   and fd.related_pos_cuid is not  null
-         					   and fd.related_pos_cuid = na.cuid
-        					   and p.port_no between fd.start_port_num and fd.end_port_num
-			                   and gc.standard_addr = #{id})
+			           and fd.fiber_dp_cuid = gc.related_ne_cuid
+			           and na.related_cab_cuid = fd.fiber_cab_cuid
+			           and fd.related_pos_cuid is not null
+			           and fd.related_pos_cuid = na.cuid
+			           and p.port_no between fd.start_port_num and fd.end_port_num
+			           and gc.standard_addr = #{id}
 			           and n.cuid = na.related_ems_cuid
 			           and n.ownership = 2
 			           and p.port_state = 1
@@ -322,23 +321,20 @@
 		           and p.port_sub_type = 13
 		           and dev_type = 3
 		           union all
-		        select p.cuid, p.related_ne_cuid, p.port_no
-		          from an_pos na, ptp p,nms_system n
-		         where p.related_ne_cuid = na.cuid
-		           and exists (select 1
-		                   from gpon_cover gc, fiber_dp_map_gx fd
-		                 where 
-		                    fd.fiber_dp_cuid = gc.related_ne_cuid
-		                    and na.related_cab_cuid = fd.fiber_cab_cuid
-		                    and fd.related_pos_cuid is not  null
-            				and fd.related_pos_cuid = na.cuid
-        				    and p.port_no between fd.start_port_num and fd.end_port_num
-		                    and gc.standard_addr = #{id})
-		           and n.cuid = na.related_ems_cuid
-		           and n.ownership = 1
-		           and p.port_state = 1
-		           and p.port_sub_type = 13
-		           and dev_type = 3)
+				   select p.cuid, p.related_ne_cuid, p.port_no
+			          from an_pos na, ptp p, nms_system n,gpon_cover gc, fiber_dp_map_gx fd
+			         where p.related_ne_cuid = na.cuid
+			           and fd.fiber_dp_cuid = gc.related_ne_cuid
+			           and na.related_cab_cuid = fd.fiber_cab_cuid
+			           and fd.related_pos_cuid is not null
+			           and fd.related_pos_cuid = na.cuid
+			           and p.port_no between fd.start_port_num and fd.end_port_num
+			           and gc.standard_addr = #{id}
+			           and n.cuid = na.related_ems_cuid
+			           and n.ownership = 1
+			           and p.port_state = 1
+			           and p.port_sub_type = 13
+			           and dev_type = 3)
 		 order by port_no asc
 	</select>
 	

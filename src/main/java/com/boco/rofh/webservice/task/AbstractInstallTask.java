@@ -79,11 +79,17 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 	
 		if (WebServiceConstant.AccessMode.FTTH.equals(rofhBean.getProduct().getAccessMode())) {
 			
-			String str = activeNetService.netActivate(rofhBean, "1", "1");
+			String str = activeNetService.netActivate(rofhBean, true);
 			rofhBean.setActiveMsg(str);
 			if (str == null){
 				
-				return ;
+				try {
+					Thread.sleep(3*60*1000);
+				} catch (InterruptedException e) {
+					
+					return ;
+				}
+				rofhBean.setActiveMsg("激活超时！");
 			}
 		}
 			

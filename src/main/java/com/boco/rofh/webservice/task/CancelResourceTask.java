@@ -34,7 +34,7 @@ public class CancelResourceTask extends AbstractResourceTask{
 				
 				rofhBean.getProduct().setCuid(attempProduct.getCuid());
 				rofhBean.getProduct().setRelatedOrderCuid(attempProduct.getRelatedOrderCuid());
-				activeNetService.netActivate(rofhBean, "3", "2");
+				activeNetService.netActivate(rofhBean, false);
 			}
 		}
 		

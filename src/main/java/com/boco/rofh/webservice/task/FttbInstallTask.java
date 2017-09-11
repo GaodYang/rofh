@@ -26,7 +26,7 @@ public class FttbInstallTask extends AbstractInstallTask{
 	 * @param addrId
 	 * @return
 	 */
-	synchronized public boolean occupyPort(RofhProduct rofhProduct){
+	public boolean occupyPort(RofhProduct rofhProduct){
 	
 			
 		String addrId = rofhProduct.getRelatedCoverageAddrCuid();

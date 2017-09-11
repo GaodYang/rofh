@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,9 @@ import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.ActiveMapper;
 import com.boco.rofh.utils.ActiveServiceUtil;
+import com.boco.rofh.utils.ActiveThreadUtil;
 import com.boco.rofh.utils.FinishMsgBuilder;
+import com.boco.rofh.webservice.pojo.ActiveMsgBody;
 import com.boco.rofh.webservice.pojo.ActiveReq;
 import com.boco.rofh.webservice.pojo.ActiveReq.Device;
 import com.boco.rofh.webservice.pojo.ActiveReq.NewResData;
@@ -78,7 +79,7 @@ public class ActiveNetService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ActiveNetService.class);
 	
-	public String getMsgBody(RofhBean rofhBean,RofhActivate activateBean,String operType,String onuOper){
+	public String getMsgBody(RofhBean rofhBean,RofhActivate activateBean,boolean isAdd){
 		
 		String pBossStr = "";
 		try {
@@ -105,7 +106,7 @@ public class ActiveNetService {
 			fulfillMsg.setSheetCode(activateBean.getCuid());
 			fulfillMsg.setSheetMainCode(rofhBean.getOrder().getCrmSheetNo());
 			fulfillMsg.setSheetTitle("");
-			fulfillMsg.setOperType(operType);
+			fulfillMsg.setOperType(isAdd ? "1" : "3");
 			fulfillMsg.setDeadlineTime(df.format(new Date()));
 			fulfillMsg.setCityName(city);
 			Product product = new Product();
@@ -138,7 +139,7 @@ public class ActiveNetService {
 			olt.setPosL2Name("1");
 			olt.setPosL2Ratio("1");
 			olt.setPosPonPort("1");
-			olt.setOnuOper(onuOper);
+			olt.setOnuOper(isAdd ? "1" : "2");
 			olt.setOnuType("1");
 			olt.setOnuPassword(activateBean.getLogicid());
 			olt.setOnuId(activateBean.getRelatedOnuCuid());
@@ -164,7 +165,7 @@ public class ActiveNetService {
 	}
 	
 	
-	public RofhActivate saveInitializeData(RofhBean rofhBean) {
+	public RofhActivate saveInitializeData(RofhBean rofhBean,boolean isAdd) {
 		
 		PonWayAttemp attempPonWay = attempPonWayDao.findByProductCuid(rofhBean.getProduct().getCuid());
 		if (attempPonWay != null){
@@ -193,6 +194,11 @@ public class ActiveNetService {
 			activateBean.setRelatedOltPortCuid(attempPonWay.getOltPonPortCuid());
 			activateBean.setOnuVender((String) map.get("DLABEL_CN"));
 			activateBean.setLogicid(attempPonWay.getAccountPassword());
+			if(isAdd){
+				activateBean.setActivateTime(new Date());
+			}else{
+				activateBean.setDeactivateTime(new Date());
+			}
 			
 			activeDao.save(activateBean);
 			return activateBean;
@@ -202,7 +208,7 @@ public class ActiveNetService {
 	}
 
 	
-	public String netActivate(RofhBean rofhBean,String operType,String onuOperType){
+	public String netActivate(RofhBean rofhBean,boolean isAdd){
 		
 		RofhActivate activateBean ;
 		List<RofhActivate> list = activeDao.findByOrderid(rofhBean.getProduct().getRelatedOrderCuid());
@@ -210,11 +216,11 @@ public class ActiveNetService {
 		if(list != null && list.size() > 0){
 			
 			activateBean = list.get(0);
-		}else if (operType.equals("1")){//代表激活，还没有对应的 激活数据
+		}else if (isAdd){//代表激活，还没有对应的 激活数据
 			
 			try {
 			
-				activateBean = saveInitializeData(rofhBean);
+				activateBean = saveInitializeData(rofhBean,isAdd);
 			} catch (Exception e) {
 				
 				logger.error("激活数据异常，不影响流程",e);
@@ -225,7 +231,7 @@ public class ActiveNetService {
 			return "未找到对应的激活数据";
 		}
 
-		return netActivate(rofhBean,activateBean,operType,onuOperType);
+		return netActivate(rofhBean,activateBean,isAdd);
 	}
 	
 	
@@ -243,30 +249,40 @@ public class ActiveNetService {
 		logger.info("======激活调用家客修改激活状态接口开始======,报文信息：" + msgBody);
 		
 		try {
-			ActiveResult activeResult = ActiveResult.toBean(msgBody);;
+			ActiveMsgBody activeResult = ActiveMsgBody.toBean(msgBody);;
 
 			// 通过环节ID取出所有激活数据根据CUID便利修改每条数据对应的激活状态
-			RofhActivate activateBean = activeDao.findOne(activeResult.getResId());
+			RofhActivate activateBean = activeDao.findOne(activeResult.getInformMsg().getRelId());
+			
+			ActiveThreadUtil.instance.remove(activateBean.getCuid());
 		
-			if (activeResult.getRtCode().equals("000")) {
+			if (activeResult.getInformMsg().getRtCode().equals("000")) {
+				
 				activateBean.setActivateStatus("已完成");
 			} else {
+				
 				activateBean.setActivateStatus("激活异常");
 			}
-			if (WebServiceConstant.ACTIVATESTATE.get(activateBean.getActivateState() + "-" + activeResult.getRtCode()) != null) {
-				activateBean.setActivateState(WebServiceConstant.ACTIVATESTATE.get(activateBean.getActivateState() + "-" + activeResult.getRtCode()));
-				activateBean.setActivateResult(activeResult.getRtMessage());
-				activateBean.setReturnActivateTime(new Date());
-				activeDao.save(activateBean);
+			activateBean.setReturnActivateTime(new Date());
+			
+			String code = activeResult.getInformMsg().getRtCode();
+			
+			if (WebServiceConstant.ACTIVATESTATE.get(activateBean.getActivateState() + "-" + code) != null) {
+				
+				activateBean.setActivateState(WebServiceConstant.ACTIVATESTATE.get(activateBean.getActivateState() + "-" + code));
+				
 			}
+			activateBean.setActivateResult(activeResult.getInformMsg().getRtMessage());
+			activeDao.save(activateBean);
 			
 			RofhProduct product = attempProductDao.findByOrderId(activateBean.getRelatedOrderCuid());
 			if (product != null ){
+				
 				RofhBean processBean = new RofhBean();
 				RofhOrder order = orderDao.findOne(activateBean.getRelatedOrderCuid());
 				processBean.setProduct(product);
 				processBean.setOrder(order);
-				processBean.setActiveMsg(activeResult.getRtMessage());
+				processBean.setActiveMsg(activeResult.getInformMsg().getRtMessage());
 
 				String xml = builder.buildFinishMsg(processBean);
 				finishRmTaskAsynService.sendXmlToPboss(order.getCrmTaskId(),xml,processBean.getProduct().getRemark());
@@ -294,13 +310,13 @@ public class ActiveNetService {
 	}
 
 
-	public String netActivate(RofhBean processBean,RofhActivate activateBean,String operType,String onuOperType){
+	public String netActivate(RofhBean processBean,RofhActivate activateBean,boolean isAdd){
 
 		ActiveResult activeResult = null;
 
 		try {
 
-			String msgBody = getMsgBody(processBean,activateBean,operType,onuOperType);
+			String msgBody = getMsgBody(processBean,activateBean,isAdd);
 			logger.info("激活接口开始调用：" + new Date() + ",报文信息：" + msgBody);
 			String result = activeServiceUtil.send(msgBody);
 		    logger.info("激活接口返回结果：" + result);
@@ -313,10 +329,11 @@ public class ActiveNetService {
 		}
 		
 		String rtCode = activeResult.getRtCode();
-		if(StringUtils.isNotEmpty(rtCode) && rtCode.equals("000")){
+		if("000".equals(rtCode)){
 			
 			logger.info("激活接口业务处理成功");
 			updateActivateByState(activateBean,activeResult.getRtMessage(),"1");
+			ActiveThreadUtil.instance.putThread(activateBean.getCuid());
 			return null;
 		}else {//当激活返回值等于001 -1修改生成激活数据
 			updateActivateByState(activateBean,activeResult.getRtMessage(),"0");
@@ -334,14 +351,11 @@ public class ActiveNetService {
 				if(oldState.equals("10") || oldState.equals("21")){
 					activateBean.setActivateState("20");
 					activateBean.setActivateResult("激活申请成功");
-					activateBean.setActivateTime(new Date());
 				}else if(oldState.equals("22") || oldState.equals("31")){
 					activateBean.setActivateState("30");
 					activateBean.setActivateResult("去激活申请成功");
-					activateBean.setDeactivateTime(new Date());
 				}
 				activateBean.setActivateStatus("已派发");
-				activateBean.setReturnActivateTime(new Date());
 			}else if("0".equals(state)){
 				if(oldState.equals("10"))	{
 					activateBean.setActivateState("21");
@@ -350,14 +364,11 @@ public class ActiveNetService {
 					activateBean.setActivateState("31");
 					activateBean.setActivateResult(error);
 				}
-				activateBean.setActivateTime(new Date());
 				activateBean.setActivateStatus("激活失败");
-				activateBean.setReturnActivateTime(new Date());
 			}
 			activeDao.save(activateBean);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 	

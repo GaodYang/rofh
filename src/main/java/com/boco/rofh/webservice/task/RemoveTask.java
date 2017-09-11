@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boco.rofh.constant.WebServiceConstant;
@@ -15,6 +16,7 @@ import com.boco.rofh.entity.RofhOrder;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.entity.RofhProductSf;
+import com.boco.rofh.utils.GenerateProductData;
 
 @Service
 public class RemoveTask extends AbstractResourceTask{
@@ -22,6 +24,8 @@ public class RemoveTask extends AbstractResourceTask{
 	private static final Logger logger = LoggerFactory
 			.getLogger(RemoveTask.class);
 	
+	@Autowired
+	private GenerateProductData generateProductData;
 	
 	@Override
 	protected void doBusiness(RofhBean rofhBean) {
@@ -38,14 +42,17 @@ public class RemoveTask extends AbstractResourceTask{
 		}else{
 			
 			List<RofhProductSf> productSfList = sfProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(),attempProduct.getAccountName());
+			RofhProductSf productSf;
 			if(productSfList == null || productSfList.size() == 0){
 				
-				logger.error("用户账号：" + rofhBean.getProduct().getProductCode() + "，不存在！");
+				/*logger.error("用户账号：" + rofhBean.getProduct().getProductCode() + "，不存在！");
 				finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.used", "用户账号：" + rofhBean.getProduct().getProductCode() + "，不存在！",rofhBean.getRegionId());
-				return;
-			}
+				return;*/
+				productSf = generateProductData.createPbossProduct(rofhBean);
+			}else{
 			
-			RofhProductSf productSf = productSfList.get(0);
+				productSf = productSfList.get(0);
+			}
 			
 			rofhBean.setProduct(productSf);
 			

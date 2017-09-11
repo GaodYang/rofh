@@ -52,7 +52,7 @@ public class ApInstallTask extends AbstractInstallTask	{
 	}
 	
 	@Override
-	synchronized public boolean occupyPort(RofhProduct rofhProduct) {
+	public boolean occupyPort(RofhProduct rofhProduct) {
 		
 		//查询端口
 		List<Map<String,Object>> list = resourceMapper.getFreePortWbs(rofhProduct.getRelatedCoverageAddrCuid());

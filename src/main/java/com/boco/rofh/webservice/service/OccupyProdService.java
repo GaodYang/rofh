@@ -14,12 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.boco.rofh.constant.WebServiceConstant;
 import com.boco.rofh.dao.AddressDao;
-import com.boco.rofh.dao.ProdInfoDao;
 import com.boco.rofh.dao.ProductDao;
-import com.boco.rofh.entity.ProdServInfo;
 import com.boco.rofh.entity.RofhFullAddress;
 import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.exception.UserException;
+import com.boco.rofh.utils.RofhBeanWapper;
 import com.boco.rofh.webservice.pojo.GetResourceReq;
 import com.boco.rofh.webservice.task.AbstractInstallTask;
 import com.boco.rofh.webservice.task.ApInstallTask;
@@ -53,7 +52,7 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 	@Autowired
 	private CttInstallTask cttInstallTask;
 	@Autowired
-	private ProdInfoDao prodInfoDao;
+	private RofhBeanWapper beanWapper;
 	
 	@Override
 	protected Object doBusiness(GetResourceReq getResourceReq) {
@@ -80,8 +79,7 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 		}
 		
 		//进行预占
-		ProdServInfo info = prodInfoDao.findOne(getResourceReq.getProdSrvCode());
-		String type = info.getProdSrvType();
+		String type = beanWapper.getProdSerMap().get(getResourceReq.getProdSrvCode());
 		type = StringUtils.isEmpty(type) ? "FTTB" : type;
 		
 		boolean flag = taskMap.get(type).occupyPort(rofhProduct);

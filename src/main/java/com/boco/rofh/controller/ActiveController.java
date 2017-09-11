@@ -74,7 +74,7 @@ public class ActiveController {
 		
 		try {
 			
-			return activeNetService.netActivate(rofhBean, "2", "1");
+			return activeNetService.netActivate(rofhBean, true);
 		} catch (Exception e) {
 			
 			return e.getMessage();

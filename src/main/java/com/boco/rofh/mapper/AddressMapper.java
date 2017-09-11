@@ -23,4 +23,7 @@ public interface AddressMapper {
 
 	String queryAddrParentIds(String id);
 	
+	List<Map<String,String>> queryRegionInfo();
+	
+	String queryCountyInfo(Map<String,String> map);
 }

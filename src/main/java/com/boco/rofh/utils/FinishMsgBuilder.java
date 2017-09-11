@@ -54,6 +54,9 @@ public class FinishMsgBuilder {
 	@Autowired
 	private RofhConfigMapper configMapper;
 	
+	@Autowired
+	private GenerateProductData generateProductData;
+	
 	@Value("${iptv.iptvuv}")
 	private String iptvAdmVlan;
 	
@@ -83,12 +86,14 @@ public class FinishMsgBuilder {
 		if (ProductAction.移机.equals(product.getProductAction())){
 			
 			List<RofhProductSf> sfProductList = sfProductDao.findByProductCode(product.getProductCode());
-			
+			RofhProductSf sfProduct;
 			if(sfProductList == null || sfProductList.isEmpty()){
 				
-				throw new UserException(product.getAccountName() + "缺少存量数据");
+				//throw new UserException(product.getAccountName() + "缺少存量数据");
+				sfProduct = generateProductData.createPbossProduct(processBean);
+			}else{
+				sfProduct = sfProductList.get(0);
 			}
-			RofhProductSf sfProduct = sfProductList.get(0);
 			processBean.setProduct(sfProduct);
 			processBean.getProduct().setProductAction(ProductAction.拆机);
 			ressrvList.add(makeData(processBean));
