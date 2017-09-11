@@ -333,7 +333,9 @@ public class ActiveNetService {
 			
 			logger.info("激活接口业务处理成功");
 			updateActivateByState(activateBean,activeResult.getRtMessage(),"1");
-			ActiveThreadUtil.instance.putThread(activateBean.getCuid());
+			if(isAdd){
+				ActiveThreadUtil.instance.putThread(activateBean.getCuid());
+			}
 			return null;
 		}else {//当激活返回值等于001 -1修改生成激活数据
 			updateActivateByState(activateBean,activeResult.getRtMessage(),"0");

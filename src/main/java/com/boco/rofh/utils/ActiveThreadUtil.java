@@ -1,7 +1,11 @@
 package com.boco.rofh.utils;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+
+
 
 /**
  * 
@@ -19,6 +23,14 @@ public enum ActiveThreadUtil {
 	public void putThread(String id){
 		
 		threadMap.put(id, Thread.currentThread());
+		new Timer().schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				
+				threadMap.remove(id);
+			}
+		}, 4*60*1000);
 	}
 	
 	
