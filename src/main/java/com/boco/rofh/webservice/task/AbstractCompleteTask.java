@@ -2,6 +2,8 @@ package com.boco.rofh.webservice.task;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import com.boco.rofh.constant.WebServiceConstant;
@@ -9,9 +11,11 @@ import com.boco.rofh.entity.AnOnu;
 import com.boco.rofh.entity.AnOnuAttemp;
 import com.boco.rofh.entity.PonWay;
 import com.boco.rofh.entity.PonWayAttemp;
+import com.boco.rofh.entity.RofhBean;
 import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.entity.RofhProductHis;
 import com.boco.rofh.entity.RofhProductSf;
+import com.boco.rofh.exception.UserException;
 
 /**
  * 资源报俊
@@ -20,6 +24,8 @@ import com.boco.rofh.entity.RofhProductSf;
  */
 public abstract class AbstractCompleteTask extends AbstractResourceTask{
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbstractCompleteTask.class);
 
 	/**
 	 * 装机流程归档处理
@@ -113,6 +119,31 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		productHis.setFinishTime(new Date());
 		hisProductDao.save(productHis);
 		attempProductDao.delete(productAttemp);
+		
+	}
+	
+	@Override
+	protected void execute(RofhBean rofhBean){
+		
+		String accountName = rofhBean.getProduct().getAccountName();
+		
+		if(isExistId(accountName)){
+			
+			return ;
+		}
+		try{	
+			if(rofhBean.getProduct().getCuid() == null){
+				
+				return;
+			}
+			this.doBusiness(rofhBean);
+		}catch(Exception e){
+			
+			logger.error("Task error !",e);
+			throw new UserException("报俊出错！" + e.getMessage());
+		}finally{
+			removeId(accountName);
+		}
 		
 	}
 }

@@ -13,7 +13,6 @@ import com.boco.rofh.webservice.task.AbstractCompleteTask;
 import com.boco.rofh.webservice.task.InstallCompleteTask;
 import com.boco.rofh.webservice.task.MoveCompleteTask;
 import com.boco.rofh.webservice.task.RemoveCompleteTask;
-import com.boco.rofh.webservice.task.ThreadPoolManager;
 
 /**
  * 资源报俊
@@ -36,18 +35,7 @@ public class CompleteTaskReqService extends BaseRofhWebService<ConfigTaskReq,Obj
 	@Override
 	protected Object doBusiness(final ConfigTaskReq req) {
 		
-		
-		final String regionId = getRegionId();
-		//yibu
-		ThreadPoolManager.getInstance().addTask(this.getClass(), new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				completeTasks.get(req.getReqInfo().getActCode()).doTask(req, regionId);
-			}
-		});
-		
+		completeTasks.get(req.getReqInfo().getActCode()).doTask(req, getRegionId());
 		
 		return null;
 		

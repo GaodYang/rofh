@@ -83,7 +83,7 @@ public abstract class AbstractResourceTask {
 	protected FinishMsgBuilder finishMsgBuilder;
 	
 	
-	private void execute(RofhBean rofhBean){
+	protected void execute(RofhBean rofhBean){
 		
 		String accountName = rofhBean.getProduct().getAccountName();
 		

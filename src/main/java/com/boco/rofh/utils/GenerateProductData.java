@@ -10,9 +10,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.boco.rofh.dao.ProductDao;
+import com.boco.rofh.dao.ProductSfDao;
 import com.boco.rofh.entity.RofhBean;
-import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductSf;
 import com.boco.rofh.mapper.AddressMapper;
 
@@ -20,7 +19,7 @@ import com.boco.rofh.mapper.AddressMapper;
 public class GenerateProductData {
 
 	@Autowired
-	private ProductDao<RofhProductSf> productDao;
+	private ProductSfDao productDao;
 	
 	@Autowired
 	private AddressMapper addressMapper;
@@ -33,6 +32,14 @@ public class GenerateProductData {
 	 */
 	public RofhProductSf createPbossProduct(RofhBean rofhBean){
 		
+		List<RofhProductSf> list = productDao.findByAccountNameSf(rofhBean.getProduct().getAccountName());
+		if(list != null && list.size() > 0){
+			
+			RofhProductSf sf  = list.get(0);
+			sf.setProductCode(rofhBean.getProduct().getProductCode());
+			productDao.save(sf);
+			return sf;
+		}
 		RofhProductSf sfProduct = new RofhProductSf();
 		BeanUtils.copyProperties(rofhBean.getProduct(), sfProduct);
 		
@@ -44,6 +51,7 @@ public class GenerateProductData {
 		sfProduct.setRelatedMaintainCuid("缺少数据，请联系pboss");
 		sfProduct.setCellName("缺少数据，请联系pboss");
 		sfProduct.setCellAddress(sfProduct.getInstallAddress());
+		sfProduct.setRelatedCustomerCuid("fake");
 		
 		
 		productDao.save(sfProduct);

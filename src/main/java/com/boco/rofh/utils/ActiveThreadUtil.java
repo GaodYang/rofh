@@ -30,7 +30,7 @@ public enum ActiveThreadUtil {
 				
 				threadMap.remove(id);
 			}
-		}, 4*60*1000);
+		}, 70*1000);
 	}
 	
 	

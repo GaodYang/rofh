@@ -28,4 +28,9 @@ public interface PtpDao extends JpaRepository<Ptp, String>{
 	
 	@Query(value="select get_object_id(:tableName) from dual",nativeQuery=true)
 	BigDecimal getObjectId(@Param("tableName") String tableName);
+	
+	@Transactional
+	@Modifying
+	@Query(value="delete from Ptp where cuid = :id")
+	public void delete(@Param("id")String id);
 }

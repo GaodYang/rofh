@@ -67,7 +67,7 @@ public class FttbInstallTask extends AbstractInstallTask{
 		ponWay.setRelatedOnuCuid(rofhProduct.getAccessDevice());
 		ponWay.setPonWayState(new BigDecimal("3"));
 		ponWay.setLabelCn(rofhProduct.getAccountName());
-
+		ponWay.setObjectid(ptpDao.getObjectId("PON_WAY"));
 		ponWay.setAccountPassword(RofhUtil.getRandomPw(8));
 		//ponWay.setAccount_password("mu74b2a3");
 		///ONU-POS-OLT

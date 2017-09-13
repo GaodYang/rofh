@@ -47,6 +47,8 @@ public class ApInstallTask extends AbstractInstallTask	{
 		
 		attempPonWay.setOnuPortCuid(rofhProduct.getAccessPort());
 		
+		attempPonWay.setObjectid(ptpDao.getObjectId("PON_WAY"));
+		
 		attempPonWayDao.save(attempPonWay);
 		
 	}

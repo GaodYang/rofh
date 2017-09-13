@@ -27,9 +27,6 @@ import org.hibernate.annotations.Parameter;
 public class AnCpe implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="\"ALIAS\"")
-	private String alias;
-
 	@Column(name="CPE_IP")
 	private String cpeIp;
 
@@ -88,13 +85,6 @@ public class AnCpe implements Serializable {
 	public AnCpe() {
 	}
 
-	public String getAlias() {
-		return this.alias;
-	}
-
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
 
 	public String getCpeIp() {
 		return this.cpeIp;

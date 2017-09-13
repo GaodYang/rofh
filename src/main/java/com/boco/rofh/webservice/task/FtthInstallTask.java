@@ -46,7 +46,7 @@ public class FtthInstallTask extends AbstractInstallTask{
   		attempPonWay.setRelatedOnuCuid(MapUtil.getStringValue(map, "ONU_ID"));
     	attempPonWay.setOnuPortCuid(MapUtil.getStringValue(map, "PTP_CUID"));
     	attempPonWay.setOnuUpPortCuid(MapUtil.getStringValue(map,"RELATED_ONU_UP_PTP"));
-    		
+    	attempPonWay.setObjectid(ptpDao.getObjectId("PON_WAY"));
     	attempPonWay.setCreateTime(new Date());
     	attempPonWay.setAccountName(rofhProduct.getAccountName());
     	attempPonWay.setPonWayState(new BigDecimal("3"));
@@ -106,6 +106,7 @@ public class FtthInstallTask extends AbstractInstallTask{
     		
     	AnPos pos = posDao.findOne(posCuid);
     	Ptp ptp = ptpDao.findOne(pos.getRelatedPortCuid());
+    	ptp = ptp == null ? new Ptp() : ptp;
     	
     	String cvlan = ptp.getCvlan();
     	cvlan = StringUtils.isEmpty(cvlan) ? "100" : cvlan;

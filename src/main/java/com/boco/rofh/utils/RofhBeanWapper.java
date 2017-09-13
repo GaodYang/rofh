@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class RofhBeanWapper {
 		RofhOrder order = buildOrder(reqInfo);
 		bean.setOrder(order);
 		
-		RofhProduct product = buildRofhProduct(prodInfo, detialAttrs,reqInfo.getInstallType());
+		RofhProduct product = buildRofhProduct(prodInfo, detialAttrs);
 		bean.setProduct(product);
 		product.setRemark(regionId);
 		
@@ -146,9 +147,10 @@ public class RofhBeanWapper {
 	 * @param map
 	 * @return
 	 */
-	private RofhProduct buildRofhProduct(ProdInfo prodInfo,Map<String, String> map,String installType) {
+	private RofhProduct buildRofhProduct(ProdInfo prodInfo,Map<String, String> map) {
 		
-		String fullName = RofhUtil.getAccountPrefix(prodInfo.getProdSrvSpecCode()) + prodInfo.getAccessNum();
+		String accessNum = map.get("main_access_numb");
+		String fullName = StringUtils.isBlank(accessNum) ? prodInfo.getAccessNum() : RofhUtil.getAccountPrefix(prodInfo.getProdSrvSpecCode()) + accessNum;
 		RofhProductAttemp attempProduct = attempProductDao.findByAccountName(fullName);
 		attempProduct = attempProduct == null ? new RofhProductAttemp() : attempProduct;
 		

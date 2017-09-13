@@ -119,7 +119,7 @@ public class ActiveNetService {
 			product.setCustomerName(rofhBean.getCustomer().getLabelCn());
 			product.setCustomerCode(rofhBean.getCustomer().getCustomerCode());
 			product.setCustomerCity(city);
-			product.setCustomerAddress(rofhBean.getCustomer().getCustomerAddress());
+			product.setCustomerAddress("");
 			product.setRegionName(city);
 			product.setNettopoType("ff8081815c6be399015c6beba0940011");
 			
@@ -139,6 +139,7 @@ public class ActiveNetService {
 			olt.setPosL2Name("1");
 			olt.setPosL2Ratio("1");
 			olt.setPosPonPort("1");
+			olt.setOnuIp("");
 			olt.setOnuOper(isAdd ? "1" : "2");
 			olt.setOnuType("1");
 			olt.setOnuPassword(activateBean.getLogicid());

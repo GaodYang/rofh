@@ -84,7 +84,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 			if (str == null){
 				
 				try {
-					Thread.sleep(3*60*1000);
+					Thread.sleep(60*1000);
 				} catch (InterruptedException e) {
 					
 					return ;

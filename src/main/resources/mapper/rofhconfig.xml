@@ -46,18 +46,18 @@
   	</select>
   	
   	<select id="getLinkInfoFttbByCuid" parameterType="java.lang.String" resultType="java.util.Map">
-  		select nvl(ao.related_upne_cuid, ao.related_pos_cuid) RELATED_POS, /* pos*/
-		          nvl(ao.related_upne_port_cuid, ao.related_pos_port_cuid) RELATED_POS_DOWN_PTP, /* pos下联*/
-		          nvl(ao.related_olt_cuid, ap.related_olt_cuid) RELATED_OLT, /*olt*/
-		          nvl(ao.related_olt_port_cuid,ap.related_port_cuid) olt_pon_port_cuid,/*pon口*/
+  		select nvl(ao.related_upne_cuid, ao.related_pos_cuid) RELATED_POS,
+		          nvl(ao.related_upne_port_cuid, ao.related_pos_port_cuid) RELATED_POS_DOWN_PTP, 
+		          nvl(ao.related_olt_cuid, ap.related_olt_cuid) RELATED_OLT,
+		          nvl(ao.related_olt_port_cuid,ap.related_port_cuid) olt_pon_port_cuid,
 		          (select p.cuid
 		             from ptp p
 		            where p.PORT_SUB_TYPE = '12' and p.port_state = 1
-		              and p.related_ne_cuid = ap.cuid and rownum = 1) RELATED_POS_UP_PTP /*pos 上联*/,
+		              and p.related_ne_cuid = ap.cuid and rownum = 1) RELATED_POS_UP_PTP ,
 		          (select p.cuid
 		             from ptp p
 		            where p.port_sub_type = '14' and p.port_state = 1
-		              and p.related_ne_cuid = ao.cuid and rownum = 1) RELATED_ONU_UP_PTP /*onu 上联*/
+		              and p.related_ne_cuid = ao.cuid and rownum = 1) RELATED_ONU_UP_PTP 
 		     from an_onu ao
 		     left join an_pos ap on ao.related_pos_cuid = ap.cuid
              where ao.cuid = #{id}
