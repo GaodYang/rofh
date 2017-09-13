@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.boco.rofh.constant.WebServiceConstant;
 import com.boco.rofh.constant.WebServiceConstant.DataSource;
+import com.boco.rofh.constant.WebServiceConstant.ProducrAction;
 import com.boco.rofh.dao.AddressDao;
 import com.boco.rofh.dao.CustomerDao;
 import com.boco.rofh.entity.PonWayAttemp;
@@ -58,8 +59,12 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		if(StringUtils.isEmpty(product.getCuid())){
 			
 			logger.error("用户宽带号：" + product.getAccountName() + ",不存在！");
-			finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.config.wait", "宽带账号："+ product.getAccountName() +",不存在！",rofhBean.getRegionId());
-			return ;
+			throw new UserException("宽带账号："+ product.getAccountName() +",不存在！");
+		}
+		
+		if(StringUtils.isNotBlank(product.getProductAction()) && !rofhBean.getAction().equals(product.getProductAction())){
+			
+			throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(product.getProductAction()) + "！");
 		}
 
 		// 添加客户信息
@@ -168,13 +173,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		rofhProduct.setProductStatus(WebServiceConstant.ProductStatus.工程);
 		rofhProduct.setBusinessState(WebServiceConstant.BusinessState.未归档);
 		rofhProduct.setCreateTime(new Date());
-			
-		if("INSTALL".equals(rofhBean.getAction())){
-			rofhProduct.setProductAction(WebServiceConstant.ProductAction.装机);
-		}else{
-			rofhProduct.setProductAction(WebServiceConstant.ProductAction.移机);
-			
-		}
+		rofhProduct.setProductAction(rofhBean.getAction());
 		
 		attempProductDao.save((RofhProductAttemp)rofhProduct);
 	}

@@ -31,16 +31,16 @@ public class FinishRmTaskAsynService {
 
 	public void sendXmlToPboss(String taskId,String xml,String regionId) {
 		
+		String result = "";
 		try {
 			
-			String result = "";
 			logger.info(xml);
 			result = pbossServiceUtil.sendSuccess(Long.parseLong(taskId), xml, regionId);
 			
 			this.insertRecode(taskId, xml, result, true,null,regionId);
 			
 		} catch (Exception e) {
-			this.insertRecode(taskId, xml, null, false,e.getMessage(),regionId);
+			this.insertRecode(taskId, xml, result, false,e.getMessage(),regionId);
 			logger.error("回单出错！",e);
 		}
 	}
@@ -48,15 +48,16 @@ public class FinishRmTaskAsynService {
 	public void sendErrorXmlToPboss(String taskId,String excpCode,String errorDesc,String regionId){
 		
 		logger.info("error : " + errorDesc);
+		String xml = "";
 		try {
 			CommonResult res = new CommonResult();
 			res.setResultCode(0);
 			res.setResultDesc(errorDesc);
-			
+			xml = res.toXml();
 			String result = pbossServiceUtil.sendError(Long.parseLong(taskId), excpCode, errorDesc, res.toXml(), regionId);
-			this.insertRecode(taskId, res.toXml(), result, true, null,regionId);
+			this.insertRecode(taskId, xml, result, true, null,regionId);
 		} catch (Exception e) {
-			this.insertRecode(taskId, null, null, false,e.getMessage(),regionId);
+			this.insertRecode(taskId, xml, null, false,e.getMessage(),regionId);
 			logger.error("回单出错！",e);
 		}
 	}

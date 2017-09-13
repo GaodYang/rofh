@@ -118,5 +118,34 @@ public class WebServiceConstant {
 		SF,HIS,ATTEMP;
 	}
 
+	public static enum ProducrAction{
+		
+		INSTALL("21"),UNINSTALL("25"),MOVE("23");
+		
+		private String code;
+		private ProducrAction(String code) {
+			
+			this.code = code;
+		}
+		
+		public String getCode(){
+			
+			return code;
+		}
+		
+		public static String getName(String code){
+			
 
+			for(ProducrAction action : ProducrAction.values()){
+				
+				if(action.code.equals(code)){
+					
+					return action.name();
+				}
+			}
+			
+			return code;
+		}
+		
+	}
 }

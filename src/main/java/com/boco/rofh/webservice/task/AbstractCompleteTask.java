@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import com.boco.rofh.constant.WebServiceConstant;
+import com.boco.rofh.constant.WebServiceConstant.ProducrAction;
 import com.boco.rofh.entity.AnOnu;
 import com.boco.rofh.entity.AnOnuAttemp;
 import com.boco.rofh.entity.PonWay;
@@ -135,6 +136,10 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 			if(rofhBean.getProduct().getCuid() == null){
 				
 				return;
+			}
+			if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
+				
+				throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(rofhBean.getProduct().getProductAction()) + "！");
 			}
 			this.doBusiness(rofhBean);
 		}catch(Exception e){

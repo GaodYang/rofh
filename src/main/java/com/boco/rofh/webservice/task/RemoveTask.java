@@ -16,6 +16,7 @@ import com.boco.rofh.entity.RofhOrder;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.entity.RofhProductSf;
+import com.boco.rofh.exception.UserException;
 import com.boco.rofh.utils.GenerateProductData;
 
 @Service
@@ -36,8 +37,7 @@ public class RemoveTask extends AbstractResourceTask{
 			if(!WebServiceConstant.ProductAction.拆机.equals(attempProduct.getProductAction())){
 				
 				logger.error("用户宽带号：" + attempProduct.getAccountName() + ",正在开通中！");
-				finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.used", "宽带账号："+ attempProduct.getAccountName() +",正在开通中！",rofhBean.getRegionId());
-				return ;
+				throw new UserException("用户宽带号：" + attempProduct.getAccountName() + ",正在开通中！") ;
 			}
 		}else{
 			

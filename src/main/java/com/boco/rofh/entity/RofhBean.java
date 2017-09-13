@@ -1,5 +1,7 @@
 package com.boco.rofh.entity;
 
+import com.boco.rofh.constant.WebServiceConstant;
+
 public class RofhBean {
 
 	private RofhProduct product;
@@ -53,7 +55,8 @@ public class RofhBean {
 	}
 
 	public void setAction(String action) {
-		this.action = action;
+		
+		this.action = WebServiceConstant.ProducrAction.valueOf(action).getCode();
 	}
 
 	public String getActiveMsg() {
