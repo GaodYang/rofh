@@ -6,8 +6,6 @@ import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.boco.rofh.constant.WebServiceConstant;
-
 public class RofhUtil {
 
 	public static String getAddressDetialInfo(String str){
@@ -42,7 +40,7 @@ public class RofhUtil {
 		return sb.toString();
 	}
 	
-	public static String getAccountPrefix(String type){
+/*	public static String getAccountPrefix(String type){
 		
 		String prefix = "";
 		switch (type) {
@@ -57,7 +55,7 @@ public class RofhUtil {
 		}
 		
 		return prefix;
-	}
+	}*/
 	
 	/**
 	 * 获取某个类的某个字段的值

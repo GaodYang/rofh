@@ -49,15 +49,16 @@ public class CancelResourceTask extends AbstractResourceTask{
 		 * 装机场景释放端口 拆机场景不释放端口
 		 */
 		if (!WebServiceConstant.ProductAction.拆机.equals(product.getProductAction())) {
-			if(!WebServiceConstant.AccessMode.WBS.equals(product.getAccessMode())){
-				
-				ptpDao.updatePortState(product.getAccessPort(), WebServiceConstant.PtpState.空闲);
-			}
 			
 			PonWayAttemp ponway = attempPonWayDao.findByProductCuid(product.getCuid());
 			
 			if(ponway == null){
 				return ;
+			}
+			
+			if(!WebServiceConstant.AccessMode.WBS.equals(product.getAccessMode())){
+				
+				ptpDao.updatePortState(product.getAccessPort(), WebServiceConstant.PtpState.空闲);
 			}
 			//删除虚拟onu
 			if(WebServiceConstant.AccessMode.FTTH.equals(product.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(product.getAccessMode())){

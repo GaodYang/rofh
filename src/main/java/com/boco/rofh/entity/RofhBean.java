@@ -17,6 +17,10 @@ public class RofhBean {
 	private String activeMsg;
 	
 	private String districtId;
+	
+	private String mainNumber;
+	
+	private String mainCode;
 
 	public RofhProduct getProduct() {
 		return product;
@@ -73,6 +77,22 @@ public class RofhBean {
 
 	public void setDistrictId(String districtId) {
 		this.districtId = districtId;
+	}
+
+	public String getMainNumber() {
+		return mainNumber;
+	}
+
+	public void setMainNumber(String mainNumber) {
+		this.mainNumber = mainNumber;
+	}
+
+	public String getMainCode() {
+		return mainCode;
+	}
+
+	public void setMainCode(String mainCode) {
+		this.mainCode = mainCode;
 	}
 	
 	

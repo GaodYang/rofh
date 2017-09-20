@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +66,12 @@ public class RofhBeanWapper {
 		
 		bean.setAction(taskReq.getReqInfo().getActCode());
 		bean.setDistrictId(reqInfo.getDistrictId());
+		
+		if("N".equals(prodInfo.getMainProdFlag())){
+			
+			bean.setMainNumber(detialAttrs.get("main_access_numb"));
+			bean.setMainCode(prodInfo.getMainProdId());
+		}
 		
 		return bean;
 	}
@@ -149,13 +154,11 @@ public class RofhBeanWapper {
 	 */
 	private RofhProduct buildRofhProduct(ProdInfo prodInfo,Map<String, String> map) {
 		
-		String accessNum = map.get("main_access_numb");
-		String fullName = StringUtils.isBlank(accessNum) ? prodInfo.getAccessNum() : RofhUtil.getAccountPrefix(prodInfo.getProdSrvSpecCode()) + accessNum;
-		RofhProductAttemp attempProduct = attempProductDao.findByAccountName(fullName);
+		RofhProductAttemp attempProduct = attempProductDao.findByAccountName(prodInfo.getAccessNum());
 		attempProduct = attempProduct == null ? new RofhProductAttemp() : attempProduct;
 		
 		attempProduct.setProductCode(prodInfo.getProdInsId());
-		attempProduct.setAccountName(fullName);
+		attempProduct.setAccountName(prodInfo.getAccessNum());
 		String bandwidth = map.get("bandwidth");
 		attempProduct.setBroadandWidth(bandwidth.substring(0, bandwidth.indexOf("@") == -1 ? bandwidth.length() : bandwidth.indexOf("@")));//带宽
 		attempProduct.setInstallAddress(map.get("install_addr"));//用户标准地址（安装地址）

@@ -132,15 +132,17 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 			
 			return ;
 		}
-		try{	
-			if(rofhBean.getProduct().getCuid() == null){
-				
-				return;
-			}
-			if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
-				
-				throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(rofhBean.getProduct().getProductAction()) + "！");
-			}
+			
+		if(rofhBean.getProduct().getCuid() == null){
+			
+			throw new UserException(accountName + "没有数据！");
+		}
+		if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
+			
+			throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(rofhBean.getProduct().getProductAction()) + "！");
+		}
+		try{
+			
 			this.doBusiness(rofhBean);
 		}catch(Exception e){
 			

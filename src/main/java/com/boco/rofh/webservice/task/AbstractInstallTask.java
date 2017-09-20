@@ -193,14 +193,13 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 			//一起装
 			RofhProduct product  ;
 			
-			String accountName = attempProduct.getAccountName().substring(1);
-			List<RofhProductAttemp> attempList = attempProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(), accountName);
+			List<RofhProductAttemp> attempList = attempProductDao.findByProductCodeAndAccount(rofhBean.getMainCode(), rofhBean.getMainNumber());
 			if(attempList != null && attempList.size() > 0){
 				
 				product = attempList.get(0);
 			}else{
 				//加装
-				List<RofhProductSf> sfList = sfProductDao.findByProductCodeAndAccount(attempProduct.getProductCode(), accountName);
+				List<RofhProductSf> sfList = sfProductDao.findByProductCodeAndAccount(rofhBean.getMainCode(), rofhBean.getMainNumber());
 				if(sfList != null && sfList.size() > 0){
 					
 					dataSource = DataSource.SF.name();
@@ -215,10 +214,13 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 			
 			product.setSaleType(attempProduct.getSaleType());
 			product.setAccountName(attempProduct.getAccountName());
+			product.setProductCode(attempProduct.getProductCode());
 			BeanUtils.copyProperties(product, attempProduct);
 			attempProduct.setRelatedSheetCuid(product.getCuid());
 			attempProduct.setRelatedOrderCuid("");
 			attempProduct.setDataSource(dataSource);
+			attempProduct.setEndTime(null);
+			attempProduct.setFinishTime(null);
 			attempProduct.setCuid(null);
 			this.setProperties(attempProduct);
 		}

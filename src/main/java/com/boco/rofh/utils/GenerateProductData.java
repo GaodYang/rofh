@@ -48,8 +48,8 @@ public class GenerateProductData {
 		map.put("id", rofhBean.getDistrictId());
 		map.put("city", sfProduct.getBusinessCityD());
 		sfProduct.setBusinessCountyD(addressMapper.queryCountyInfo(map));
-		sfProduct.setRelatedMaintainCuid("缺少数据，请联系pboss");
-		sfProduct.setCellName("缺少数据，请联系pboss");
+	//	sfProduct.setRelatedMaintainCuid("缺少数据");
+	//	sfProduct.setCellName("缺少数据");
 		sfProduct.setCellAddress(sfProduct.getInstallAddress());
 		sfProduct.setRelatedCustomerCuid("fake");
 		
