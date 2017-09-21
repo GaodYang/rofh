@@ -43,7 +43,7 @@ public class GenerateProductData {
 		RofhProductSf sfProduct = new RofhProductSf();
 		BeanUtils.copyProperties(rofhBean.getProduct(), sfProduct);
 		
-		sfProduct.setBusinessCityD(cityMap.get(rofhBean.getRegionId()));
+		sfProduct.setBusinessCityD(cityMap.get("0" + rofhBean.getRegionId()));
 		Map<String,String> map = new HashMap<>();
 		map.put("id", rofhBean.getDistrictId());
 		map.put("city", sfProduct.getBusinessCityD());

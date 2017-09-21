@@ -51,7 +51,13 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 				AnOnu onu = new AnOnu();
 				BeanUtils.copyProperties(attempOnu, onu);
 				attempOnuDao.delete(attempOnu);
-				onuDao.save(onu);
+				try {
+					
+					onuDao.save(onu);
+				} catch (Exception e) {
+					logger.error("虚拟onu与存量数据冲突！");
+				}
+				
 			}
 		}
 		
