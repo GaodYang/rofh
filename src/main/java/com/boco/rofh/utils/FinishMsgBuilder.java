@@ -24,7 +24,6 @@ import com.boco.rofh.entity.PonWayBase;
 import com.boco.rofh.entity.RofhBean;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductSf;
-import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.RofhConfigMapper;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq.FProdInfo;

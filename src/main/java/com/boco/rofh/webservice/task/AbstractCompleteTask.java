@@ -2,6 +2,7 @@ package com.boco.rofh.webservice.task;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -69,12 +70,20 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 	
 	protected void removeComplete(RofhProductSf rofhProduct) {
 		
+		if(!WebServiceConstant.AccessMode.WBS.equals(rofhProduct.getAccessMode())){
+			
+			String portid = rofhProduct.getAccessPort();
+			if(StringUtils.isNotBlank(portid)){		
+				
+				ptpDao.updatePortState(rofhProduct.getAccessPort(),WebServiceConstant.PtpState.空闲);
+			}
+		}
 		
 		PonWay ponway = ponWayDao.findByProductCuid(rofhProduct.getCuid());
 		if(ponway == null){
 			return;
 		}
-		if(WebServiceConstant.AccessMode.FTTB.equals(rofhProduct.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(rofhProduct.getAccessMode())){
+		if(WebServiceConstant.AccessMode.FTTH.equals(rofhProduct.getAccessMode()) || WebServiceConstant.AccessMode.XDSL.equals(rofhProduct.getAccessMode())){
 		
 			onuDao.delete(ponway.getRelatedOnuCuid());
 		

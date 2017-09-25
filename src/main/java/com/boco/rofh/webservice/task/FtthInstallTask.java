@@ -152,6 +152,8 @@ public class FtthInstallTask extends AbstractInstallTask{
 		onuDowPtp.setRelatedEmsCuid(pos.getRelatedEmsCuid());
 		onuDowPtp.setRelatedDistrictCuid(pos.getRelatedDistrictCuid());
 		onuDowPtp.setFdn(neFnd + ":PTP=/rack=1/shelf=1/slot=2/port=1");
+		onuDowPtp.setDevType(new BigDecimal("2"));
+		onuDowPtp.setCreateTime(new Date());
 		
 		ptpDao.save(onuDowPtp);
 		
@@ -166,6 +168,8 @@ public class FtthInstallTask extends AbstractInstallTask{
 		onuUpPtp.setRelatedEmsCuid(pos.getRelatedEmsCuid());
 		onuUpPtp.setRelatedDistrictCuid(pos.getRelatedDistrictCuid());
 		onuUpPtp.setFdn(neFnd + ":PTP=/rack=1/shelf=1/slot=1/port=1");
+		onuUpPtp.setDevType(new BigDecimal("2"));
+		onuUpPtp.setCreateTime(new Date());
 		ptpDao.save(onuUpPtp);
 		
 		// 将pon口cvlan加一

@@ -284,9 +284,10 @@ public class ActiveNetService {
 				processBean.setProduct(product);
 				processBean.setOrder(order);
 				processBean.setActiveMsg(activeResult.getInformMsg().getRtMessage());
-
+				
+				String regionId = processBean.getProduct().getRemark();
 				String xml = builder.buildFinishMsg(processBean);
-				finishRmTaskAsynService.sendXmlToPboss(order.getCrmTaskId(),xml,processBean.getProduct().getRemark());
+				finishRmTaskAsynService.sendXmlToPboss(order.getCrmTaskId(),xml,regionId);
 				
 			}
 		} catch (Exception e) {

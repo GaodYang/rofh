@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,18 +41,21 @@ public class GenerateProductData {
 			productDao.save(sf);
 			return sf;
 		}
+		
 		RofhProductSf sfProduct = new RofhProductSf();
 		BeanUtils.copyProperties(rofhBean.getProduct(), sfProduct);
 		
-		sfProduct.setBusinessCityD(cityMap.get("0" + rofhBean.getRegionId()));
-		Map<String,String> map = new HashMap<>();
-		map.put("id", rofhBean.getDistrictId());
-		map.put("city", sfProduct.getBusinessCityD());
-		sfProduct.setBusinessCountyD(addressMapper.queryCountyInfo(map));
-	//	sfProduct.setRelatedMaintainCuid("缺少数据");
-	//	sfProduct.setCellName("缺少数据");
-		sfProduct.setCellAddress(sfProduct.getInstallAddress());
-		sfProduct.setRelatedCustomerCuid("fake");
+		if(StringUtils.isNotBlank(rofhBean.getRegionId())){
+			
+			sfProduct.setBusinessCityD(cityMap.get("0" + rofhBean.getRegionId()));
+			Map<String,String> map = new HashMap<>();
+			map.put("id", rofhBean.getDistrictId());
+			map.put("city", sfProduct.getBusinessCityD());
+			sfProduct.setBusinessCountyD(addressMapper.queryCountyInfo(map));
+			sfProduct.setCellAddress(sfProduct.getInstallAddress());
+			sfProduct.setRelatedCustomerCuid("fake");
+		}
+		sfProduct.setCuid(null);
 		
 		
 		productDao.save(sfProduct);
