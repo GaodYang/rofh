@@ -56,8 +56,9 @@ public class GenerateProductData {
 			sfProduct.setRelatedCustomerCuid("fake");
 		}else{
 			
+			sfProduct.setRelatedCoverageAddrCuid(null);
 			sfProduct.setCellAddress("存量地址缺失");
-			sfProduct.setRelatedMaintainCuid("");
+			sfProduct.setRelatedMaintainCuid(null);
 		}
 		
 		
