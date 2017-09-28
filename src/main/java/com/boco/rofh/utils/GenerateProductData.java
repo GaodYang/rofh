@@ -54,7 +54,13 @@ public class GenerateProductData {
 			sfProduct.setBusinessCountyD(addressMapper.queryCountyInfo(map));
 			sfProduct.setCellAddress(sfProduct.getInstallAddress());
 			sfProduct.setRelatedCustomerCuid("fake");
+		}else{
+			
+			sfProduct.setCellAddress("存量地址缺失");
+			sfProduct.setRelatedMaintainCuid("");
 		}
+		
+		
 		sfProduct.setCuid(null);
 		
 		
