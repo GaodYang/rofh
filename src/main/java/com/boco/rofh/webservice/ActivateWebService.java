@@ -2,11 +2,11 @@ package com.boco.rofh.webservice;
 
 import com.boco.rofh.utils.SpringUtil;
 
-public class ActiveService implements IActiveService{
+public class ActivateWebService implements IActiveService{
 
 	private IActiveService activeService;
 	
-	public ActiveService() {
+	public ActivateWebService() {
 		
 		activeService = SpringUtil.getBean(IActiveService.class);
 	}

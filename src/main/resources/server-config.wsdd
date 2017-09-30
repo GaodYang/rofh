@@ -18,7 +18,7 @@
 	
 	<service name="IActivate" provider="java:RPC">
 		<parameter name="className"
-			value="com.boco.rofh.webservice.ActiveService" />
+			value="com.boco.rofh.webservice.ActivateWebService" />
 		<parameter name="allowedMethods" value="*" />
 	</service>
 
