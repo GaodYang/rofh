@@ -143,11 +143,6 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		
 		String accountName = rofhBean.getProduct().getAccountName();
 		
-		if(isExistId(accountName)){
-			
-			return ;
-		}
-			
 		if(rofhBean.getProduct().getCuid() == null){
 			
 			throw new UserException(accountName + "没有数据！");
@@ -155,6 +150,11 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
 			
 			throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(rofhBean.getProduct().getProductAction()) + "！");
+		}
+		
+		if(isExistId(accountName)){
+			
+			throw new UserException(accountName + "正在处理中！");
 		}
 		try{
 			
