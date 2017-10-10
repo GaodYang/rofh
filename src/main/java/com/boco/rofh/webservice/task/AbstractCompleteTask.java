@@ -145,7 +145,7 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		
 		if(rofhBean.getProduct().getCuid() == null){
 			
-			throw new UserException(accountName + "没有数据！");
+			return;
 		}
 		if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
 			
