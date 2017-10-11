@@ -85,7 +85,8 @@ public class CancelResourceTask extends AbstractResourceTask{
 		RofhProductHis productHis = new RofhProductHis();
 		BeanUtils.copyProperties(product, productHis);
 		productHis.setFinishTime(new Date());
-		productHis.setProductAction(WebServiceConstant.ProductAction.撤单);
+		productHis.setBusinessState(WebServiceConstant.BusinessState.已取消);
+		//productHis.setProductAction(WebServiceConstant.ProductAction.撤单);
 		hisProductDao.save(productHis);
 		attempProductDao.delete(product);
 	}
