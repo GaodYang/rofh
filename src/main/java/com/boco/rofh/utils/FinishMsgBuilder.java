@@ -109,7 +109,8 @@ public class FinishMsgBuilder {
 		
 		Ressrv ressrv = new Ressrv();
 		ressrv.setRessrvCode("PORT_RES_SRV");
-		ressrv.setRessrvId(product.getAccountName());
+	//	ressrv.setRessrvId(product.getAccountName());
+		ressrv.setRessrvId("10086");
 		ressrv.setRessrvName("端口资源服务");
 		
 		List<Res> resList = new ArrayList<Res>();

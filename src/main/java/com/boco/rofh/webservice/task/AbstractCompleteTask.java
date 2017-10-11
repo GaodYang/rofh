@@ -143,8 +143,8 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		
 		String accountName = rofhBean.getProduct().getAccountName();
 		
-		if(rofhBean.getProduct().getCuid() == null){
-			
+		if(rofhBean.getProduct().getCuid() == null || rofhBean.getProduct().getProductAction() == null){
+			//这是撤单
 			return;
 		}
 		if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
