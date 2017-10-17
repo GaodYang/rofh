@@ -112,5 +112,11 @@
 			    where t.cuid like '${city}-%'
 			      and rownum = 1
 	</select>
+	
+	<select id="queryRegionType" parameterType="java.lang.String" resultType="java.lang.String">
+		      select fa.regiontype1
+			   from t_rofh_full_address fa
+			  where fa.object_id = #{id}
+	</select>
 
 </mapper>

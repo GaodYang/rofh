@@ -61,4 +61,6 @@ public interface ICrmService {
 	 */
 	@WebMethod(action="http://webservice.rofh.boco.com/queryAddressParentIds")
 	public String queryAddressParentIds(@WebParam(name = "sReceiveMsg")String sReceiveMsg,@WebParam(name = "sRegionId")String sRegionId);
+	
+	public String queryAddressAttr(String sReceiveMsg,String sRegionId);
 }

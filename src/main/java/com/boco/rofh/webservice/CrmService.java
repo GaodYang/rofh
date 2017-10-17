@@ -58,6 +58,10 @@ public class CrmService implements ICrmService{
 		return crmService.queryAddressParentIds(sReceiveMsg, sRegionId);
 	}
 	
-	
+	@Override
+	public String queryAddressAttr(String sReceiveMsg, String sRegionId) {
+		
+		return crmService.queryAddressAttr(sReceiveMsg, sRegionId);
+	}
 	
 }

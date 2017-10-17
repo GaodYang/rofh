@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boco.rofh.webservice.service.OccupyProdService;
+import com.boco.rofh.webservice.service.QueryAddressAttrService;
 import com.boco.rofh.webservice.service.QueryAddressCountService;
 import com.boco.rofh.webservice.service.QueryAddressParentIdsService;
 import com.boco.rofh.webservice.service.QueryAddressService;
@@ -39,6 +40,9 @@ public class CrmServiceImpl implements ICrmService{
 	
 	@Autowired
 	private QueryUserPlanService queryUserPlanService;
+	
+	@Autowired
+	private QueryAddressAttrService queryAddressAttrService;
 
 	/**
 	 * 4.2 标准地址查询（树结构方式）
@@ -107,6 +111,12 @@ public class CrmServiceImpl implements ICrmService{
 	public String queryAddressParentIds(String sReceiveMsg,String sRegionId){
 		
 		return queryAddressParentIdsService.doProcess(sReceiveMsg, sRegionId);
+	}
+	
+	@Override
+	public String queryAddressAttr(String sReceiveMsg,String sRegionId) {
+		
+		return queryAddressAttrService.doProcess(sReceiveMsg, sRegionId);
 	}
 	
 }
