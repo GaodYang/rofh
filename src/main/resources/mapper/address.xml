@@ -114,7 +114,7 @@
 	</select>
 	
 	<select id="queryRegionType" parameterType="java.lang.String" resultType="java.lang.String">
-		      select fa.regiontype1
+		      select nvl(fa.regiontype1,'0')
 			   from t_rofh_full_address fa
 			  where fa.object_id = #{id}
 	</select>
