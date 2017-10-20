@@ -1,5 +1,6 @@
 package com.boco.rofh.webservice.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,14 @@ public class QueryAddressAttrService extends BaseRofhWebService<QueryAddressAttr
 		
 		QueryAddressAttrResult result = new QueryAddressAttrResult();
 		
-		String type = addressMapper.queryRegionType(req.getStandardAddrId());
+		String addrId = req.getStandardAddrId();
+		if(StringUtils.isEmpty(addrId)){
+			
+			result.setRegionType("0");
+			return result;
+		}
+		
+		String type = addressMapper.queryRegionType(addrId);
 		type = type == null ? "0" : type;
 		result.setRegionType(type);
 		
