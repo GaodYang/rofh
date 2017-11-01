@@ -167,6 +167,14 @@ public class RofhOrder implements Serializable {
 
 	@Column(name="TRANS_BUSINESS")
 	private String transBusiness;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="CREATE_TIME")
+	private Date createTime;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="LAST_MODIFY_TIME")
+	private Date lastModifyTime;
 
 	public RofhOrder() {
 	}
@@ -554,5 +562,22 @@ public class RofhOrder implements Serializable {
 	public void setOrderGroupId(String orderGroupId) {
 		this.orderGroupId = orderGroupId;
 	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getLastModifyTime() {
+		return lastModifyTime;
+	}
+
+	public void setLastModifyTime(Date lastModifyTime) {
+		this.lastModifyTime = lastModifyTime;
+	}
+	
 
 }

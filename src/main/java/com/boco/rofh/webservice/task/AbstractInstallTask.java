@@ -18,7 +18,6 @@ import com.boco.rofh.dao.CustomerDao;
 import com.boco.rofh.entity.PonWayAttemp;
 import com.boco.rofh.entity.RofhBean;
 import com.boco.rofh.entity.RofhCustomer;
-import com.boco.rofh.entity.RofhOrder;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.entity.RofhProductSf;
@@ -70,7 +69,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		// 添加客户信息
 		this.addRofhCustomer(rofhBean);
 		//添加订单
-		this.addOrder(rofhBean);
+	//	this.addOrder(rofhBean);
 		//新pon_way
 		//如果有pon_way就不操作
 		PonWayAttemp pw = attempPonWayDao.findByProductCuid(rofhBean.getProduct().getCuid());
@@ -143,7 +142,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 	/**
 	 * 添加订单信息
 	 * @param processBean
-	 */
+	 *//*
 	protected void addOrder(RofhBean rofhBean) {
 		
 		RofhOrder order = rofhBean.getOrder();
@@ -159,7 +158,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 			
 		}
 		orderDao.save(order);
-	}
+	}*/
 	
 	/**
 	 * 更新产品信息

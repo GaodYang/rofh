@@ -6,4 +6,5 @@ import com.boco.rofh.entity.RofhOrder;
 
 public interface OrderDao extends JpaRepository<RofhOrder, String>{
 
+	RofhOrder findFirstByCrmSheetNoAndCrmTaskId(String crmSheetNo,String crmTaskId); 
 }

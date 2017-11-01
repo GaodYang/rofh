@@ -109,7 +109,8 @@ public class FtthInstallTask extends AbstractInstallTask{
     	ptp = ptp == null ? new Ptp() : ptp;
     	
     	String cvlan = ptp.getCvlan();
-    	cvlan = StringUtils.isEmpty(cvlan) ? "100" : cvlan;
+    	cvlan = StringUtils.isEmpty(cvlan) ? "576" : cvlan;
+    	cvlan = Integer.parseInt(cvlan) + 1 + "";
     	
     	String onuName =  createOnuName(rofhProduct,cvlan);
     	

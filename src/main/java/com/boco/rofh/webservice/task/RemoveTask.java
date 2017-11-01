@@ -72,10 +72,7 @@ public class RemoveTask extends AbstractResourceTask{
 		BeanUtils.copyProperties(sfProduct, attempProduct);
 		attempProduct.setCuid(null);
 		
-		RofhOrder order = rofhBean.getOrder();
-		order.setRelGroupCustomerCuid(attempProduct.getRelatedCustomerCuid());
-		orderDao.save(order);
-		attempProduct.setRelatedOrderCuid(order.getCuid());
+		attempProduct.setRelatedOrderCuid(rofhBean.getOrder().getCuid());
 		attempProduct.setCreateTime(new Date());
 		attempProduct.setFinishTime(null);
 		attempProduct.setProductAction(WebServiceConstant.ProductAction.拆机);
