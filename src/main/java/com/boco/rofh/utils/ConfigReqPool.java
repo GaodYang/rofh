@@ -45,13 +45,14 @@ public class ConfigReqPool {
 			if(list != null && list.size() == num){
 				
 				Collections.sort(list);
+				this.remove(id);
 				return list;
 			}
 			return null;
 		}
 	}
 	
-	public void remove(String id){
+	private void remove(String id){
 		
 		if(reqMap.containsKey(id)){
 			

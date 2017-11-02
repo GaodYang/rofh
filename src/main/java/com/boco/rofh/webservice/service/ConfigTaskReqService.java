@@ -86,7 +86,7 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 							
 							runTask(taskReq,regionId);
 						}
-						ConfigReqPool.getInstance().remove(groupId);
+					//	ConfigReqPool.getInstance().remove(groupId);
 					}
 				});
 		
