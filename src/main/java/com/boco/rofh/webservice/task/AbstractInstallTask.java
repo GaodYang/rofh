@@ -225,8 +225,8 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		}
 		
 		rofhBean.getCustomer().setCuid(attempProduct.getRelatedCustomerCuid());
-		//添加订单
-		this.addOrder(rofhBean);
+		/*//添加订单
+		this.addOrder(rofhBean);*/
 		//更新产品信息
 		this.updateProduct(rofhBean);
 		
