@@ -1,26 +1,16 @@
 package com.boco.rofh.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 
 public class ConfigReqPool {
 
-	private ConfigReqPool() {
-	}
-
-	private Map<String,List<ConfigTaskReq>> reqMap = new HashMap<>();
+	private Map<String,Set<ConfigTaskReq>> reqMap = new HashMap<>();
 	
-	private static final ConfigReqPool instance = new ConfigReqPool();
-	
-	public static ConfigReqPool getInstance(){
-		
-		return instance;
-	}
 	
 	private void put(String id,ConfigTaskReq taskReq){
 		
@@ -29,22 +19,21 @@ public class ConfigReqPool {
 			reqMap.get(id).add(taskReq);
 		}else{
 			
-			List<ConfigTaskReq> list = new ArrayList<>();
+			Set<ConfigTaskReq> list = new TreeSet<>();
 			list.add(taskReq);
 			reqMap.put(id, list);
 		}
 	}
 	
-	public List<ConfigTaskReq> getTask(String id,int num,ConfigTaskReq configTaskReq){
+	public Set<ConfigTaskReq> getTask(String id,int num,ConfigTaskReq configTaskReq){
 		
 		synchronized (id.intern()) {
 			
 			this.put(id, configTaskReq);
 			
-			List<ConfigTaskReq> list = reqMap.get(id);
+			Set<ConfigTaskReq> list = reqMap.get(id);
 			if(list != null && list.size() == num){
 				
-				Collections.sort(list);
 				this.remove(id);
 				return list;
 			}
@@ -60,7 +49,7 @@ public class ConfigReqPool {
 		}
 	}
 	
-	public Map<String,List<ConfigTaskReq>> getMap(){
+	public Map<String,Set<ConfigTaskReq>> getMap(){
 		
 		return this.reqMap;
 	}

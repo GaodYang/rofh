@@ -1,9 +1,9 @@
 package com.boco.rofh.webservice.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -59,21 +59,18 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 		
 		String regionId = getRegionId();
 		
-		List<ConfigTaskReq> taskList = new ArrayList<>();
+		Set<ConfigTaskReq> taskList = null;
 		
 		String groupId = req.getReqInfo().getSrcOrderGrpId();
 		if(StringUtils.isNotBlank(groupId)){
 			
-			List<ConfigTaskReq> list = ConfigReqPool.getInstance().getTask(groupId, req.getReqInfo().getSubOrderNum(), req);
-			if(list != null){
-				taskList.addAll(list);
-			}
+			taskList = ConfigReqPool.getInstance().getTask(groupId, req.getReqInfo().getSubOrderNum(), req);
 		}
 		else{
 			
 			taskList.add(req);
 		}
-		if(taskList.isEmpty()){
+		if(taskList == null){
 			
 			return null;
 		}
