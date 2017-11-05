@@ -205,7 +205,7 @@ public class FinishMsgBuilder {
 			
 			if(ponway != null){
 			
-				if(DataSource.SF.equals(product.getDataSource())){
+				if(DataSource.SF.name().equals(product.getDataSource())){
 					
 					list = configMapper.getOnuInfoById(RofhNameSpaceBean.buildBean(ponway.getCuid(), "", ""));
 				}
