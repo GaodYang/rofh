@@ -89,4 +89,13 @@ public class RofhUtil {
 		
 	}
 	
+	/**
+	 * 生成count个数字
+	 */
+	public static int getRandomNum(int count) {
+		
+		return (int)((Math.random()*9+1)*(Math.pow(10, (count - 1))));  
+		
+	}
+	
 }

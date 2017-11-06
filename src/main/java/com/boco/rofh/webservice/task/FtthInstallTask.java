@@ -242,7 +242,8 @@ public class FtthInstallTask extends AbstractInstallTask{
     		}
     	}
     	name.append("-ZD-ONU");
-    	name.append(String.format("%03d", Integer.parseInt(cvlan)));
+    //	name.append(String.format("%03d", Integer.parseInt(cvlan)));
+    	name.append(RofhUtil.getRandomNum(5));
     	name.append("-");
     	//厂家编码
     	String vendorCode = resourceMapper.getDeviceVendorCodeByPosId(rofhProduct.getAccessDevice());
