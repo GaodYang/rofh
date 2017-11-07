@@ -1,5 +1,7 @@
 package com.boco.rofh.redis;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -38,10 +40,33 @@ public class RedisTaskManager extends ConfigReqPool{
 			
 		}else{
 			
-			redisService.addTask(new RedisKey(id, num), configTaskReq);
+			RedisKey key = new RedisKey(id, num + "");
+			redisService.addTask(key, configTaskReq);
+			if(redisService.isFull(key)) {
+				
+				result = redisService.getTaskAndRemove(key);
+			}
 		}
 		
 		return result;
+	}
+	
+	public List<Set<ConfigTaskReq>> getFullOrders(){
+		
+		List<Set<ConfigTaskReq>> list = new ArrayList<>();
+		Set<RedisKey> keys = redisService.getKeys();
+		if(keys != null){
+			
+			keys.forEach( key -> {
+				
+				if(redisService.isFull(key)){
+					
+					list.add(redisService.getTaskAndRemove(key));
+				}
+			} );
+		}
+		
+		return list;
 	}
 		
 }

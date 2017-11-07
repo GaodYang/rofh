@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,19 +22,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RedisConfig {
 
 	@Bean
-	public RedisTemplate<RedisKey, ConfigTaskReq> redisTemplate(RedisConnectionFactory connectionFactory) {
+	public RedisTemplate<String, ConfigTaskReq> redisTemplate(RedisConnectionFactory connectionFactory) {
 
-		RedisTemplate<RedisKey, ConfigTaskReq> redisTemplate = new RedisTemplate<>();
+		RedisTemplate<String, ConfigTaskReq> redisTemplate = new RedisTemplate<>();
 		Jackson2JsonRedisSerializer<ConfigTaskReq> taskSerializer = new Jackson2JsonRedisSerializer<>(
 				ConfigTaskReq.class);
-		Jackson2JsonRedisSerializer<RedisKey> redisKeySerializer = new Jackson2JsonRedisSerializer<>(
-				RedisKey.class);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		taskSerializer.setObjectMapper(mapper);
-		redisKeySerializer.setObjectMapper(mapper);
 		redisTemplate.setConnectionFactory(connectionFactory);
-		redisTemplate.setKeySerializer(redisKeySerializer);
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(taskSerializer);
 		return redisTemplate;
 	}

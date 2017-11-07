@@ -1,6 +1,7 @@
 package com.boco.rofh.redis;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -23,51 +24,60 @@ import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 public class RedisService {
 
 	@Autowired
-	private RedisTemplate<RedisKey,ConfigTaskReq> redisTemplate;
+	private RedisTemplate<String,ConfigTaskReq> redisTemplate;
 	
-	private static final RedisKey KEY_PARTTEN = new RedisKey("[0-9]*","[1-9]");
+	private static final String KEY_PARTTEN = "[0-9]*\\:[0-9]*\\:[1-9]";
 	
 	private static final int MAX_NO = 10;
 	
 	
 	@Resource(name = "redisTemplate")
-	private ZSetOperations<RedisKey,ConfigTaskReq> zSetOperations;
+	private ZSetOperations<String,ConfigTaskReq> zSetOperations;
 	
 	public void addTask(RedisKey key,ConfigTaskReq req){
 		
-		zSetOperations.add(key, req,req.getReqInfo().getPriority());
+		zSetOperations.add(key.toKey(), req,req.getReqInfo().getPriority());
 	}
 	
 	public Set<ConfigTaskReq> getTask(RedisKey key){
 		
-		return zSetOperations.reverseRange(key, 0, MAX_NO);
+		return zSetOperations.reverseRange(key.toKey(), 0, MAX_NO);
 	}
 	
-	public Long isFull(RedisKey key){
+	public boolean isFull(RedisKey key){
 		
-		return zSetOperations.zCard(key) - key.getNo();
+		return zSetOperations.zCard(key.toKey()) >= key.getNo();
 	}
 	
 	public void remove(RedisKey key){
 		
-		redisTemplate.delete(key);
+		redisTemplate.delete(key.toKey());
 	}
 	
 	public Set<ConfigTaskReq> getTaskAndRemove(RedisKey key){
 		
-		Set<ConfigTaskReq> set = this.getTask(key);
-		this.remove(key);
-		return set;
+		synchronized (key.getOrderId().intern()) {
+			
+			Set<ConfigTaskReq> set = this.getTask(key);
+			this.remove(key);
+			return set;
+		}
 	}
 	
-	public Set<RedisKey> getKeys(){
+	public List<RedisKey> getKeys(){
 		
-		return redisTemplate.keys(KEY_PARTTEN);
+		return this.getKeyByOrderId("[0-9]*");
 	}
 	
-	public Set<RedisKey> getKeyByOrderId(String orderId){
+	public List<RedisKey> getKeyByOrderId(String orderId){
 		
-		return redisTemplate.keys(new RedisKey(orderId, "[1-9]"));
+		List<RedisKey> keys = new ArrayList<>();
+		Set<String> skey = redisTemplate.keys("[0-9]*\\:"+orderId+"\\:[1-9]");
+		if(skey != null){
+			
+			skey.forEach( key -> keys.add(RedisKey.fromKey(key)) );
+		}
+		return keys;
 	}
 	
 	
