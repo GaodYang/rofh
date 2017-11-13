@@ -54,14 +54,16 @@ public class RedisService {
 		redisTemplate.delete(key.toKey());
 	}
 	
+	public void remove(String key){
+		
+		redisTemplate.delete(key);
+	}
+	
 	public Set<ConfigTaskReq> getTaskAndRemove(RedisKey key){
 		
-		synchronized (key.getOrderId().intern()) {
-			
-			Set<ConfigTaskReq> set = this.getTask(key);
-			this.remove(key);
-			return set;
-		}
+		Set<ConfigTaskReq> set = this.getTask(key);
+		this.remove(key);
+		return set;
 	}
 	
 	public List<RedisKey> getKeys(){

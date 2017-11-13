@@ -1,17 +1,20 @@
 package com.boco.rofh.webservice.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boco.rofh.constant.WebServiceConstant.ProdSerType;
+import com.boco.rofh.redis.RedisTaskManager;
 import com.boco.rofh.utils.ConfigReqPool;
 import com.boco.rofh.utils.RofhBeanWapper;
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
@@ -50,30 +53,36 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 	private IptvInstallTask iptvInstallTask;
 	@Autowired
 	private ImsInstallTask imsInstallTask;
-	
 	@Autowired
 	private RofhBeanWapper beanWapper;
+	@Resource(type = RedisTaskManager.class)
+	private ConfigReqPool configManager;
 	
 	@Override
 	protected Object doBusiness(ConfigTaskReq req) {
 		
 		String regionId = getRegionId();
 		
-		Set<ConfigTaskReq> taskList = null;
+		List<ConfigTaskReq> taskList = new ArrayList<>();
 		
 		String groupId = req.getReqInfo().getSrcOrderGrpId();
 		if(StringUtils.isNotBlank(groupId)){
 			
-			taskList = ConfigReqPool.getInstance().getTask(groupId, req.getReqInfo().getSubOrderNum(), req);
+			Set<ConfigTaskReq> set = configManager.getTask(req,regionId);
+			if(set != null && set.size() > 0){
+				
+				taskList.addAll(set);
+			}
 		}
 		else{
 			
 			taskList.add(req);
 		}
-		if(taskList == null){
+		if(taskList.isEmpty()){
 			
 			return null;
 		}
+		
 		ThreadPoolManager.getInstance().addTask(this.getClass(), 
 				new Runnable() {
 					@Override
@@ -83,7 +92,8 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 							
 							runTask(taskReq,regionId);
 						}
-					//	ConfigReqPool.getInstance().remove(groupId);
+						
+						configManager.removeTask(req,regionId);
 					}
 				});
 		
@@ -91,7 +101,7 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 		
 	}
 	
-	private void runTask(ConfigTaskReq req , String regionId){
+	public void runTask(ConfigTaskReq req , String regionId){
 		
 		String key = "UNINSTALL";
 		if(!"UNINSTALL".equals(req.getReqInfo().getActCode())){

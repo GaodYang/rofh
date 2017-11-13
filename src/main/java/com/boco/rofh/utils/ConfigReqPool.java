@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.springframework.stereotype.Service;
+
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 
+@Service
 public class ConfigReqPool {
 
 	private Map<String,Set<ConfigTaskReq>> reqMap = new HashMap<>();
@@ -25,14 +28,16 @@ public class ConfigReqPool {
 		}
 	}
 	
-	public Set<ConfigTaskReq> getTask(String id,int num,ConfigTaskReq configTaskReq){
+	public Set<ConfigTaskReq> getTask(ConfigTaskReq configTaskReq,String regionId){
 		
+		int num = configTaskReq.getReqInfo().getSubOrderNum();
+		String id = configTaskReq.getReqInfo().getSrcOrderGrpId();
 		synchronized (id.intern()) {
 			
 			this.put(id, configTaskReq);
 			
 			Set<ConfigTaskReq> list = reqMap.get(id);
-			if(list != null && list.size() == num){
+			if(list != null && list.size() >= num){
 				
 				this.remove(id);
 				return list;
@@ -41,7 +46,7 @@ public class ConfigReqPool {
 		}
 	}
 	
-	private void remove(String id){
+	public void remove(String id){
 		
 		if(reqMap.containsKey(id)){
 			
@@ -52,5 +57,10 @@ public class ConfigReqPool {
 	public Map<String,Set<ConfigTaskReq>> getMap(){
 		
 		return this.reqMap;
+	}
+
+	public void removeTask(ConfigTaskReq req, String regionId) {
+		
+		return ;
 	}
 }
