@@ -17,7 +17,7 @@ import com.boco.rofh.dao.PtpDao;
 import com.boco.rofh.dao.WbsDao;
 import com.boco.rofh.entity.RofhProductAttemp;
 
-@Component
+//@Component
 public class FreeOverTimePortScheduler {
 
 	

@@ -112,8 +112,8 @@ public class RofhBeanWapper {
 		
 		
 		RofhCustomer rofhCustomer = new RofhCustomer();
-		rofhCustomer.setCustomerContact(map.get("contact_man_1"));
-		rofhCustomer.setContactNumber(map.get("contact_tel_1"));
+		rofhCustomer.setCustomerContact(map.get("contact_man"));
+		rofhCustomer.setContactNumber(map.get("contact_tel"));
 		rofhCustomer.setLabelCn(map.get("cust_name"));
 		
 		rofhCustomer.setRelatedBmclasstypeCuid("T_ROFH_CUSTOMER");

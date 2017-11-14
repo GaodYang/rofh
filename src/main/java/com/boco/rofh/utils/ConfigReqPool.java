@@ -1,26 +1,19 @@
 package com.boco.rofh.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.springframework.stereotype.Service;
 
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 
+@Service
 public class ConfigReqPool {
 
-	private ConfigReqPool() {
-	}
-
-	private Map<String,List<ConfigTaskReq>> reqMap = new HashMap<>();
+	private Map<String,Set<ConfigTaskReq>> reqMap = new HashMap<>();
 	
-	private static final ConfigReqPool instance = new ConfigReqPool();
-	
-	public static ConfigReqPool getInstance(){
-		
-		return instance;
-	}
 	
 	private void put(String id,ConfigTaskReq taskReq){
 		
@@ -29,22 +22,23 @@ public class ConfigReqPool {
 			reqMap.get(id).add(taskReq);
 		}else{
 			
-			List<ConfigTaskReq> list = new ArrayList<>();
+			Set<ConfigTaskReq> list = new TreeSet<>();
 			list.add(taskReq);
 			reqMap.put(id, list);
 		}
 	}
 	
-	public List<ConfigTaskReq> getTask(String id,int num,ConfigTaskReq configTaskReq){
+	public Set<ConfigTaskReq> getTask(ConfigTaskReq configTaskReq,String regionId){
 		
+		int num = configTaskReq.getReqInfo().getSubOrderNum();
+		String id = configTaskReq.getReqInfo().getSrcOrderGrpId();
 		synchronized (id.intern()) {
 			
 			this.put(id, configTaskReq);
 			
-			List<ConfigTaskReq> list = reqMap.get(id);
-			if(list != null && list.size() == num){
+			Set<ConfigTaskReq> list = reqMap.get(id);
+			if(list != null && list.size() >= num){
 				
-				Collections.sort(list);
 				this.remove(id);
 				return list;
 			}
@@ -52,7 +46,7 @@ public class ConfigReqPool {
 		}
 	}
 	
-	private void remove(String id){
+	public void remove(String id){
 		
 		if(reqMap.containsKey(id)){
 			
@@ -60,8 +54,13 @@ public class ConfigReqPool {
 		}
 	}
 	
-	public Map<String,List<ConfigTaskReq>> getMap(){
+	public Map<String,Set<ConfigTaskReq>> getMap(){
 		
 		return this.reqMap;
+	}
+
+	public void removeTask(ConfigTaskReq req, String regionId) {
+		
+		return ;
 	}
 }
