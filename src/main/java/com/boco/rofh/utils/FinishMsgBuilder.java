@@ -109,8 +109,8 @@ public class FinishMsgBuilder {
 		
 		Ressrv ressrv = new Ressrv();
 		ressrv.setRessrvCode("PORT_RES_SRV");
-		ressrv.setRessrvId(product.getAccountName());
-	//	ressrv.setRessrvId("10086");
+	//	ressrv.setRessrvId(product.getAccountName());
+		ressrv.setRessrvId("10086");
 		ressrv.setRessrvName("端口资源服务");
 		
 		List<Res> resList = new ArrayList<Res>();
@@ -205,7 +205,7 @@ public class FinishMsgBuilder {
 			
 			if(ponway != null){
 			
-				if(DataSource.SF.equals(product.getDataSource())){
+				if(DataSource.SF.name().equals(product.getDataSource())){
 					
 					list = configMapper.getOnuInfoById(RofhNameSpaceBean.buildBean(ponway.getCuid(), "", ""));
 				}
