@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.boco.rofh.utils.DateTimeConverter;
+import com.boco.rofh.utils.IntNullConverter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -102,9 +103,11 @@ public class ConfigTaskReq implements Comparable<ConfigTaskReq>{
 		
 		//子订单数量
 		@XStreamAlias("sub_order_num")
+		@XStreamConverter(value=IntNullConverter.class,ints={1})
 		private int subOrderNum;
 		
 		//优先级
+		@XStreamConverter(value=IntNullConverter.class,ints={10})
 		private int priority;
 		
 		@XStreamAlias("req_attr_list")

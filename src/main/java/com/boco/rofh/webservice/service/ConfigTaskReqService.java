@@ -76,7 +76,7 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 		}
 		else{
 			
-			taskList.add(req);
+			runTask(req,regionId);
 		}
 		if(taskList.isEmpty()){
 			
