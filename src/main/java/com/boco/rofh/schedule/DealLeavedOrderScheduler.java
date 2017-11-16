@@ -6,6 +6,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -32,11 +33,17 @@ public class DealLeavedOrderScheduler {
 
 	@Autowired
 	private ConfigTaskReqService configService;
+	
+	@Value("${server.port}")
+	private String port;
 
 	@Scheduled(cron = "0 0 1 * * ?")
 	public void doTask() {
 
-		logger.debug("start DealLeavedOrderScheduler...");
+		logger.debug("start DealLeavedOrderScheduler..." + port);
+		if(!"9067".equals(port)){
+			return;
+		}
 
 		try {	
 			Map<RedisKey, Set<ConfigTaskReq>> map = manager.getFullOrders();
