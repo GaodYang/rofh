@@ -25,6 +25,7 @@
    <select id="queryPosBroadPlan" parameterType="java.util.Map" resultType="java.util.Map">
    			select count(1) num,decode(min(n.ownership),2,'CTT','FTTH') type from an_pos ap,ptp p,nms_system n
                where  ap.related_cab_cuid = #{FIBER_CAB_CUID}
+                   and ap.live_cycle = 1
             	   and p.related_ne_cuid = ap.cuid
             	   and p.port_state = 1
                    and p.port_sub_type = 13
@@ -46,6 +47,7 @@
 			  from (select n.ownership
 			          from an_pos ap, ptp p, nms_system n
 			         where ap.related_cab_cuid = #{id}
+			           and ap.live_cycle = 1
 			           and p.related_ne_cuid = ap.cuid
 			           and p.port_state = 1
 			           and p.port_sub_type = 13
@@ -248,6 +250,7 @@
 			                 where na.related_cab_cuid = gc.related_ne_cuid
 			                   and gc.standard_addr = #{id})
 			           and p.related_ne_cuid = na.cuid
+			           and na.live_cycle = 1
 			           and n.cuid = na.related_ems_cuid
 			           and n.ownership = 2
 			           and p.port_state = 1
@@ -264,6 +267,7 @@
 			                   and fd.related_pos_cuid is null
 			                   and gc.standard_addr = #{id})
 			           and n.cuid = na.related_ems_cuid
+			           and na.live_cycle = 1
 			           and n.ownership = 2
 			           and p.port_state = 1
 			           and p.port_sub_type = 13
@@ -276,6 +280,7 @@
 			               gpon_cover      gc,
 			               fiber_dp_map_gx fd
 			         where p.related_ne_cuid = na.cuid
+			           and na.live_cycle = 1
 			           and fd.fiber_dp_cuid = gc.related_ne_cuid
 			           and na.related_cab_cuid = fd.fiber_cab_cuid
 			           and fd.related_pos_cuid is not null
@@ -299,6 +304,7 @@
 		                 where na.related_cab_cuid = gc.related_ne_cuid
 		                   and gc.standard_addr = #{id})
 		           and p.related_ne_cuid = na.cuid
+		           and na.live_cycle = 1
 		           and n.cuid = na.related_ems_cuid
 		           and n.ownership = 1
 		           and p.port_state = 1
@@ -316,6 +322,7 @@
 		                    and fd.related_pos_cuid is null
 		                    and gc.standard_addr = #{id})
 		           and n.cuid = na.related_ems_cuid
+		           and na.live_cycle = 1
 		           and n.ownership = 1
 		           and p.port_state = 1
 		           and p.port_sub_type = 13
@@ -324,6 +331,7 @@
 				   select p.cuid, p.related_ne_cuid, p.port_no
 			          from an_pos na, ptp p, nms_system n,gpon_cover gc, fiber_dp_map_gx fd
 			         where p.related_ne_cuid = na.cuid
+			           and na.live_cycle = 1
 			           and fd.fiber_dp_cuid = gc.related_ne_cuid
 			           and na.related_cab_cuid = fd.fiber_cab_cuid
 			           and fd.related_pos_cuid is not null
