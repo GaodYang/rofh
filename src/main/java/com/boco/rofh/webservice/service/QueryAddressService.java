@@ -104,6 +104,7 @@ public class QueryAddressService extends BaseRofhWebService<QueryAddressReq,Quer
 				add.setDistrictName(ObjectUtils.toString(map.get("DISTRICTNAME")));
 				add.setId(ObjectUtils.toString(map.get("OBJECT_ID")));
 				add.setName(ObjectUtils.toString(map.get("ROOM_NO")));
+				add.setCommunityType(ObjectUtils.toString(map.get("COMMUNITY_TYPE")));
 				addList.add(add);
 			}
 		

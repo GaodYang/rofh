@@ -27,5 +27,5 @@ public interface AddressMapper {
 	
 	String queryCountyInfo(Map<String,String> map);
 	
-	String queryRegionType(String id);
+	Map<String,Object> queryRegionType(String id);
 }

@@ -4,16 +4,15 @@
 <mapper namespace="com.boco.rofh.mapper.AddressMapper" >
     
     <select id="queryAddressTreeById" parameterType="java.lang.String" resultType="java.util.Map">
-		select  decode(rel_full_addr_cuid,null,id,
-                 (select object_id
-                      from t_rofh_full_address fa
-                  where fa.cuid = rel_full_addr_cuid)) id,
-                 name,
-                 nm_get_py(name) spell,
-                 full_name,
-                 nm_get_py(full_name) full_spell
-               from t_rofh_addr_rel
-              where rel_id = #{id}
+		 select  decode(ra.rel_full_addr_cuid,null,ra.id,fa.object_id) id,
+                 decode(ra.rel_full_addr_cuid,null,null,nvl(fa.community_type,'2')) community_type,
+                 ra.name,
+                 nm_get_py(ra.name) spell,
+                 ra.full_name,
+                 nm_get_py(ra.full_name) full_spell
+               from t_rofh_addr_rel ra,t_rofh_full_address fa
+               where fa.cuid(+) = ra.rel_full_addr_cuid
+                     and ra.rel_id = #{id}
 	</select>
 	
 	<select id="queryObjectIdByRelId" parameterType="java.lang.String" resultType="java.lang.String">
@@ -41,7 +40,7 @@
 	<select id="queryAddress" parameterType="com.boco.rofh.webservice.pojo.QueryAddressReq" resultType="java.util.Map">
 		select * from (
 		select rownum n,t.* from (
-		select FA.LABEL_CN name, FA.object_id,upper(fa.pinyin) pinyin,FA.room_no,t.oldcuid districtid,t.label_cn districtname
+		select FA.LABEL_CN name, FA.object_id,upper(fa.pinyin) pinyin,FA.room_no,t.oldcuid districtid,t.label_cn districtname,nvl(fa.community_type,'2') community_type
 		  from t_rofh_full_address FA
 		  left join district t  on t.cuid = fa.county
 		 where 1=1 
@@ -113,8 +112,10 @@
 			      and rownum = 1
 	</select>
 	
-	<select id="queryRegionType" parameterType="java.lang.String" resultType="java.lang.String">
-		      select nvl(fa.regiontype1,'0')
+	<select id="queryRegionType" parameterType="java.lang.String" resultType="java.util.Map">
+		      select nvl(fa.regiontype1,'0') type,
+		      		 nvl(fa.community_type,'2') community_type,
+              		 fa.completion_time
 			   from t_rofh_full_address fa
 			  where fa.object_id = #{id}
 	</select>
