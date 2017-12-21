@@ -44,7 +44,7 @@ public class QueryAddressAttrService extends BaseRofhWebService<QueryAddressAttr
 		result.setRegionType(type);
 		
 		CommunityInfo info = new CommunityInfo();
-		
+		result.setCommunityInfo(info);
 		String communityType = ObjectUtils.toString(map.get("COMMUNITY_TYPE"));
 		info.setCommunityType(communityType);
 		
