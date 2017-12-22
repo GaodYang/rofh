@@ -29,8 +29,8 @@
   	<select id="getLinkInfoFtthPPOByCuid" parameterType="java.lang.String" resultType="java.util.Map">
          select 
                 ap1.related_upne_port_cuid RELATED_POS_DOWN_PTP,
-                nvl(ap1.related_olt_cuid, ap2.related_olt_cuid) RELATED_OLT,
-                nvl(ap1.related_port_cuid,ap2.related_port_cuid) RELATED_OLT_DOWN_PTP,
+                ap2.related_olt_cuid RELATED_OLT,
+                ap2.related_port_cuid RELATED_OLT_DOWN_PTP,
                 ap2.cuid RELATED_POS,
                 (select p.cuid
                    from ptp p
