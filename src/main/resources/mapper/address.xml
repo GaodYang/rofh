@@ -112,7 +112,11 @@
 			      and rownum = 1
 	</select>
 	
-	<select id="queryRegionType" parameterType="java.lang.String" resultType="java.util.Map">
+	<resultMap type="java.util.Map" id="regionTypeResult">   
+	  <result property="COMPLETION_TIME" column="COMPLETION_TIME"  javaType="java.util.Date" jdbcType="TIMESTAMP"/>  
+	 </resultMap> 
+	
+	<select id="queryRegionType" parameterType="java.lang.String" resultMap="regionTypeResult">
 		      select nvl(fa.regiontype1,'0') type,
 		      		 nvl(fa.community_type,'2') community_type,
               		 fa.completion_time
