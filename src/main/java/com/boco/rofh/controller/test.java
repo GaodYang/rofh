@@ -429,7 +429,7 @@ public class test {
 	public @ResponseBody List<ReqInfo> tt(){
 		
 		List<ReqInfo> list = new ArrayList<>();
-		ConfigReqPool.getInstance().getMap().forEach((k,v) -> v.forEach((c) -> list.add(c.getReqInfo())));
+	//	ConfigReqPool.getInstance().getMap().forEach((k,v) -> v.forEach((c) -> list.add(c.getReqInfo())));
 		return list;
 	}
 }
