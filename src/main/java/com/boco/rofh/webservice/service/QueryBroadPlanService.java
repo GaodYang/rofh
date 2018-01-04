@@ -88,10 +88,16 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 			//是分光器
 			if(fiberList != null && fiberList.size() > 0){
 				
-				Map<String,Object> fiberMap = fiberList.get(0);
-				//取分光器信息
-				Map<String,Object> posMap = resourceMapper.queryPosBroadPlan(fiberMap);
-				broadPlanResult.setProdSrvList(makeData(ProdSerType.valueOf(posMap.get("TYPE").toString()),Integer.parseInt(posMap.get("NUM").toString())));
+				ProdSerType type = ProdSerType.FTTH;
+				int count = 0;
+				for(Map<String,Object> fiberMap : fiberList){
+					//取分光器信息
+					Map<String,Object> posMap = resourceMapper.queryPosBroadPlan(fiberMap);
+					type = ProdSerType.valueOf(posMap.get("TYPE").toString());
+					count += Integer.parseInt(posMap.get("NUM").toString());
+				}
+				
+				broadPlanResult.setProdSrvList(makeData(type,count));
 				return broadPlanResult;
 			}
 		}else{
