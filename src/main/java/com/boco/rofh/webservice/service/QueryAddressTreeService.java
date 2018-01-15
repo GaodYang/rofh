@@ -67,6 +67,7 @@ public class QueryAddressTreeService extends BaseRofhWebService<QueryAddressTree
 				childInfo.setParentAddrId(id);
 				childInfo.setRegionId(getRegionId());
 				childInfo.setSpell(MapUtil.getStringValue(map, "SPELL"));
+				childInfo.setCommunityType(MapUtil.getStringValue(map, "COMMUNITY_TYPE"));
 				//叶子结点
 				/*String relid = MapUtil.getStringValue(map, "RELID");
 				if(StringUtils.isNotBlank(relid))

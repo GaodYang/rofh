@@ -64,6 +64,9 @@ public class QueryAddressTreeResult {
 		@XStreamAlias("detail_all_spell")
 		private String detailAllSpell;
 		
+		@XStreamAlias("community_type")
+		private String communityType;
+		
 		@XStreamAlias("sub_addr_list")
 		private List<ResStdAddrInfo> subAddrList;
 
@@ -193,6 +196,14 @@ public class QueryAddressTreeResult {
 
 		public void setDetailAllSpell(String detailAllSpell) {
 			this.detailAllSpell = detailAllSpell;
+		}
+
+		public String getCommunityType() {
+			return communityType;
+		}
+
+		public void setCommunityType(String communityType) {
+			this.communityType = communityType;
 		}
 
 		public List<ResStdAddrInfo> getSubAddrList() {

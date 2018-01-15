@@ -92,6 +92,9 @@ public class QueryAddressResult {
 		@XStreamAlias("detail_all_spell")
 		private String  detailAllSpell;
 		
+		@XStreamAlias("community_type")
+		private String communityType;
+		
 		public String getDetailAllName() {
 			return detailAllName;
 		}
@@ -219,6 +222,16 @@ public class QueryAddressResult {
 
 		public void setIsCoverpoint(String isCoverpoint) {
 			this.isCoverpoint = isCoverpoint;
+		}
+
+
+		public String getCommunityType() {
+			return communityType;
+		}
+
+
+		public void setCommunityType(String communityType) {
+			this.communityType = communityType;
 		}
 
 

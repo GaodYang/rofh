@@ -1,5 +1,9 @@
 package com.boco.rofh.webservice.service;
 
+import java.util.Date;
+import java.util.Map;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.boco.rofh.mapper.AddressMapper;
 import com.boco.rofh.webservice.pojo.QueryAddressAttrReq;
 import com.boco.rofh.webservice.pojo.QueryAddressAttrResult;
+import com.boco.rofh.webservice.pojo.QueryAddressAttrResult.CommunityInfo;
 
 /**
  * 
@@ -33,9 +38,20 @@ public class QueryAddressAttrService extends BaseRofhWebService<QueryAddressAttr
 			return result;
 		}
 		
-		String type = addressMapper.queryRegionType(addrId);
+		Map<String,Object> map = addressMapper.queryRegionType(addrId);
+		String type = ObjectUtils.toString(map.get("TYPE"));
 		type = type == null ? "0" : type;
 		result.setRegionType(type);
+		
+		CommunityInfo info = new CommunityInfo();
+		result.setCommunityInfo(info);
+		String communityType = ObjectUtils.toString(map.get("COMMUNITY_TYPE"));
+		info.setCommunityType(communityType);
+		
+		if("1".equals(communityType)){
+			
+			info.setCompletionTime((Date)map.get("COMPLETION_TIME"));
+		}
 		
 		return result;
 	}
