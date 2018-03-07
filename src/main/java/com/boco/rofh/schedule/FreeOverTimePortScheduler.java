@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ import com.boco.rofh.dao.PtpDao;
 import com.boco.rofh.dao.WbsDao;
 import com.boco.rofh.entity.RofhProductAttemp;
 
-//@Component
+@Component
 public class FreeOverTimePortScheduler {
 
 	
@@ -32,15 +33,21 @@ public class FreeOverTimePortScheduler {
 	@Autowired
 	private WbsDao wbsDao;
 	
+	@Value("${server.port}")
+	private String port;
+	
 	@Scheduled(cron="0 0 1 * * ?") 
 	public void task(){
 		
 		logger.info("start FreeOverPortTimeTask...");
-		//获取一个小时前的时间
+		if(!"9067".equals(port)){
+			return;
+		}
+		//获取15天前的时间
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)-2);
+		calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)-15);
 		Date date = calendar.getTime();
-		logger.info("两天前的时间：" + date);
+		logger.info("15天前的时间：" + date);
 		//查询超时预占
 		List<RofhProductAttemp> products = attempProductDao.findAllOverTimeProduct(date);
 		
