@@ -211,26 +211,38 @@
 	
 	
 	<select id="getFreePortFttb" parameterType="java.lang.String" resultType="java.util.Map">
-			select cuid, related_ne_cuid
-			  from (select p.cuid, p.related_ne_cuid, p.port_no
-			          from ptp p,an_onu na,nms_system n
+			select cuid, related_ne_cuid, related_olt_port_cuid pon_port
+			  from (select p.cuid,
+			               p.related_ne_cuid,
+			               p.port_no,
+			               na.related_olt_port_cuid
+			          from ptp p, an_onu na, nms_system n
 			         where exists (select 1
-			                  from  gpon_cover gc
-			                 where 
-			                   na.related_cab_cuid = gc.related_ne_cuid
+			                  from gpon_cover gc
+			                 where na.related_cab_cuid = gc.related_ne_cuid
 			                   and gc.standard_addr = #{id})
 			           and p.related_ne_cuid = na.cuid
 			           and n.cuid = na.related_ems_cuid
-		               and n.ownership = 1
+			           and n.ownership = 1
 			           and p.port_state = 1
 			           and p.port_sub_type = 37
-			           and dev_type = 2)
+			           and dev_type = 2
+			           and exists
+			         (select 1
+			                  from (select olt_pon_port_cuid
+			                          from attemp_pon_way pw
+			                        union all
+			                        select olt_pon_port_cuid
+			                          from pon_way pw
+			                        )
+			          where olt_pon_port_cuid=na.related_olt_port_cuid
+			                having count(1) <![CDATA[<]]> 120))
 			 order by port_no asc
 	</select>
 	
 	<select id="getFreePortCtt" parameterType="java.lang.String" resultType="java.util.Map">
 			select cuid, related_ne_cuid, type
-			  from (select p.cuid, p.related_ne_cuid, p.port_no, '3' type
+			  from (select p.cuid, p.related_ne_cuid, p.port_no, '3' type,na.related_olt_port_cuid
 			          from ptp p, an_onu na, nms_system n
 			         where exists (select 1
 			                  from gpon_cover gc
@@ -243,7 +255,7 @@
 			           and p.port_sub_type = 37
 			           and dev_type = 2
 			        union all
-			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type
+			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type,na.related_port_cuid related_olt_port_cuid
 			          from ptp p, an_pos na, nms_system n
 			         where exists (select 1
 			                  from gpon_cover gc
@@ -257,7 +269,7 @@
 			           and p.port_sub_type = 13
 			           and dev_type = 3
 			        union all
-			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type
+			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type,na.related_port_cuid related_olt_port_cuid
 			          from an_pos na, ptp p, nms_system n
 			         where p.related_ne_cuid = na.cuid
 			           and exists (select 1
@@ -273,7 +285,7 @@
 			           and p.port_sub_type = 13
 			           and dev_type = 3
 			        union all
-			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type
+			        select p.cuid, p.related_ne_cuid, p.port_no, '5' type,na.related_port_cuid related_olt_port_cuid
 			          from an_pos          na,
 			               ptp             p,
 			               nms_system      n,
@@ -291,13 +303,22 @@
 			           and n.ownership = 2
 			           and p.port_state = 1
 			           and p.port_sub_type = 13
-			           and dev_type = 3)
+			           and dev_type = 3) na
+			           where exists (select 1
+			                  from (select olt_pon_port_cuid
+			                          from attemp_pon_way pw
+			                        union all
+			                        select olt_pon_port_cuid
+			                          from pon_way pw
+			                        )
+			          where olt_pon_port_cuid=na.related_olt_port_cuid
+			                having count(1) <![CDATA[<]]> 120)
 			 order by port_no asc
 	</select>
 	
 	<select id="getFreePortFtth" parameterType="java.lang.String" resultType="java.util.Map">
           select cuid, related_ne_cuid
-		  from (select p.cuid, p.related_ne_cuid, p.port_no
+		  from (select p.cuid, p.related_ne_cuid, p.port_no,na.related_port_cuid related_olt_port_cuid
 		          from ptp p,an_pos na,nms_system n
 		         where exists (select 1
 		                  from  gpon_cover gc
@@ -311,7 +332,7 @@
 		           and p.port_sub_type = 13
 		           and dev_type = 3
 		        union all
-		        select p.cuid, p.related_ne_cuid, p.port_no
+		        select p.cuid, p.related_ne_cuid, p.port_no,na.related_port_cuid related_olt_port_cuid
 		          from an_pos na, ptp p,nms_system n
 		         where p.related_ne_cuid = na.cuid
 		           and exists (select 1
@@ -328,7 +349,7 @@
 		           and p.port_sub_type = 13
 		           and dev_type = 3
 		           union all
-				   select p.cuid, p.related_ne_cuid, p.port_no
+				   select p.cuid, p.related_ne_cuid, p.port_no,na.related_port_cuid related_olt_port_cuid
 			          from an_pos na, ptp p, nms_system n,gpon_cover gc, fiber_dp_map_gx fd
 			         where p.related_ne_cuid = na.cuid
 			           and na.live_cycle = 1
@@ -342,7 +363,16 @@
 			           and n.ownership = 1
 			           and p.port_state = 1
 			           and p.port_sub_type = 13
-			           and dev_type = 3)
+			           and dev_type = 3)na
+		            where exists (select 1
+			                  from (select olt_pon_port_cuid
+			                          from attemp_pon_way pw
+			                        union all
+			                        select olt_pon_port_cuid
+			                          from pon_way pw
+			                        )
+			          where olt_pon_port_cuid=na.related_olt_port_cuid
+			                having count(1) <![CDATA[<]]> 64)
 		 order by port_no asc
 	</select>
 	
