@@ -14,5 +14,6 @@
 		<class>com.boco.rofh.entity.WebservicePbossFinish</class>
 		<class>com.boco.rofh.entity.ProdServInfo</class>
 		<class>com.boco.rofh.entity.RofhActivate</class>
+		<class>com.boco.rofh.entity.ActiveResp$Active</class>
 	</persistence-unit>
 </persistence>

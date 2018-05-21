@@ -8,11 +8,19 @@
     </select>
     
 	<select id="getOltById" parameterType="java.lang.String" resultType="java.util.HashMap">
-    	SELECT T.CUID AS RELATED_OLT_CUID,DECODE(T.RELATED_VENDOR_CUID,'DEVICE_VENDOR-8a5a61821bb08a9b011bb0f16f323acb',T.DEV_IP,T.LABEL_DEV )  RELATED_OLT_DEVIP,D.LABEL_CN AS DLABEL_CN,
+    	SELECT T.CUID AS RELATED_OLT_CUID,T.DEV_IP RELATED_OLT_DEVIP,D.LABEL_CN AS DLABEL_CN,
 		        '' LOGICID,'' CVLAN,T.LABEL_CN AS RELATED_OLT_NAME,
 		        N.NATIVE_NAME AS EMS_NAME,T.STANDARD_NAME AS STANDARD_NAME
 		  FROM TRANS_ELEMENT T,NMS_SYSTEM N,device_vendor d
 		 WHERE  T.CUID = #{id} AND  n.cuid =t.related_ems_cuid AND D.CUID=T.RELATED_VENDOR_CUID
+    </select>
+    
+    <select id="getAllActive"  resultType="com.boco.rofh.entity.RofhActivate">
+    	 select trp.*
+			    from t_sf_rofh_product ts, t_rofh_precover_activate trp
+			   where trp.related_order_cuid = ts.related_order_cuid
+			     and ts.finish_time <![CDATA[<]]>
+			         to_date('2018-05-15 00:00:00', 'yyyy-mm-dd hh24:mi:ss')
     </select>
 
 </mapper>
