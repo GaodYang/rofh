@@ -21,6 +21,9 @@
 			   where trp.related_order_cuid = ts.related_order_cuid
 			     and ts.finish_time <![CDATA[<]]>
 			         to_date('2018-05-15 00:00:00', 'yyyy-mm-dd hh24:mi:ss')
+			     and not exists(select 1
+                     from NM_ACTIVE_IPTV_ALL na
+                    where na.id = trp.logicid)
     </select>
 
 </mapper>

@@ -7,13 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-@XmlRootElement(name = "result")
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@XStreamAlias("result")
 public class ActiveResp {
 	
     private String type; 
@@ -23,7 +22,8 @@ public class ActiveResp {
     private List<Active> activeList;
     
     @Entity
-	@Table(name="NM_ACTIVE_IPTV_ALL")
+	@Table(name="NM_ACTIVE_IPTV")
+    @XStreamAlias("active")
     public static class Active{
     	
     	@Transient
@@ -94,8 +94,6 @@ public class ActiveResp {
 		this.productId = productId;
 	}
 
-	@XmlElementWrapper(name="activeList") 
-    @XmlElement(name="active") 
 	public List<Active> getActiveList() {
 		return activeList;
 	}

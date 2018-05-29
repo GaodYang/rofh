@@ -98,27 +98,6 @@ public class ActiveMsg {
 			return ToStringBuilder.reflectionToString(this);
 		}
 		
-		@Override
-		public boolean equals(Object obj) {
-			
-			if(!(obj instanceof Device)){
-				
-				return false;
-			}
-			Device device = (Device)obj;
-			if(device == this){
-				
-				return true;
-			}
-			return this.ponPort.equals(device.ponPort);
-		}
-		
-		@Override
-		public int hashCode() {
-			
-			return 31 + ((ponPort == null) ? 0 : ponPort.hashCode());
-		}
-		
 	}
 	
 	

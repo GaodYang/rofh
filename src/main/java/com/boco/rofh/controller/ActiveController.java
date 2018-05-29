@@ -51,6 +51,7 @@ import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.mapper.ActiveMapper;
 import com.boco.rofh.utils.XStreamUtil;
 import com.boco.rofh.webservice.service.ActiveNetService;
+import com.boco.rofh.webservice.task.ThreadPoolManager;
 
 @Controller
 @RequestMapping("/active")
@@ -191,38 +192,46 @@ public class ActiveController {
 		
 		activeMap.forEach((ems,activeList) -> {
 			
-			logger.debug("处理ems:"+ ems + ",共" + activeList.size() + "条数据");
-			
-			ActiveMsg activeMsg = new ActiveMsg();
-			activeMsg.setType("4");
-			activeMsg.setProductId("iptv-ims");
-			Set<Device> deviceList = new HashSet<>();
-			activeMsg.setDeviceList(deviceList);
-			for(RofhActivate active : activeList){
+			ThreadPoolManager.getInstance().addTask(RofhActivate.class, new Runnable() {
 				
-				Device device = new Device();
-				device.setEms(ems);
-				device.setCvlan(active.getCvlan());
-				device.setFactory(active.getOnuVender());
-				device.setLabelDev(active.getRelatedOltDevip());
-				device.setOltName(active.getRelatedOltName());
-				device.setOnuName(active.getOnuName());
-				device.setPassword(active.getLogicid());
-				device.setPonPort(active.getOltPortName());
-				device.setSvlan(active.getSvlan());
-				deviceList.add(device);
-				if(deviceList.size() == 100) {
+				@Override
+				public void run() {
 					
-					doActive(activeMsg);
-					deviceList = new HashSet<>();
+					logger.debug("处理ems:"+ ems + ",共" + activeList.size() + "条数据");
+					
+					ActiveMsg activeMsg = new ActiveMsg();
+					activeMsg.setType("4");
+					activeMsg.setProductId("iptv-ims");
+					Set<Device> deviceList = new HashSet<>();
+					activeMsg.setDeviceList(deviceList);
+					for(RofhActivate active : activeList){
+						
+						Device device = new Device();
+						device.setEms(ems);
+						device.setCvlan(active.getCvlan());
+						device.setFactory(active.getOnuVender());
+						device.setLabelDev(active.getRelatedOltDevip());
+						device.setOltName(active.getRelatedOltName());
+						device.setOnuName(active.getOnuName());
+						device.setPassword(active.getLogicid());
+						device.setPonPort(active.getOltPortName());
+						device.setSvlan(active.getSvlan());
+						deviceList.add(device);
+						if(deviceList.size() == 100) {
+							
+							doActive(activeMsg);
+							deviceList.clear();
+						}
+					}
+					if(deviceList.size() > 0) {
+						
+						doActive(activeMsg);
+					}
+					
+					logger.debug(ems+"处理完成");
 				}
-			}
-			if(deviceList.size() > 0) {
-				
-				doActive(activeMsg);
-			}
+			});
 			
-			logger.debug(ems+"处理完成");
 		});
 		
 		return "success";
