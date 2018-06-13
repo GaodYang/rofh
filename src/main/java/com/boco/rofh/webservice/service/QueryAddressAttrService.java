@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.boco.rofh.exception.UserException;
 import com.boco.rofh.mapper.AddressMapper;
 import com.boco.rofh.webservice.pojo.QueryAddressAttrReq;
 import com.boco.rofh.webservice.pojo.QueryAddressAttrResult;
@@ -39,6 +40,10 @@ public class QueryAddressAttrService extends BaseRofhWebService<QueryAddressAttr
 		}
 		
 		Map<String,Object> map = addressMapper.queryRegionType(addrId);
+		if(map == null || map.isEmpty()) {
+			
+			throw new UserException(addrId + "地址不存在！");
+		}
 		String type = ObjectUtils.toString(map.get("TYPE"));
 		type = type == null ? "0" : type;
 		result.setRegionType(type);

@@ -12,6 +12,7 @@
                  nm_get_py(ra.full_name) full_spell
                from t_rofh_addr_rel ra,t_rofh_full_address fa
                where fa.cuid(+) = ra.rel_full_addr_cuid
+                     and nvl(fa.community_type,2) = 2
                      and ra.rel_id = #{id}
 	</select>
 	
@@ -43,7 +44,7 @@
 		select FA.LABEL_CN name, FA.object_id,upper(fa.pinyin) pinyin,FA.room_no,t.oldcuid districtid,t.label_cn districtname,nvl(fa.community_type,'2') community_type
 		  from t_rofh_full_address FA
 		  left join district t  on t.cuid = fa.county
-		 where 1=1 
+		 where nvl(FA.community_type,2) = 2
 		<if test="detailName != null and detailName != '' ">
 			and replace(fa.label_cn,'|','') like '${detailName}'
 		</if> 
@@ -61,7 +62,7 @@
 		select count(1) TOTALCOUNT
 		   from t_rofh_full_address FA
 		   left join district t  on t.cuid = fa.county
-		 where 1=1 
+		 where nvl(FA.community_type,2) = 2
 		 <if test="detailName != null and detailName != '' ">
 			and replace(fa.label_cn,'|','') like '${detailName}'
 		</if> 

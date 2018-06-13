@@ -149,7 +149,7 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		}
 		if(!rofhBean.getAction().equals(rofhBean.getProduct().getProductAction())){
 			
-			throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(rofhBean.getProduct().getProductAction()) + "！");
+			throw new UserException("操作有误，" + accountName + "当前产品状态为：" + ProducrAction.getName(rofhBean.getProduct().getProductAction()) + "！");
 		}
 		
 		if(isExistId(accountName)){
@@ -162,7 +162,7 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		}catch(Exception e){
 			
 			logger.error("Task error !",e);
-			throw new UserException("报俊出错！" + e.getMessage());
+			throw new UserException(accountName + "报俊出错！" + e.getMessage());
 		}finally{
 			removeId(accountName);
 		}

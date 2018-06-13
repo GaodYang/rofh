@@ -75,7 +75,7 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 			rofhProduct.setBusinessCountyD(fullAddress.getCounty());
 		}else{
 			
-			throw new UserException("地址不可用！");
+			throw new UserException(getResourceReq.getStdAddrId() + "地址不可用！");
 		}
 		
 		//进行预占
@@ -85,7 +85,7 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 		boolean flag = taskMap.get(type).occupyPort(rofhProduct);
 		if(!flag){
 			
-			throw new UserException("没有空闲端口！");
+			throw new UserException(getResourceReq.getStdAddrId() + "没有空闲端口！");
 		}
 		
 		//设置默认属性

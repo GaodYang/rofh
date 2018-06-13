@@ -124,7 +124,7 @@ public class FtthInstallTask extends AbstractInstallTask{
     	onu.setRelatedUpneCuid(pos.getCuid());
     	onu.setRelatedSiteCuid(pos.getRelatedSiteCuid());
     	onu.setRelatedAccessPoint(pos.getRelatedAccessPoint());
-    	onu.setRelatedCabCuid(pos.getRelatedCabCuid());
+    	//onu.setRelatedCabCuid(pos.getRelatedCabCuid());
     	onu.setRelatedPosPortCuid(rofhProduct.getAccessPort());
     	onu.setRelatedUpnePortCuid(rofhProduct.getAccessPort());
 		onu.setRelatedPonPortCuid(ptp.getCuid());

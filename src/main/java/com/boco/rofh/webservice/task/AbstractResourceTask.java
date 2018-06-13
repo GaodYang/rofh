@@ -131,6 +131,7 @@ public abstract class AbstractResourceTask {
 	
 	public void removeId(String id){
 		
+		logger.info("removing : " + id +"@" + this + IDList);
 		IDList.remove(id);
 		logger.info("removed : " + id);
 	}

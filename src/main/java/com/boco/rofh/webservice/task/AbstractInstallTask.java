@@ -63,7 +63,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 		
 		if(StringUtils.isNotBlank(product.getProductAction()) && !rofhBean.getAction().equals(product.getProductAction())){
 			
-			throw new UserException("操作有误，当前产品状态为：" + ProducrAction.getName(product.getProductAction()) + "！");
+			throw new UserException("操作有误，" + product.getAccountName() + "当前产品状态为：" + ProducrAction.getName(product.getProductAction()) + "！");
 		}
 
 		// 添加客户信息
@@ -206,7 +206,7 @@ public abstract class AbstractInstallTask extends AbstractResourceTask{
 				}else{
 					
 					//没有数据
-					throw new UserException("没有宽带数据！");
+					throw new UserException(rofhBean.getMainCode() + "@" + rofhBean.getMainNumber() + "没有宽带数据！");
 				}
 				
 			}
