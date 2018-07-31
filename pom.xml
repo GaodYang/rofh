@@ -76,6 +76,12 @@
 			<artifactId>active</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.boco.webservice</groupId>
+			<artifactId>terminal</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- axis 依赖开始 -->
 		<dependency>

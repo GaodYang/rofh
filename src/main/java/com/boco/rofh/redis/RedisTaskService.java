@@ -21,7 +21,7 @@ import com.boco.rofh.webservice.pojo.ConfigTaskReq;
  *
  */
 @Service
-public class RedisService {
+public class RedisTaskService {
 
 	@Autowired
 	private RedisTemplate<String,ConfigTaskReq> redisTemplate;
@@ -34,22 +34,22 @@ public class RedisService {
 	@Resource(name = "redisTemplate")
 	private ZSetOperations<String,ConfigTaskReq> zSetOperations;
 	
-	public void addTask(RedisKey key,ConfigTaskReq req){
+	public void addTask(RedisTaskKey key,ConfigTaskReq req){
 		
 		zSetOperations.add(key.toKey(), req,req.getReqInfo().getPriority());
 	}
 	
-	public Set<ConfigTaskReq> getTask(RedisKey key){
+	public Set<ConfigTaskReq> getTask(RedisTaskKey key){
 		
 		return zSetOperations.reverseRange(key.toKey(), 0, MAX_NO);
 	}
 	
-	public boolean isFull(RedisKey key){
+	public boolean isFull(RedisTaskKey key){
 		
 		return zSetOperations.zCard(key.toKey()) >= key.getNo();
 	}
 	
-	public void remove(RedisKey key){
+	public void remove(RedisTaskKey key){
 		
 		redisTemplate.delete(key.toKey());
 	}
@@ -59,25 +59,25 @@ public class RedisService {
 		redisTemplate.delete(key);
 	}
 	
-	public Set<ConfigTaskReq> getTaskAndRemove(RedisKey key){
+	public Set<ConfigTaskReq> getTaskAndRemove(RedisTaskKey key){
 		
 		Set<ConfigTaskReq> set = this.getTask(key);
 		this.remove(key);
 		return set;
 	}
 	
-	public List<RedisKey> getKeys(){
+	public List<RedisTaskKey> getKeys(){
 		
 		return this.getKeyByOrderId("[0-9]*");
 	}
 	
-	public List<RedisKey> getKeyByOrderId(String orderId){
+	public List<RedisTaskKey> getKeyByOrderId(String orderId){
 		
-		List<RedisKey> keys = new ArrayList<>();
+		List<RedisTaskKey> keys = new ArrayList<>();
 		Set<String> skey = redisTemplate.keys("[0-9]*\\:"+orderId+"\\:[1-9]");
 		if(skey != null){
 			
-			skey.forEach( key -> keys.add(RedisKey.fromKey(key)) );
+			skey.forEach( key -> keys.add(RedisTaskKey.fromKey(key)) );
 		}
 		return keys;
 	}

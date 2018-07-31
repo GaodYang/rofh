@@ -3,7 +3,6 @@ package com.boco.rofh.webservice.task;
 import java.util.Date;
 import java.util.LinkedList;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public abstract class AbstractResourceTask {
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractResourceTask.class);
 	
-	private LinkedList<String> IDList = new LinkedList<String>(); 
+	private static LinkedList<String> IDList = new LinkedList<String>(); 
 	
 	@Autowired
 	protected FinishRmTaskAsynService finishRmTaskAsynService;
@@ -90,6 +89,7 @@ public abstract class AbstractResourceTask {
 		
 		String accountName = rofhBean.getProduct().getAccountName();
 		
+		logger.info("try add " + accountName);
 		if(isExistId(accountName)){
 			
 			finishRmTaskAsynService.sendErrorXmlToPboss(rofhBean.getOrder().getCrmTaskId(), "port.used", "宽带账号："+ accountName +",正在处理中！",rofhBean.getRegionId());
@@ -126,12 +126,13 @@ public abstract class AbstractResourceTask {
 		}
 		
 		IDList.add(id);
+		logger.debug(id + " added");
 		return false;
 	}
 	
 	public void removeId(String id){
 		
-		logger.info("removing : " + id +"@" + this + IDList);
+		logger.info("removing : " + id +"@" + IDList);
 		IDList.remove(id);
 		logger.info("removed : " + id);
 	}

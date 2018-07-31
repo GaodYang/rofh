@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.boco.rofh.redis.RedisKey;
+import com.boco.rofh.redis.RedisTaskKey;
 import com.boco.rofh.redis.RedisTaskManager;
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
 import com.boco.rofh.webservice.service.ConfigTaskReqService;
@@ -46,7 +46,7 @@ public class DealLeavedOrderScheduler {
 		}
 
 		try {	
-			Map<RedisKey, Set<ConfigTaskReq>> map = manager.getFullOrders();
+			Map<RedisTaskKey, Set<ConfigTaskReq>> map = manager.getFullOrders();
 
 			logger.debug("execute tasks :" + map);
 

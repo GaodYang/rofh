@@ -3,11 +3,14 @@ package com.boco.rofh.webservice.service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,8 @@ import com.boco.rofh.webservice.task.FtthInstallTask;
 @Service
 public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>{
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(OccupyProdService.class);
 	
 	private Map<String,AbstractInstallTask> taskMap = new HashMap<String,AbstractInstallTask>();
 	
@@ -54,50 +59,63 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 	@Autowired
 	private RofhBeanWapper beanWapper;
 	
+	private static LinkedList<String> IDList = new LinkedList<String>(); 
+	
 	@Override
 	protected Object doBusiness(GetResourceReq getResourceReq) {
 		
-		RofhProductAttemp rofhProduct = new RofhProductAttemp();
-		//请求信息入库
-		rofhProduct.setAccountName(getResourceReq.getAccount());
-		//判断重复
-		if(productDao.isExistByAccount(rofhProduct.getAccountName()) != null){
+		String accountName = getResourceReq.getAccount();
+		if(isExistId(accountName)) {
 			
-			//throw new UserException("用户" + rofhProduct.getAccountName() + "正在开通中！");
+			throw new UserException(accountName + "正在处理中！");
+		}
+		try {
+			
+			//判断重复
+			if(productDao.isExistByAccount(accountName) != null){
+				
+				//throw new UserException("用户" + rofhProduct.getAccountName() + "正在开通中！");
+				return null;
+			}
+			//请求信息入库
+			RofhProductAttemp rofhProduct = new RofhProductAttemp();
+			rofhProduct.setAccountName(accountName);
+			//设置地址信息
+			RofhFullAddress fullAddress = addressDao.findByObjectId(new BigDecimal(getResourceReq.getStdAddrId()));
+			if (fullAddress != null) {
+				rofhProduct.setRelatedCoverageAddrCuid(fullAddress.getCuid());
+				rofhProduct.setBusinessProvinceD(fullAddress.getProvince());
+				rofhProduct.setBusinessCityD(fullAddress.getCity());
+				rofhProduct.setBusinessCountyD(fullAddress.getCounty());
+			}else{
+				
+				throw new UserException(getResourceReq.getStdAddrId() + "地址不可用！");
+			}
+			
+			//进行预占
+			String type = beanWapper.getProdSerMap().get(getResourceReq.getProdSrvCode());
+			type = StringUtils.isEmpty(type) ? "FTTB" : type;
+			
+			boolean flag = taskMap.get(type).occupyPort(rofhProduct);
+			if(!flag){
+				
+				throw new UserException(getResourceReq.getStdAddrId() + "没有空闲端口！");
+			}
+			
+			//设置默认属性
+			rofhProduct.setBusinessType(WebServiceConstant.BusinessType.宽带);
+			rofhProduct.setRelatedBmclasstypeCuid("ROFH_PRODUCT");
+			rofhProduct.setCellName(addressDao.getVillageById(rofhProduct.getRelatedCoverageAddrCuid()));
+			rofhProduct.setDataSource("1");
+			rofhProduct.setPreemptTime(new Date());
+			
+			productDao.save((RofhProductAttemp)rofhProduct);
+			
 			return null;
-		}
-		//设置地址信息
-		RofhFullAddress fullAddress = addressDao.findByObjectId(new BigDecimal(getResourceReq.getStdAddrId()));
-		if (fullAddress != null) {
-			rofhProduct.setRelatedCoverageAddrCuid(fullAddress.getCuid());
-			rofhProduct.setBusinessProvinceD(fullAddress.getProvince());
-			rofhProduct.setBusinessCityD(fullAddress.getCity());
-			rofhProduct.setBusinessCountyD(fullAddress.getCounty());
-		}else{
+		}finally {
 			
-			throw new UserException(getResourceReq.getStdAddrId() + "地址不可用！");
+			removeId(accountName);
 		}
-		
-		//进行预占
-		String type = beanWapper.getProdSerMap().get(getResourceReq.getProdSrvCode());
-		type = StringUtils.isEmpty(type) ? "FTTB" : type;
-		
-		boolean flag = taskMap.get(type).occupyPort(rofhProduct);
-		if(!flag){
-			
-			throw new UserException(getResourceReq.getStdAddrId() + "没有空闲端口！");
-		}
-		
-		//设置默认属性
-		rofhProduct.setBusinessType(WebServiceConstant.BusinessType.宽带);
-		rofhProduct.setRelatedBmclasstypeCuid("ROFH_PRODUCT");
-		rofhProduct.setCellName(addressDao.getVillageById(rofhProduct.getRelatedCoverageAddrCuid()));
-		rofhProduct.setDataSource("1");
-		rofhProduct.setPreemptTime(new Date());
-		
-		productDao.save((RofhProductAttemp)rofhProduct);
-		
-		return null;
 	}
 	
 	public Map<String, AbstractInstallTask> getTaskMap() {
@@ -124,5 +142,24 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 		taskMap.put("FTTH", ftthInstallTask);
 		taskMap.put("WBS", apInstallTask);
 		taskMap.put("CTT", cttInstallTask);
+	}
+	
+	synchronized public boolean isExistId(String id){
+		
+		if(IDList.contains(id)){
+			
+			return true;
+		}
+		
+		IDList.add(id);
+		logger.debug(id + " added");
+		return false;
+	}
+	
+	public void removeId(String id){
+		
+		logger.info("removing : " + id +"@" + IDList);
+		IDList.remove(id);
+		logger.info("removed : " + id);
 	}
 }

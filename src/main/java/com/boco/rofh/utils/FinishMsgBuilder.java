@@ -22,9 +22,11 @@ import com.boco.rofh.entity.PonWay;
 import com.boco.rofh.entity.PonWayAttemp;
 import com.boco.rofh.entity.PonWayBase;
 import com.boco.rofh.entity.RofhBean;
+import com.boco.rofh.entity.RofhFullAddress;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductSf;
 import com.boco.rofh.mapper.RofhConfigMapper;
+import com.boco.rofh.redis.RedisIptvCodeService;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq.FProdInfo;
 import com.boco.rofh.webservice.pojo.FinishRmTaskAsynReq.Res;
@@ -64,6 +66,9 @@ public class FinishMsgBuilder {
 	
 	@Value("${iptv.igmpvlan}")
 	private String iptvLiveVlan;
+	
+	@Autowired
+	private RedisIptvCodeService iptvCodeService;
 
 	public String buildFinishMsg(RofhBean processBean){
 		
@@ -139,7 +144,7 @@ public class FinishMsgBuilder {
 		resAttrList.add(newResAttr("active_result",rofhBean.getActiveMsg()));
 		
 		Map<String,String> maintainMap = null;
-		if(product.getRelatedCoverageAddrCuid() != null){
+		if(StringUtils.isNotBlank(product.getRelatedCoverageAddrCuid())){
 			maintainMap = configMapper.getMaintainNameByAddr(product.getRelatedCoverageAddrCuid());
 		}
 		maintainMap = maintainMap == null ? new HashMap<>() : maintainMap;
@@ -164,6 +169,23 @@ public class FinishMsgBuilder {
 			resAttrList.add(newResAttr("iptv_adm_vlan",this.iptvAdmVlan));
 			resAttrList.add(newResAttr("iptv_live_vlan",this.iptvLiveVlan));
 			resAttrList.add(newResAttr("iptv_on_vlan",this.iptvOnVlan));
+			
+			//iptv_region_num
+			String regionNum = null;
+			if(StringUtils.isNotBlank(product.getRelatedCoverageAddrCuid())){
+				RofhFullAddress address = addressDao.findOne(product.getRelatedCoverageAddrCuid());
+				if(address != null) {
+					regionNum = iptvCodeService.get(address.getTown());
+					if(StringUtils.isBlank(regionNum)) {
+						
+						regionNum = iptvCodeService.get(address.getCounty());
+					}
+				}
+			}
+			if(StringUtils.isBlank(regionNum)) {
+				regionNum = iptvCodeService.get(product.getBusinessCountyD());
+			}
+			resAttrList.add(newResAttr("iptv_region_num",regionNum));
 		}
 		
 		

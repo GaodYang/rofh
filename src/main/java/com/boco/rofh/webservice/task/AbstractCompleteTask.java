@@ -158,7 +158,9 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		}
 		try{
 			
+			logger.info("正在报俊：" + accountName);
 			this.doBusiness(rofhBean);
+			logger.info("完成报俊：" + accountName);
 		}catch(Exception e){
 			
 			logger.error("Task error !",e);

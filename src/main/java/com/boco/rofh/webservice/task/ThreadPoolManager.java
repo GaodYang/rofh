@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.boco.rofh.constant.WebServiceConstant;
+import com.boco.rofh.webservice.service.ConfigTaskReqService;
 
 
 /**
@@ -36,7 +37,11 @@ public class ThreadPoolManager {
 			return pools.get(type);
 		}
 		
-		ExecutorService pool = Executors.newFixedThreadPool(WebServiceConstant.DEFAULT_POOL_SIZE);
+		int poolSize = WebServiceConstant.DEFAULT_POOL_SIZE;
+		if(type == ConfigTaskReqService.class) {
+			poolSize *=2;
+		}
+		ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 		pools.put(type, pool);
 		return pool;
 		
@@ -46,5 +51,10 @@ public class ThreadPoolManager {
 		
 		ExecutorService pool = getThreadPool(type);
 		pool.execute(runnable);
+	}
+	
+	public Map<Class<?>, ExecutorService> getPools() {
+		
+		return pools;
 	}
 }

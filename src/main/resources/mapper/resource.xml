@@ -17,13 +17,30 @@
    	 		select fd.fiber_cab_cuid,
                    fd.related_pos_cuid,
                    fd.start_port_num,
-                   fd.end_port_num
+                   fd.end_port_num,
+                   fd.fiber_dp_cuid,
+                   fd.fiber_count
             from fiber_dp_map_gx fd
            where fd.fiber_dp_cuid = #{id}
    </select>
    
    <select id="queryPosBroadPlan" parameterType="java.util.Map" resultType="java.util.Map">
-   			select count(1) num,decode(min(n.ownership),2,'CTT','FTTH') type from an_pos ap,ptp p,nms_system n
+   			select  
+   				<choose>
+   					<when test="RELATED_POS_CUID != null and RELATED_POS_CUID != '' ">
+   						count(1) 
+   					</when>
+   					<otherwise>
+						min(#{FIBER_COUNT} - (select count(1)
+			                from gpon_cover gc, t_sf_rofh_product sp
+			               where gc.related_ne_cuid = #{FIBER_DP_CUID}
+			                 and gc.standard_addr = sp.related_coverage_addr_cuid) -
+			             (select count(1)
+			                from gpon_cover gc, t_attemp_rofh_product sp
+			               where gc.related_ne_cuid = #{FIBER_DP_CUID}
+			                 and gc.standard_addr = sp.related_coverage_addr_cuid))
+				   </otherwise>
+				 </choose>  num,decode(min(n.ownership),2,'CTT','FTTH') type from an_pos ap,ptp p,nms_system n
                where  ap.related_cab_cuid = #{FIBER_CAB_CUID}
                    and ap.live_cycle = 1
             	   and p.related_ne_cuid = ap.cuid
@@ -53,6 +70,8 @@
 			           and p.port_sub_type = 13
 			           and p.dev_type = 3
 			           and n.cuid = ap.related_ems_cuid
+			           and not exists (select 1
+			              		from an_pos ap2 where  ap.cuid = ap2.related_upne_cuid)
 			        union all
 			        select decode(n.ownership,1,3,n.ownership)
 			          from an_onu ap, ptp p, nms_system n
@@ -324,6 +343,9 @@
 		                  from  gpon_cover gc
 		                 where na.related_cab_cuid = gc.related_ne_cuid
 		                   and gc.standard_addr = #{id})
+		           and not exists(select 1
+		           		from fiber_dp_map_gx fd
+		           		where fd.related_pos_cuid = na.cuid)
 		           and p.related_ne_cuid = na.cuid
 		           and na.live_cycle = 1
 		           and n.cuid = na.related_ems_cuid
@@ -373,6 +395,8 @@
 			                        )
 			          where olt_pon_port_cuid=na.related_olt_port_cuid
 			                having count(1) <![CDATA[<]]> 64)
+			              and not exists (select 1
+			              		from an_pos ap2 where  na.related_ne_cuid = ap2.related_upne_cuid)
 		 order by port_no asc
 	</select>
 	

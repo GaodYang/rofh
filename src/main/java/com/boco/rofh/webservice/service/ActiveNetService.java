@@ -326,7 +326,7 @@ public class ActiveNetService {
 		}	catch (Exception e) {
 			
 			logger.error("调用激活接口失败",e);
-			updateActivateByState(activateBean,"调用激活接口失败","0");
+			updateActivateByState(activateBean,"调用激活接口失败","0",isAdd);
 			return "调用激活接口调用失败";
 		}
 		
@@ -334,37 +334,36 @@ public class ActiveNetService {
 		if("000".equals(rtCode)){
 			
 			logger.info("激活接口业务处理成功");
-			updateActivateByState(activateBean,activeResult.getRtMessage(),"1");
+			updateActivateByState(activateBean,activeResult.getRtMessage(),"1",isAdd);
 			if(isAdd){
 				ActiveThreadUtil.instance.putThread(activateBean.getCuid());
 			}
 			return null;
 		}else {//当激活返回值等于001 -1修改生成激活数据
-			updateActivateByState(activateBean,activeResult.getRtMessage(),"0");
+			updateActivateByState(activateBean,activeResult.getRtMessage(),"0",isAdd);
 		}	
 		
 		return activeResult.getRtMessage();
 	}
 	
-	public void updateActivateByState(RofhActivate activateBean,String error,String state){
+	public void updateActivateByState(RofhActivate activateBean,String error,String state,boolean isAdd){
 		try {
 			logger.info("调用激活接口返回值" + state + "...astate" + activateBean.getActivateState() + "error信息：" + error);
-			String oldState = activateBean.getActivateState();
 			// 1激活成功修改激活状态
-			if("1".equals(state)){
-				if(oldState.equals("10") || oldState.equals("21")){
+			if("1".equals(state)) {
+				if(isAdd) {
 					activateBean.setActivateState("20");
 					activateBean.setActivateResult("激活申请成功");
-				}else if(oldState.equals("22") || oldState.equals("31")){
+				}else {
 					activateBean.setActivateState("30");
 					activateBean.setActivateResult("去激活申请成功");
 				}
 				activateBean.setActivateStatus("已派发");
-			}else if("0".equals(state)){
-				if(oldState.equals("10"))	{
+			}else if("0".equals(state)) {
+				if(isAdd) {
 					activateBean.setActivateState("21");
 					activateBean.setActivateResult(error);
-				}else if(oldState.equals("22")){
+				}else {
 					activateBean.setActivateState("31");
 					activateBean.setActivateResult(error);
 				}

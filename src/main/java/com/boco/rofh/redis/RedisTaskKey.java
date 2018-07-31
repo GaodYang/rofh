@@ -3,7 +3,7 @@ package com.boco.rofh.redis;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class RedisKey {
+public class RedisTaskKey {
 
 	private String regionId;
 	
@@ -11,17 +11,17 @@ public class RedisKey {
 	
 	private int no;
 	
-	public RedisKey() {
+	public RedisTaskKey() {
 	}
 	
-	public RedisKey(String regionId,String orderId,int no) {
+	public RedisTaskKey(String regionId,String orderId,int no) {
 		
 		this.regionId = regionId;
 		this.orderId = orderId;
 		this.no = no;
 	}
 	
-	public RedisKey(String regionId,String orderId,String no) {
+	public RedisTaskKey(String regionId,String orderId,String no) {
 		
 		this.regionId = regionId;
 		this.orderId = orderId;
@@ -58,10 +58,10 @@ public class RedisKey {
 		return this.regionId + ":" + this.orderId + ":" + this.no;
 	}
 	
-	public static RedisKey fromKey(String key){
+	public static RedisTaskKey fromKey(String key){
 		
 		String[] val = key.split(":");
-		return new RedisKey(val[0],val[1],val[2]);
+		return new RedisTaskKey(val[0],val[1],val[2]);
 	}
 	
 	@Override

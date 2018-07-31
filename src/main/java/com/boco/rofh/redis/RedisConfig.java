@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.boco.rofh.webservice.pojo.ConfigTaskReq;
@@ -31,8 +32,12 @@ public class RedisConfig {
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		taskSerializer.setObjectMapper(mapper);
 		redisTemplate.setConnectionFactory(connectionFactory);
-		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		RedisSerializer<?> stringSerializer = new StringRedisSerializer();
+		redisTemplate.setKeySerializer(stringSerializer);
 		redisTemplate.setValueSerializer(taskSerializer);
+		
+		redisTemplate.setHashKeySerializer(stringSerializer);
+		redisTemplate.setHashValueSerializer(stringSerializer);
 		return redisTemplate;
 	}
 }

@@ -7,12 +7,14 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boco.rofh.constant.WebServiceConstant.ProdSerType;
 import com.boco.rofh.dao.AddressDao;
 import com.boco.rofh.mapper.ResourceMapper;
+import com.boco.rofh.utils.MapUtil;
 import com.boco.rofh.utils.RofhBeanWapper;
 import com.boco.rofh.webservice.pojo.QueryBroadPlanReq;
 import com.boco.rofh.webservice.pojo.QueryBroadPlanResult;
@@ -79,7 +81,7 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 		//正常查
 		List<Map<String,Object>> list = resourceMapper.queryBroadPlan(cabId);
 		Map<String,Object> bMap = list.get(0);
-		int num = Integer.parseInt(bMap.get("NUM").toString());
+		int num = MapUtil.getIntegerValue(bMap, "NUM");
 	
 		if(num == 0){
 			
@@ -91,10 +93,11 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 				ProdSerType type = ProdSerType.FTTH;
 				int count = 0;
 				for(Map<String,Object> fiberMap : fiberList){
+
 					//取分光器信息
 					Map<String,Object> posMap = resourceMapper.queryPosBroadPlan(fiberMap);
-					type = ProdSerType.valueOf(posMap.get("TYPE").toString());
-					count += Integer.parseInt(posMap.get("NUM").toString());
+					type = ProdSerType.valueOf(MapUtil.getStringValue(posMap, "TYPE"));
+					count += MapUtil.getIntegerValue(posMap, "NUM");
 				}
 				
 				broadPlanResult.setProdSrvList(makeData(type,count));

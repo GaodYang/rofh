@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -164,8 +165,12 @@ public class RofhBeanWapper {
 		attempProduct.setInstallAddress(map.get("install_addr"));//用户标准地址（安装地址）
 		attempProduct.setSaleType(prodInfo.getProdSrvSpecCode());//专业服务编码
 		//报俊字段
-		attempProduct.setSnCode(prodInfo.getOnuId());
-		attempProduct.setStbMac(prodInfo.getStbMac());
+		if(StringUtils.isNotEmpty(prodInfo.getOnuId())) {
+			attempProduct.setSnCode(prodInfo.getOnuId());
+		}
+		if(StringUtils.isNotEmpty(prodInfo.getStbMac())) {
+			attempProduct.setStbMac(prodInfo.getStbMac());
+		}
 		
 		return attempProduct;
 	}

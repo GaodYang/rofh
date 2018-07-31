@@ -23,7 +23,7 @@ public class RedisTaskManager extends ConfigReqPool{
 
 	
 	@Autowired
-	private RedisService redisService;
+	private RedisTaskService redisService;
 	
 	@Autowired
 	private DealLeavedOrderScheduler dealLeavedOrderScheduler;
@@ -43,7 +43,7 @@ public class RedisTaskManager extends ConfigReqPool{
 		String id = configTaskReq.getReqInfo().getSrcOrderGrpId();
 		if(num == 1){
 			
-			List<RedisKey> keys = redisService.getKeyByOrderId(id);
+			List<RedisTaskKey> keys = redisService.getKeyByOrderId(id);
 			if(keys != null && keys.size() > 0){
 				
 				result = redisService.getTaskAndRemove(keys.get(0));
@@ -55,7 +55,7 @@ public class RedisTaskManager extends ConfigReqPool{
 			
 		}else{
 			
-			RedisKey key = new RedisKey(regionId,id, num);
+			RedisTaskKey key = new RedisTaskKey(regionId,id, num);
 			redisService.addTask(key, configTaskReq);
 			if(!taskMap.containsKey(key.toKey()) && redisService.isFull(key)) {
 				
@@ -67,10 +67,10 @@ public class RedisTaskManager extends ConfigReqPool{
 		return result;
 	}
 	
-	public Map<RedisKey,Set<ConfigTaskReq>> getFullOrders(){
+	public Map<RedisTaskKey,Set<ConfigTaskReq>> getFullOrders(){
 		
-		Map<RedisKey, Set<ConfigTaskReq>> map = new HashMap<>();
-		List<RedisKey> keys = redisService.getKeys();
+		Map<RedisTaskKey, Set<ConfigTaskReq>> map = new HashMap<>();
+		List<RedisTaskKey> keys = redisService.getKeys();
 		if(keys != null){
 			
 			keys.forEach( key -> {
@@ -89,7 +89,7 @@ public class RedisTaskManager extends ConfigReqPool{
 	public Map<String, Set<ConfigTaskReq>> getMap() {
 		
 		Map<String, Set<ConfigTaskReq>> map = new HashMap<>();
-		List<RedisKey> keys = redisService.getKeys();
+		List<RedisTaskKey> keys = redisService.getKeys();
 		keys.forEach( key -> {
 			
 			map.put(key.toKey(),redisService.getTask(key));
@@ -106,7 +106,7 @@ public class RedisTaskManager extends ConfigReqPool{
 	@Override
 	public void removeTask(ConfigTaskReq req, String regionId) {
 		
-		RedisKey key = new RedisKey(regionId, req.getReqInfo().getSrcOrderGrpId(), req.getReqInfo().getSubOrderNum());
+		RedisTaskKey key = new RedisTaskKey(regionId, req.getReqInfo().getSrcOrderGrpId(), req.getReqInfo().getSubOrderNum());
 		String id = key.toKey();
 		this.remove(id);
 		taskMap.remove(id);
