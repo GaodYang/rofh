@@ -29,7 +29,7 @@ public class WebServiceConstant {
 	public static final String SUFFIX_CDATA = "]]>";
 
 	
-	public static final int DEFAULT_POOL_SIZE = 50;
+	public static final int DEFAULT_POOL_SIZE = 20;
 	/**
 	 * 接入类型枚举
 	 * 
@@ -51,6 +51,7 @@ public class WebServiceConstant {
 
 	}
 
+	//0普通宽带  1一网通宽带	2小微宽带
 	public static class BusinessType {
 
 		public static final String 宽带 = "12";

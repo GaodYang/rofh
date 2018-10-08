@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,7 @@ public class QueryBroadPlanService extends BaseRofhWebService<QueryBroadPlanReq,
 	 * @return
 	 */
 	@Override
-	protected QueryBroadPlanResult doBusiness(QueryBroadPlanReq broadPlanReq) {
+	public QueryBroadPlanResult doBusiness(QueryBroadPlanReq broadPlanReq) {
 		
 		//标准地址id
 		String cuid = addressDao.findIdByObjectId(new BigDecimal(broadPlanReq.getStandardAddrId()));

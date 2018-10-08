@@ -10,6 +10,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ import com.boco.rofh.webservice.task.ThreadPoolManager;
 @Service
 public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Object>{
 	
+	private static final Logger logger = LoggerFactory.getLogger(ConfigTaskReqService.class);
 	
 	private Map<String,AbstractResourceTask> configResourceTask;
 	
@@ -68,9 +71,11 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 		String groupId = req.getReqInfo().getSrcOrderGrpId();
 		if(StringUtils.isNotBlank(groupId)){
 			
+			logger.info("executing groupId is " + groupId);
 			Set<ConfigTaskReq> set = configManager.getTask(req,regionId);
 			if(set != null && set.size() > 0){
 				
+				logger.info(groupId + " now size is " + set.size());
 				taskList.addAll(set);
 			}
 		}
@@ -110,6 +115,8 @@ public class ConfigTaskReqService extends BaseRofhWebService<ConfigTaskReq, Obje
 			key = StringUtils.isEmpty(key) ? "FTTB" : key;
 
 		}
+		
+		logger.info(req.getProdInfoList().get(0).getAccessNum() + " doing : " + key);
 		configResourceTask.get(key).doTask(req,regionId);
 	}
 	

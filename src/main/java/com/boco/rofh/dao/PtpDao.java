@@ -33,4 +33,9 @@ public interface PtpDao extends JpaRepository<Ptp, String>{
 	@Modifying
 	@Query(value="delete from Ptp where cuid = :id")
 	public void delete(@Param("id")String id);
+	
+	@Transactional
+	@Modifying
+	@Query(value="delete from Ptp where related_ne_cuid = :id and dev_type = 2")
+	public void deleteByOnuId(@Param("id")String id);
 }

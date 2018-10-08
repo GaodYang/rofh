@@ -31,6 +31,7 @@
    						count(1) 
    					</when>
    					<otherwise>
+   					least(count(1),
 						min(#{FIBER_COUNT} - (select count(1)
 			                from gpon_cover gc, t_sf_rofh_product sp
 			               where gc.related_ne_cuid = #{FIBER_DP_CUID}
@@ -38,7 +39,7 @@
 			             (select count(1)
 			                from gpon_cover gc, t_attemp_rofh_product sp
 			               where gc.related_ne_cuid = #{FIBER_DP_CUID}
-			                 and gc.standard_addr = sp.related_coverage_addr_cuid))
+			                 and gc.standard_addr = sp.related_coverage_addr_cuid)))
 				   </otherwise>
 				 </choose>  num,decode(min(n.ownership),2,'CTT','FTTH') type from an_pos ap,ptp p,nms_system n
                where  ap.related_cab_cuid = #{FIBER_CAB_CUID}
@@ -57,6 +58,28 @@
 				   <if test="END_PORT_NUM != null and END_PORT_NUM != '' ">
 				   	    and p.port_no <![CDATA[ <= ]]> #{END_PORT_NUM}
 				   </if>
+				   and not exists (select 1
+			              		from an_pos ap2 where  ap.cuid = ap2.related_upne_cuid)
+				   and ((n.ownership = 1 and exists
+				   		(select 1
+				                  from (select olt_pon_port_cuid
+				                          from attemp_pon_way pw
+				                        union all
+				                        select olt_pon_port_cuid
+				                          from pon_way pw
+				                        )
+				          where olt_pon_port_cuid=ap.related_port_cuid
+				                having count(1) <![CDATA[<]]> 64))
+				       or(n.ownership = 2 and exists
+				   		(select 1
+				                  from (select olt_pon_port_cuid
+				                          from attemp_pon_way pw
+				                        union all
+				                        select olt_pon_port_cuid
+				                          from pon_way pw
+				                        )
+				          where olt_pon_port_cuid=ap.related_port_cuid
+				                having count(1) <![CDATA[<]]> 120)))
    </select>
    
    <select id="queryBroadPlan" parameterType="java.lang.String" resultType="java.util.Map">
@@ -70,8 +93,42 @@
 			           and p.port_sub_type = 13
 			           and p.dev_type = 3
 			           and n.cuid = ap.related_ems_cuid
+			           and n.ownership = 1
 			           and not exists (select 1
 			              		from an_pos ap2 where  ap.cuid = ap2.related_upne_cuid)
+			           and exists
+				         (select 1
+				                  from (select olt_pon_port_cuid
+				                          from attemp_pon_way pw
+				                        union all
+				                        select olt_pon_port_cuid
+				                          from pon_way pw
+				                        )
+				          where olt_pon_port_cuid=ap.related_port_cuid
+				                having count(1) <![CDATA[<]]> 64)
+				    union all
+				    select n.ownership
+			          from an_pos ap, ptp p, nms_system n
+			         where ap.related_cab_cuid = #{id}
+			           and ap.live_cycle = 1
+			           and p.related_ne_cuid = ap.cuid
+			           and p.port_state = 1
+			           and p.port_sub_type = 13
+			           and p.dev_type = 3
+			           and n.cuid = ap.related_ems_cuid
+			           and n.ownership = 2
+			           and not exists (select 1
+			              		from an_pos ap2 where  ap.cuid = ap2.related_upne_cuid)
+			           and exists
+				         (select 1
+				                  from (select olt_pon_port_cuid
+				                          from attemp_pon_way pw
+				                        union all
+				                        select olt_pon_port_cuid
+				                          from pon_way pw
+				                        )
+				          where olt_pon_port_cuid=ap.related_port_cuid
+				                having count(1) <![CDATA[<]]> 120)
 			        union all
 			        select decode(n.ownership,1,3,n.ownership)
 			          from an_onu ap, ptp p, nms_system n
@@ -80,7 +137,17 @@
 			           and p.port_state = 1
 			           and p.port_sub_type = 37
 			           and p.dev_type = 2
-			           and n.cuid = ap.related_ems_cuid)
+			           and n.cuid = ap.related_ems_cuid
+			           and exists
+				         (select 1
+				                  from (select olt_pon_port_cuid
+				                          from attemp_pon_way pw
+				                        union all
+				                        select olt_pon_port_cuid
+				                          from pon_way pw
+				                        )
+				          where olt_pon_port_cuid=ap.related_olt_port_cuid
+				                having count(1) <![CDATA[<]]> 120))
    </select>
    
    <select id="queryBroadPlanbk" parameterType="java.lang.String" resultType="java.util.Map">
@@ -332,6 +399,8 @@
 			                        )
 			          where olt_pon_port_cuid=na.related_olt_port_cuid
 			                having count(1) <![CDATA[<]]> 120)
+			               	and not exists (select 1
+			              		from an_pos ap2 where  na.related_ne_cuid = ap2.related_upne_cuid)
 			 order by port_no asc
 	</select>
 	

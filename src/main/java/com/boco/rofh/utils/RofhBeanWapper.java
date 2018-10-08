@@ -164,6 +164,11 @@ public class RofhBeanWapper {
 		attempProduct.setBroadandWidth(bandwidth.substring(0, bandwidth.indexOf("@") == -1 ? bandwidth.length() : bandwidth.indexOf("@")));//带宽
 		attempProduct.setInstallAddress(map.get("install_addr"));//用户标准地址（安装地址）
 		attempProduct.setSaleType(prodInfo.getProdSrvSpecCode());//专业服务编码
+		
+		String broadbandType = map.get("broadband_type");
+		if(StringUtils.isNotEmpty(broadbandType)) {
+			attempProduct.setBusinessType(broadbandType);
+		}
 		//报俊字段
 		if(StringUtils.isNotEmpty(prodInfo.getOnuId())) {
 			attempProduct.setSnCode(prodInfo.getOnuId());

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.boco.rofh.constant.WebServiceConstant;
 import com.boco.rofh.entity.RofhBean;
-import com.boco.rofh.entity.RofhOrder;
 import com.boco.rofh.entity.RofhProduct;
 import com.boco.rofh.entity.RofhProductAttemp;
 import com.boco.rofh.entity.RofhProductSf;
@@ -79,5 +78,10 @@ public class RemoveTask extends AbstractResourceTask{
 		attempProductDao.save(attempProduct);
 		rofhBean.setProduct(attempProduct);
 		
+	}
+	
+	public List<String> getIds(){
+		
+		return IDList;
 	}
 }

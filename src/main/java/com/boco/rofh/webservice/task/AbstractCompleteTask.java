@@ -87,8 +87,9 @@ public abstract class AbstractCompleteTask extends AbstractResourceTask{
 		
 			onuDao.delete(ponway.getRelatedOnuCuid());
 		
-			ptpDao.delete(ponway.getOnuPortCuid());
-			ptpDao.delete(ponway.getOnuUpPortCuid());
+			
+			ptpDao.deleteByOnuId(ponway.getOnuPortCuid());
+			//ptpDao.delete(ponway.getOnuUpPortCuid());
 
 		}
 		else if(WebServiceConstant.AccessMode.WBS.equals(rofhProduct.getAccessMode())){

@@ -1,9 +1,11 @@
 package com.boco.rofh.webservice.service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -59,7 +61,7 @@ public class OccupyProdService extends BaseRofhWebService<GetResourceReq,Object>
 	@Autowired
 	private RofhBeanWapper beanWapper;
 	
-	private static LinkedList<String> IDList = new LinkedList<String>(); 
+	private List<String> IDList = Collections.synchronizedList(new LinkedList<String>()); 
 	
 	@Override
 	protected Object doBusiness(GetResourceReq getResourceReq) {
